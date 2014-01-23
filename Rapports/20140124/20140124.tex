@@ -1,0 +1,47 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{mathced}
+\usepackage{graphicx}
+\usepackage{eurosym}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage{pgfplots}
+\author{HUGUENIN Cédric}
+\everymath{\displaystyle}
+\begin{document}
+\entete{TELECOM Nancy}{PIDR}{Premier contact}{24 janvier 2014}
+
+\section{Données à conserver}
+
+\begin{itemize}
+\item \'Enoncé de l'exercice ;
+\item code de l'élève ;
+\item nombre tentatives ;
+\item temps entre chaque tentatives ;
+\item changement d'exercice alors que l'actuel n'est pas résolu.
+\end{itemize}
+
+\section{Structure stockage}
+
+\begin{itemize}
+\item Un dépôt par utilisateur ;
+\item une branche par leçon ;
+\item une branche par exercice dans chaque branche de leçon.
+\end{itemize}
+$ $\\
+\begin{itemize}
+\item Message du commit : FAIL ou SUCCESS, l'ID de l'exercice, date, langage, indice utilisé.
+\item Contenu du commit : code source, le message d'erreur s'il existe et l'énoncé.
+\end{itemize}
+
+Dans le code source, il faut sauvegarder le template.
+
+Commit lors de la compilation.
+Quand il est en ligne, il push.
+
+\section{Questions}
+
+\begin{itemize}
+\item Serveurs http://www.loria.fr/\~oster/plm-cloud/, et http://jlmserver-chmod0.appspot.com ?
+\item Utilisation de Play ? Utilité de Google App Engine (a priori non compatible avec Play 2.x) ?
+\end{itemize}
+
+\end{document}
