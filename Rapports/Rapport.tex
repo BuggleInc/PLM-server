@@ -1,0 +1,125 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{mathced}
+\usepackage{graphicx}
+\usepackage{eurosym}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage{pgfplots}
+\author{HUGUENIN Cédric}
+\everymath{\displaystyle}
+\begin{document}
+\entete{TELECOM Nancy}{PIDR}{Serveur d'application PLM}{}
+% Section : les dates
+% Titre du PIDR en haut
+\section{15 janvier 2014}
+\subsection{Données à conserver}
+
+\begin{itemize}
+\item \'Enoncé de l'exercice ;
+\item code de l'élève ;
+\item nombre tentatives ;
+\item temps entre chaque tentatives ;
+\item changement d'exercice alors que l'actuel n'est pas résolu.
+\end{itemize}
+
+\subsection{Structure stockage}
+
+\begin{itemize}
+\item Un dépôt par utilisateur ;
+\item une branche par leçon ;
+\item une branche par exercice dans chaque branche de leçon.
+\end{itemize}
+$ $\\
+\begin{itemize}
+\item Message du commit : FAIL ou SUCCESS, l'ID de l'exercice, date, langage, indice utilisé, nombre de tests passés.
+\item Contenu du commit : code source, le message d'erreur s'il existe et l'énoncé.
+\end{itemize}
+
+Fichiers avec le code source, le template et le résultat.
+
+Commit lors de la compilation.
+Quand il est en ligne, il push.
+
+\subsection{Questions}
+
+\begin{itemize}
+\item Serveurs \url{http://www.loria.fr/~oster/plm-cloud/}, et \url{http://jlmserver-chmod0.appspot.com} ?
+\item Utilisation de Play ? Utilité de Google App Engine (a priori non compatible avec Play 2.x) ?
+\end{itemize}
+
+\section{24 janvier 2014}
+
+Plutôt une branche par exercice.
+Google App Engine : première tentative.
+Play plus simple et plu portable.
+Ne pas dépendre d'une technique.
+ 
+Voir ce que l'on attend de nous
+
+Notre rapport doit permettre de faire gagner du temps à la prochaine équipe
+
+Gestion de projet : ToDo list, planning des grandes étapes.
+
+Regarder le code de la session de la PLM
+Git pourrait faire l'espion et la session
+
+Mode professeur à reprendre. Fonctionnalités attendues (serveur d'utilisation) :
+\begin{itemize}
+\item explorer graphiquement l'évolution de chaque élèves ;
+\item mise en forme des données : représentation ;
+\item 
+\end{itemize}
+Première version pour monter les gits. (premier tiers de notre travail)
+Commit en local.
+Monter automatiquement sur le serveur.
+Moulinette d'extraction des données.
+% modélisation apprenante. Alertes configurables (nombre essai, temps passé)
+% openbadges.org
+% Besoins d'authentification des élèves.
+% 
+% Détection d'exercices infaisable : personne n'y arrive
+
+% Récupérer des leçons sur un serveur
+
+% Trois cibles : apprenants, auteurs de ressources : création de contenu, enseignants : faire leur séquences d'exo : éditeur d'exercice et de séquences.
+
+% Traces utilisées en live : savoir qui aider, et après coup, pour repérer les exercices qui marchent ou pas.
+
+% Prendre le controle à distance de la machine de l'élèves / chat vidéo
+
+% nouveaux langages : scratch, js, C
+
+% forum collaboratif : commenter et proposer des exercices (les élèves par exemple). On propose aux autres élèves et les notes. (Recapcha) 
+
+% Serveur de centralisation
+
+% ToDo list :
+Faire le git en local et le push sur un serveur
+
+Trouver des étapes : établir un planning.
+
+Faire un serveur qui centralise le code des élèves.
+
+Gestionnaire de sessions en GIT qui commit plein de trucs
+Template, source, énoncé dans un seul commit.
+Chargeur qui récupère les données depuis le git.
+
+ImportCloudSession.java
+SessionDB.java Exo, language, fichier : en mémoire ; le ISessionKit : gère l'écriture sur le disque.
+Exercice.java -> SourceFile.java : template et le body (ce que l'élève à tapé) actuel
+Finir de mettre dans SessionDB le code de l'élève
+SourceFile : ce qui vient du jar
+SessionDB : ce qu'il faut écrire sur le disque
+Qui est en charge de getCompilableContent ?
+
+
+Code session.
+Ramener code de l'élève dans SessionDB
+Les tests doivent passer
+Contenu du sessionDB dans le git et le contenu du template.
+
+Bonus :
+Poster sur GitHub pour le feedback des problèmes : dans les issues
+PLM doit se loguer sur GitHub pour poster les messages d'erreurs.
+
+Attentes du stages
+\end{document}
