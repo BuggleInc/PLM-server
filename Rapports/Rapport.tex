@@ -31,7 +31,7 @@
 $ $\\
 \begin{itemize}
 \item Message du commit : FAIL ou SUCCESS, l'ID de l'exercice, date, langage, indice utilisé, nombre de tests passés.
-\item Contenu du commit : code source, le message d'erreur s'il existe et l'énoncé.
+\item Contenu du commit : code source, le message d'erreur s'il existe, le template et l'énoncé.
 \end{itemize}
 
 Fichiers avec le code source, le template et le résultat.
@@ -42,84 +42,84 @@ Quand il est en ligne, il push.
 \subsection{Questions}
 
 \begin{itemize}
-\item Serveurs \url{http://www.loria.fr/~oster/plm-cloud/}, et \url{http://jlmserver-chmod0.appspot.com} ?
+\item Serveurs ?
+	\begin{itemize}
+	\item \url{http://www.loria.fr/~oster/plm-cloud/}
+	\item \url{http://jlmserver-chmod0.appspot.com}
+	\end{itemize}
 \item Utilisation de Play ? Utilité de Google App Engine (a priori non compatible avec Play 2.x) ?
 \end{itemize}
 
 \section{24 janvier 2014}
+\subsection{Git}
+Git pourrait faire l'espion et la session.
 
-Plutôt une branche par exercice.
-Google App Engine : première tentative.
-Play plus simple et plu portable.
-Ne pas dépendre d'une technique.
- 
-Voir ce que l'on attend de nous
+Il faut plutôt faire une branche par exercice.
 
-Notre rapport doit permettre de faire gagner du temps à la prochaine équipe
+%Gestionnaire de sessions en GIT qui commit plein de trucs.
+Template, source, énoncé dans un seul commit.
+Chargeur qui récupère les données depuis le git.
+Faire le git en local et le push sur un serveur. 
 
-Gestion de projet : ToDo list, planning des grandes étapes.
+Première version pour monter les gits : (premier tiers de notre travail). Commit en local. Monter automatiquement sur le serveur.
+\subsection{Modification du code de la PLM}
+Regarder le code de la session de la PLM.
 
-Regarder le code de la session de la PLM
-Git pourrait faire l'espion et la session
+Besoins d'authentification des élèves.
 
+ImportCloudSession.java
+SessionDB.java Exo, language, fichier : en mémoire ; ISessionKit gère l'écriture sur le disque.
+Exercice.java -> SourceFile.java : template et le body (ce que l'élève à tapé) actuel.
+Finir de mettre dans SessionDB le code de l'élève.
+SourceFile : ce qui vient du jar.
+SessionDB : ce qu'il faut écrire sur le disque.
+Qui est en charge de getCompilableContent ?
+
+Ramener code de l'élève dans SessionDB.
+
+Les tests doivent passer.
+
+\subsection{Mode professeur}
 Mode professeur à reprendre. Fonctionnalités attendues (serveur d'utilisation) :
 \begin{itemize}
 \item explorer graphiquement l'évolution de chaque élèves ;
 \item mise en forme des données : représentation ;
-\item 
+\item alertes configurables (nombre essai, temps passé) ;
+\item détection d'exercices infaisable : personne n'y arrive ;
+\item traces utilisées en direct : savoir qui aider, et après coup, pour repérer les exercices qui marchent ou pas.
 \end{itemize}
-Première version pour monter les gits. (premier tiers de notre travail)
-Commit en local.
-Monter automatiquement sur le serveur.
-Moulinette d'extraction des données.
-% modélisation apprenante. Alertes configurables (nombre essai, temps passé)
-% openbadges.org
-% Besoins d'authentification des élèves.
-% 
-% Détection d'exercices infaisable : personne n'y arrive
 
-% Récupérer des leçons sur un serveur
+\subsection{Autres}
 
-% Trois cibles : apprenants, auteurs de ressources : création de contenu, enseignants : faire leur séquences d'exo : éditeur d'exercice et de séquences.
+Google App Engine était une première tentative. Play plus simple et plus portable. Il faut éviter de dépendre d'une technique.
 
-% Traces utilisées en live : savoir qui aider, et après coup, pour repérer les exercices qui marchent ou pas.
+Système de badges : \url{openbadges.org}
 
-% Prendre le controle à distance de la machine de l'élèves / chat vidéo
+Récupérer des leçons sur un serveur.
 
-% nouveaux langages : scratch, js, C
+Notre rapport doit permettre de faire gagner du temps à la prochaine équipe. Rapport à rendre pour le 22 mai 2014. Soutenance : 28 mai 2014
 
-% forum collaboratif : commenter et proposer des exercices (les élèves par exemple). On propose aux autres élèves et les notes. (Recapcha) 
+Gestion de projet : ToDo liste, planning des grandes étapes.
 
-% Serveur de centralisation
+Trois cibles : apprenants, auteurs de ressources : création de contenu, enseignants : faire leur séquences d'exo : éditeur d'exercice et de séquences.
+Moulinette d'extraction des données. Modélisation apprenante.
 
-% ToDo list :
-Faire le git en local et le push sur un serveur
+Prendre le contrôle à distance de la machine de l'élèves / chat vidéo
 
-Trouver des étapes : établir un planning.
+Nouveaux langages : scratch, js, C.
 
-Faire un serveur qui centralise le code des élèves.
+Forum collaboratif : commenter et proposer des exercices (les élèves par exemple). On propose aux autres élèves et les notes. (Recapcha) 
 
-Gestionnaire de sessions en GIT qui commit plein de trucs
-Template, source, énoncé dans un seul commit.
-Chargeur qui récupère les données depuis le git.
-
-ImportCloudSession.java
-SessionDB.java Exo, language, fichier : en mémoire ; le ISessionKit : gère l'écriture sur le disque.
-Exercice.java -> SourceFile.java : template et le body (ce que l'élève à tapé) actuel
-Finir de mettre dans SessionDB le code de l'élève
-SourceFile : ce qui vient du jar
-SessionDB : ce qu'il faut écrire sur le disque
-Qui est en charge de getCompilableContent ?
-
-
-Code session.
-Ramener code de l'élève dans SessionDB
-Les tests doivent passer
-Contenu du sessionDB dans le git et le contenu du template.
 
 Bonus :
-Poster sur GitHub pour le feedback des problèmes : dans les issues
+Poster sur GitHub pour le feedback des problèmes : dans les issues.
 PLM doit se loguer sur GitHub pour poster les messages d'erreurs.
+\url{http://developer.github.com/v3/issues/#create-an-issue}
 
-Attentes du stages
+\subsection{Questions}
+\begin{itemize}
+\item Différences entre SessionDB et ExecutionProgress ?
+\item Utilisation exclusive du git pour stocker le code en local ?
+\item Le serveur alerte le professeur d'un élève en difficultés à partir des données du git pushé en temps réel ? (Commit log en JSON -> données récupérables avec un fetch moins coûteux qu'un pull)
+\end{itemize}
 \end{document}
