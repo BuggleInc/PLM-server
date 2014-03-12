@@ -1,0 +1,13 @@
+[0m[[0mdebug[0m] [0mCopy resource mappings: [0m
+[0m[[0mdebug[0m] [0m	(/home/math/Play/zentasks/target/scala-2.10/resource_managed/main/public/stylesheets/main.css,/home/math/Play/zentasks/target/scala-2.10/classes/public/stylesheets/main.css)[0m
+[0m[[0mdebug[0m] [0m	(/home/math/Play/zentasks/target/scala-2.10/resource_managed/main/public/stylesheets/main.min.css,/home/math/Play/zentasks/target/scala-2.10/classes/public/stylesheets/main.min.css)[0m
+[0m[[0mdebug[0m] [0m	(/home/math/Play/zentasks/target/scala-2.10/resource_managed/main/public/stylesheets/login.css,/home/math/Play/zentasks/target/scala-2.10/classes/public/stylesheets/login.css)[0m
+[0m[[0mdebug[0m] [0m	(/home/math/Play/zentasks/target/scala-2.10/resource_managed/main/public/stylesheets/login.min.css,/home/math/Play/zentasks/target/scala-2.10/classes/public/stylesheets/login.min.css)[0m
+[0m[[0mdebug[0m] [0m	(/home/math/Play/zentasks/target/scala-2.10/resource_managed/main/public/javascripts/main.js,/home/math/Play/zentasks/target/scala-2.10/classes/public/javascripts/main.js)[0m
+[0m[[0mdebug[0m] [0m	(/home/math/Play/zentasks/target/scala-2.10/resource_managed/main/public/javascripts/main.min.js,/home/math/Play/zentasks/target/scala-2.10/classes/public/javascripts/main.min.js)[0m
+[0m[[0mdebug[0m] [0m	(/home/math/Play/zentasks/conf/evolutions,/home/math/Play/zentasks/target/scala-2.10/classes/evolutions)[0m
+[0m[[0mdebug[0m] [0m	(/home/math/Play/zentasks/conf/initial-data.yml,/home/math/Play/zentasks/target/scala-2.10/classes/initial-data.yml)[0m
+[0m[[0mdebug[0m] [0m	(/home/math/Play/zentasks/conf/application.conf,/home/math/Play/zentasks/target/scala-2.10/classes/application.conf)[0m
+[0m[[0mdebug[0m] [0m	(/home/math/Play/zentasks/conf/routes,/home/math/Play/zentasks/target/scala-2.10/classes/routes)[0m
+[0m[[0mdebug[0m] [0m	(/home/math/Play/zentasks/conf/evolutions/default,/home/math/Play/zentasks/target/scala-2.10/classes/evolutions/default)[0m
+[0m[[0mdebug[0m] [0m	(/home/math/Play/zentasks/conf/evolutions/default/1.sql,/home/math/Play/zentasks/target/scala-2.10/classes/evolutions/default/1.sql)[0m
