@@ -3,13 +3,25 @@ package controllers;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.Calendar;
+import java.util.Iterator;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import com.jcraft.jsch.JSchException;
+
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
-import org.eclipse.jgit.internal.storage.file.FileRepository;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -42,9 +54,27 @@ public class JGit extends Controller {
 		// Git git = new Git(localRepo);
 		// git.pull().call();
 
-		repository.close();
+		
+		
+		repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
+		Git git = new Git(repository);
+		RevWalk walk = new RevWalk(repository);
+		RevCommit commit = null;
+		String s = "";
+		
+		Iterable<RevCommit> logs = git.log().call();
+		Iterator<RevCommit> i = logs.iterator();
 
-		return ok("A remote repository has been cloned successfully.");
+		while (i.hasNext()) {
+			commit = walk.parseCommit(i.next());
+			s = s + commit.getFullMessage() + "<br />\n";
+
+		}
+		repository.close();
+		
+		System.out.println(s);
+		
+		return ok(s);
 	}
 
 }
