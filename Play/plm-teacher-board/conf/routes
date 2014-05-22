@@ -10,3 +10,7 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 # Clone a remote repository
 GET     /cloneRepo                  controllers.JGit.cloneRepo()
+GET     /displayBranch				controllers.JGit.displayBranch(uuid:String)
+GET     /handleRequest      		controllers.Identity.linkIdentity(username:String, hashUUID:String,mail:String)
+GET     /students      				controllers.Application.students()
+POST    /student/:uuid/delete       controllers.Application.deleteStudent(uuid:String)

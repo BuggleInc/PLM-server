@@ -1,0 +1,21 @@
+@(students: List[Student])
+
+@import helper._
+
+@main("Students") {
+    
+    <h1>@students.size() students(s)</h1>
+    
+    <ul>
+        @for(student <- students) {
+            <li>
+                @student.name, @student.mail, @student.uuid 
+				
+				@form(routes.Application.deleteStudent(student.uuid)) {
+                    <input type="submit" value="Delete">
+                }
+
+            </li>
+        }
+    </ul>
+}

@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.Arrays;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -13,6 +14,8 @@ import com.jcraft.jsch.JSchException;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.CreateBranchCommand;
+import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -22,12 +25,15 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 
 import play.mvc.Controller;
 import play.mvc.Result;
 
 public class JGit extends Controller {
 	private static final String REMOTE_URL = "https://PLM-Test@bitbucket.org/PLM-Test/plm-test-repo.git";
+	
+	public static String filePath;
 
 	public static Result index() {
 		return ok("You called the index method of the Git controller.");
@@ -37,7 +43,8 @@ public class JGit extends Controller {
 		// prepare a new folder for the cloned repository
 		File localPath = File.createTempFile("TestGitRepository", "");
 		localPath.delete();
-
+		filePath = localPath.getAbsolutePath();
+		
 		// then clone
 		System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
 		Git.cloneRepository().setURI(REMOTE_URL).setDirectory(localPath).call();
@@ -67,12 +74,64 @@ public class JGit extends Controller {
 
 		while (i.hasNext()) {
 			commit = walk.parseCommit(i.next());
-			s = s + commit.getFullMessage() + "<br />\n";
+			s = s + commit.getFullMessage() + "\n";
 
 		}
 		repository.close();
 		
 		System.out.println(s);
+		
+		return ok(s);
+	}
+	
+	
+	public static Result displayBranch(String uuid) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+		String s = "";
+		File localPath = new File("repo/");
+		if (!localPath.exists()) {
+			localPath.mkdir();
+			filePath = localPath.getAbsolutePath();
+
+			// clone
+			System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
+			Git.cloneRepository().setURI(REMOTE_URL).setDirectory(localPath).call();
+		}
+		
+		Repository repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
+		Git git = new Git(repository);
+
+		git.checkout().setName("master").call();
+		git.checkout().setName("master").call();
+
+		try {
+			CreateBranchCommand create = git.branchCreate();
+			create.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM);
+			create.setName(uuid);
+			create.setStartPoint("origin/" + uuid);
+			create.call();
+		} catch (RefAlreadyExistsException ex) {
+
+		}
+
+		// checkout the branch of the current user
+		git.checkout().setName(uuid).call();
+		
+		RevWalk walk = new RevWalk(repository);
+		RevCommit commit = null;
+		
+		Iterable<RevCommit> logs = git.log().call();
+		Iterator<RevCommit> i = logs.iterator();
+
+		while (i.hasNext()) {
+			commit = walk.parseCommit(i.next());
+			s = s + commit.getFullMessage() + "\n";
+
+		}
+		repository.close();
+		
+		System.out.println(s);
+		
+		s += "\n" + filePath + "\n";
 		
 		return ok(s);
 	}
