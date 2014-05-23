@@ -6,11 +6,14 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Arrays;
+import java.util.ArrayList;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import com.jcraft.jsch.JSchException;
+
+import com.google.gson.*;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -29,6 +32,8 @@ import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import models.*;
 
 public class JGit extends Controller {
 	private static final String REMOTE_URL = "https://PLM-Test@bitbucket.org/PLM-Test/plm-test-repo.git";
@@ -121,19 +126,22 @@ public class JGit extends Controller {
 		
 		Iterable<RevCommit> logs = git.log().call();
 		Iterator<RevCommit> i = logs.iterator();
-
+			
+		Gson gson = new Gson();
+		ArrayList<Commit> commits = new ArrayList<>();
 		while (i.hasNext()) {
 			commit = walk.parseCommit(i.next());
-			s = s + commit.getFullMessage() + "\n";
-
+			String commitJson = commit.getFullMessage();
+			String commitMsg;
+			commits.add(new Commit(commitJson));
 		}
 		repository.close();
 		
 		System.out.println(s);
 		
-		s += "\n" + filePath + "\n";
-		
-		return ok(s);
+		return ok(
+			views.html.commits.render(commits)
+			);
 	}
 
 }

@@ -31,7 +31,7 @@ public class Identity extends Controller {
 		
 		System.out.println(s);
 		
-		Student stu = new Student(username, hashUUID, mail);
+		Student stu = new Student(username, mail, hashUUID);
 		try {
 			stu.save();
 		} catch(PersistenceException ex) {
@@ -41,8 +41,8 @@ public class Identity extends Controller {
 		}
 		
 		return ok(
-		views.html.students.render(Student.all())
-		);
+			views.html.students.render(Student.all())
+			);
 
 	}
 

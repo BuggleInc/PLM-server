@@ -1,0 +1,15 @@
+@(commits: List[Commit])
+
+@import helper._
+
+@main("Commits") {
+    
+    <h1>Commits</h1>
+	
+	<image src="@routes.Assets.at("images/correct.png")" width="1%" height="1%" >
+	@for(commit <- commits) {
+		@commit.evt_type
+		<image src="@{routes.Assets.at("images/" + commit.evt_type)}" width="1%" height="1%" >
+	}
+   
+}

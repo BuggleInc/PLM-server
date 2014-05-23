@@ -4,8 +4,10 @@
 
 @main("Students") {
     
-    <h1>@students.size() students(s)</h1>
-    
+    <h1>@students.size() student(s)</h1>
+	
+	<image src="@routes.Assets.at("images/correct.png")" width="10%" height="10%" >
+	
     <ul>
         @for(student <- students) {
             <li>
@@ -13,6 +15,9 @@
 				
 				@form(routes.Application.deleteStudent(student.uuid)) {
                     <input type="submit" value="Delete">
+                }
+				@form(routes.JGit.displayBranch(student.uuid)) {
+                    <input type="submit" value="Show commits">
                 }
 
             </li>

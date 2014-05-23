@@ -17,15 +17,13 @@ public class Student extends Model {
 	@Id
 	public String uuid;
 	
-	@Required
 	public String name;
 	
-	@Required
 	public String mail;
 
 	public static Finder<String, Student> find = new Finder<String, Student>(String.class, Student.class);
 
-	public Student(String uuid, String name, String mail) {
+	public Student(String name, String mail, String uuid) {
 		this.uuid = uuid;
 		this.name = name;
 		this.mail = mail;
@@ -46,6 +44,9 @@ public class Student extends Model {
 	}
 
 	public static void create(Student student) {
+		System.out.println("Student :\n"
+				+ "name : " + student.name +"\n"
+				+ "uuid : "+ student.uuid);
 	  student.save();
 	}
 	
