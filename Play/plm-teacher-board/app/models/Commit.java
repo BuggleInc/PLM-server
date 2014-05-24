@@ -91,7 +91,7 @@ public class Commit {
 		} else if(evt_type.equals("Failed") || evt_type.equals("Success")) {
 			comment = "Language : " + exolang + ", total tests : " + totaltests + ", passed : " + passedtests;
 		} else if (evt_type.equals("Start")) {
-			comment = "os" + os + ", plm_version : " + plm_version + ", java_version : " + java_version;
+			comment = "OS : " + os + ", PLM_VERSION : " + plm_version + ", JAVA_VERSION : " + java_version;
 		}
 	}
 }

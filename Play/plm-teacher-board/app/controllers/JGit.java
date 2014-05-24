@@ -91,7 +91,7 @@ public class JGit extends Controller {
 	}
 	
 	
-	public static Result displayBranch(String uuid) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+	public static Result displayBranch(String uuid, String studentname) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
 		String s = "";
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
@@ -143,7 +143,7 @@ public class JGit extends Controller {
 		System.out.println(s);
 		
 		return ok(
-			views.html.commits.render(commits)
+			views.html.commits.render(commits, studentname)
 			);
 	}
 
