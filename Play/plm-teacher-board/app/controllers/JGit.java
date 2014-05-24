@@ -107,7 +107,6 @@ public class JGit extends Controller {
 		Git git = new Git(repository);
 
 		git.checkout().setName("master").call();
-		git.checkout().setName("master").call();
 
 		try {
 			CreateBranchCommand create = git.branchCreate();
@@ -123,6 +122,8 @@ public class JGit extends Controller {
 
 		// checkout the branch of the current user
 		git.checkout().setName(uuid).call();
+		
+		git.pull().call();
 		
 		RevWalk walk = new RevWalk(repository);
 		RevCommit commit = null;
