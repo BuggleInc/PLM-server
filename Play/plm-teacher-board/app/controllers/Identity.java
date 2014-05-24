@@ -41,9 +41,15 @@ public class Identity extends Controller {
 		}
 		
 		return ok(
-			views.html.students.render(Student.all())
+			//views.html.students.render(Student.all())
+			views.html.linkOk.render()
 			);
-
+	}
+	
+	public static Result linkForm(String hashUUID) {
+		return ok(
+			views.html.identity.render(hashUUID)
+			);
 	}
 
 }
