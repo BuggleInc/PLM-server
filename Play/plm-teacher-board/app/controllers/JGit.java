@@ -1,7 +1,21 @@
 package controllers;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collection;
 
 import java.util.Calendar;
 import java.util.Iterator;
@@ -40,6 +54,8 @@ public class JGit extends Controller {
 	private static final String REMOTE_URL = "https://PLM-Test@bitbucket.org/PLM-Test/plm-test-repo.git";
 	
 	public static String filePath;
+	
+	public static int passed;
 
 	public static Result index() {
 		return ok("You called the index method of the Git controller.");
@@ -140,11 +156,100 @@ public class JGit extends Controller {
 			commits.add(new Commit(commitJson, commit.getCommitTime()));
 		}
 		repository.close();
+		ArrayList<Double> eventSummary = new ArrayList<>();
+		eventSummary.add(0.0);eventSummary.add(0.0);eventSummary.add(0.0);eventSummary.add(0.0);
+		int cptEvt = 0;
+		for(Commit c : commits) {
+			cptEvt++;
+			switch(c.evt_type) {
+				case "Switched":
+					eventSummary.set(0, eventSummary.get(0)+1);
+				break;
+				case "Success":
+					eventSummary.set(1, eventSummary.get(1)+1);
+				break;
+				case "Failed":
+					eventSummary.set(2, eventSummary.get(2)+1);
+				break;
+				case "Start":
+					eventSummary.set(3, eventSummary.get(3)+1);
+				break;
+			}
+		}
+		cptEvt--;
+		for(int j =0; j<eventSummary.size(); j++) {
+			eventSummary.set(j, eventSummary.get(j)*100/cptEvt);
+		}
+		final File path = new File("repo");
+		
+		final ArrayList<ProgressItem> summary = new ArrayList<>();
+		
+		passed = 0;
+		
+		String pattern = "*.[0-9]*";
+		FileSystem fs = FileSystems.getDefault();
+		final PathMatcher matcher = fs.getPathMatcher("glob:" + pattern); // to match file names ending with digits
+
+		FileVisitor<Path> matcherVisitor = new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attribs) {
+				Path name = file.getFileName();
+				String[] languages = {"java", "py", "scala"};
+				if (matcher.matches(name)) { // if the file exists, the tests were run at least once
+					String s = name + "";
+					String[] tab = s.split("\\.", 0);
+					String lessonNameTmp = "";
+					for (int i = 0; i < tab.length - 2; i++) { // get the lesson id
+						lessonNameTmp += tab[i];
+					}
+					final String lessonName = lessonNameTmp;
+					String ext = tab[tab.length - 2]; // get the programming language
+					int possible = Integer.parseInt(tab[tab.length - 1]); // get the number of exercises
+					if (possible > 0) {
+						for (final String p : languages) { // for each programming language, how many exercises are done
+							if (p.equals(ext)) {
+								System.out.println(lessonName + "   " + p + "   " + possible);
+								//Game.getInstance().studentWork.setPossibleExercises((String) lessonName, p, possible);
+								String pattern = lessonName + ".*." + p + ".DONE";
+								FileSystem fs = FileSystems.getDefault();
+								final PathMatcher matcher = fs.getPathMatcher("glob:" + pattern);
+
+								FileVisitor<Path> matcherVisitor = new SimpleFileVisitor<Path>() {
+
+									@Override
+									public FileVisitResult visitFile(Path file, BasicFileAttributes attribs) {
+										Path name = file.getFileName();
+										if (matcher.matches(name)) {
+											passed = passed + 1; // incr each time we found a correctly done exercise for the programming language p
+										}
+										return FileVisitResult.CONTINUE;
+									}
+								};
+								try {
+									passed = 0;
+									Files.walkFileTree(Paths.get(path.getPath()), matcherVisitor);
+								} catch (IOException ex) {
+
+								}
+								System.out.println(lessonName + "   " + p + "   " + possible + ", " + passed +" done");
+								summary.add(new ProgressItem(lessonName, p, possible, passed));
+							}
+						}
+					}
+				}
+				return FileVisitResult.CONTINUE;
+			}
+		};
+		try {
+			Files.walkFileTree(Paths.get(path.getPath()), matcherVisitor);
+		} catch (IOException ex) {
+
+		}
 		
 		System.out.println(s);
 		
 		return ok(
-			views.html.commits.render(commits, studentname)
+			views.html.commits.render(commits, studentname, summary, eventSummary)
 			);
 	}
 
