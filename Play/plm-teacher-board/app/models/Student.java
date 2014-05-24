@@ -10,6 +10,7 @@ import play.data.validation.Constraints.*;
 
 import play.db.ebean.Model;
 
+// http://localhost:9000/handleRequest?username=Ced&hashUUID=55af741f-b531-429c-ba33-57627f1b6287&mail=ced@ced.ced
 
 @Entity
 public class Student extends Model {

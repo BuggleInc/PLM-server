@@ -1,15 +1,73 @@
 @(commits: List[Commit])
 
 @import helper._
+@import java.math.BigInteger; var i=1
 
-@main("Commits") {
-    
-    <h1>Commits</h1>
-	
-	<image src="@routes.Assets.at("images/correct.png")" width="1%" height="1%" >
-	@for(commit <- commits) {
-		@commit.evt_type
-		<image src="@{routes.Assets.at("images/" + commit.evt_type)}" width="1%" height="1%" >
+@displayClass(c: Commit) = {
+	@if(!c.evt_class.equals("")) {
+		class="@{c.evt_class}"
 	}
+}
+
+
+@main("Activity") {
+	
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="page-header">
+					<h1>
+						User's activity ... TODO: display name if account linked
+					</h1>
+				</div>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>
+								#
+							</th>
+							<th>
+								Event_type
+							</th>
+							<th>
+								Exercice
+							</th>
+							<th>
+								Date
+							</th>
+							<th>
+								Comment
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+					@for(commit <- commits) {
+						@if(commit.evt_type != null) {		
+							<tr @displayClass(commit)">
+								<td>
+									@i
+								</td>
+								<td>
+									@commit.evt_type
+									<!--@*<img src="@{routes.Assets.at("images/" + commit.evt_type)}" width="5%" height="5%" />*@-->
+								</td>
+								<td>
+									@commit.exoname
+								</td>
+								<td>
+									@commit.commitTime
+								</td>
+								<td>
+									@commit.comment
+								</td>
+							</tr>
+							@{i=i+1}
+						}
+					}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
    
 }

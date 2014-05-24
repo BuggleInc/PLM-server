@@ -17,6 +17,7 @@ import com.google.gson.*;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.lib.Repository;
@@ -118,6 +119,8 @@ public class JGit extends Controller {
 
 		}
 
+		PullCommand pullCmd = git.pull();
+
 		// checkout the branch of the current user
 		git.checkout().setName(uuid).call();
 		
@@ -133,7 +136,7 @@ public class JGit extends Controller {
 			commit = walk.parseCommit(i.next());
 			String commitJson = commit.getFullMessage();
 			String commitMsg;
-			commits.add(new Commit(commitJson));
+			commits.add(new Commit(commitJson, commit.getCommitTime()));
 		}
 		repository.close();
 		
