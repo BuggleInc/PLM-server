@@ -32,6 +32,7 @@ public class Commit {
 		evt_class = "";
 		comment = "";
 		exolang = "";
+		
 		try {
 			JsonParser jsonParser = new JsonParser();
 			JsonObject jo = (JsonObject)jsonParser.parse(json);

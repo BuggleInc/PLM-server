@@ -107,8 +107,7 @@ public class JGit extends Controller {
 	}
 	
 	
-	public static Result displayBranch(String uuid, String studentname) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
-		String s = "";
+	private static ArrayList<Commit> computeCommits(String uuid)  throws IOException, InvalidRemoteException, TransportException, GitAPIException {
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
 			localPath.mkdir();
@@ -156,6 +155,11 @@ public class JGit extends Controller {
 			commits.add(new Commit(commitJson, commit.getCommitTime()));
 		}
 		repository.close();
+		return commits;
+	}
+	
+	public static Result displayBranch(String uuid, String studentname) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+		ArrayList<Commit> commits = computeCommits(uuid);
 		ArrayList<Double> eventSummary = new ArrayList<>();
 		eventSummary.add(0.0);eventSummary.add(0.0);eventSummary.add(0.0);eventSummary.add(0.0);
 		int cptEvt = 0;
@@ -231,7 +235,7 @@ public class JGit extends Controller {
 								} catch (IOException ex) {
 
 								}
-								//System.out.println(lessonName + "   " + p + "   " + possible + ", " + passed +" done");
+								System.out.println(lessonName + "   " + p + "   " + possible + ", " + passed +" done");
 								summary.add(new ProgressItem(lessonName, p, possible, passed));
 							}
 						}
@@ -246,11 +250,91 @@ public class JGit extends Controller {
 
 		}
 		
-		System.out.println(s);
-		
 		return ok(
 			views.html.commits.render(commits, studentname, summary, eventSummary)
 			);
+	}
+	
+	public static ArrayList<ProgressItem> computeStudentForLesson(ArrayList<String> uuidList, final String lessonname) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+		final ArrayList<ProgressItem> summary = new ArrayList<>();
+		int cpt = 0;
+		for(String uuid : uuidList) {
+		cpt++;
+			ArrayList<Commit> commits = computeCommits(uuid);
+			ArrayList<Double> eventSummary = new ArrayList<>();
+			eventSummary.add(0.0);eventSummary.add(0.0);eventSummary.add(0.0);eventSummary.add(0.0);
+
+			final File path = new File("repo");
+			
+			passed = 0;
+			
+			String pattern = "*.[0-9]*";
+			FileSystem fs = FileSystems.getDefault();
+			final PathMatcher matcher = fs.getPathMatcher("glob:" + pattern); // to match file names ending with digits
+
+			FileVisitor<Path> matcherVisitor = new SimpleFileVisitor<Path>() {
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attribs) {
+					Path name = file.getFileName();
+					String[] languages = {"java"};
+					if (matcher.matches(name)) { // if the file exists, the tests were run at least once
+						String s = name + "";
+						String[] tab = s.split("\\.", 0);
+						String lessonNameTmp = "";
+						for (int i = 0; i < tab.length - 2; i++) { // get the lesson id
+							lessonNameTmp += tab[i];
+						}
+						if(lessonNameTmp.equals(lessonname)) {
+							final String lessonName = lessonNameTmp;
+							String ext = tab[tab.length - 2]; // get the programming language
+							int possible = Integer.parseInt(tab[tab.length - 1]); // get the number of exercises
+							if (possible > 0) {
+								for (final String p : languages) { // for each programming language, how many exercises are done
+									if (p.equals(ext)) {
+										System.out.println(" PPPPAAAAAAASSSSSSSS    DDDDDDEEEEEE   BBBBUUUUUUGGGGG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+										//System.out.println(lessonName + "   " + p + "   " + possible);
+										//Game.getInstance().studentWork.setPossibleExercises((String) lessonName, p, possible);
+										String pattern = lessonName + ".*." + p + ".DONE";
+										FileSystem fs = FileSystems.getDefault();
+										final PathMatcher matcher = fs.getPathMatcher("glob:" + pattern);
+
+										FileVisitor<Path> matcherVisitor = new SimpleFileVisitor<Path>() {
+
+											@Override
+											public FileVisitResult visitFile(Path file, BasicFileAttributes attribs) {
+												Path name = file.getFileName();
+												if (matcher.matches(name)) {
+													passed = passed + 1; // incr each time we found a correctly done exercise for the programming language p
+												}
+												return FileVisitResult.CONTINUE;
+											}
+										};
+										try {
+											passed = 0;
+											Files.walkFileTree(Paths.get(path.getPath()), matcherVisitor);
+										} catch (IOException ex) {
+
+										}
+										System.out.println(lessonName + "   " + p + "   " + possible + ", " + passed +" done");
+										summary.add(new ProgressItem(lessonName, p, possible, passed));
+									}
+								}
+							}
+						}
+					}
+					return FileVisitResult.CONTINUE;
+				}
+			};
+			try {
+				Files.walkFileTree(Paths.get(path.getPath()), matcherVisitor);
+			} catch (IOException ex) {
+
+			}
+		}
+		if(cpt != summary.size()) {	// the files concerning the lesson doesn't exists
+			summary.add(new ProgressItem(lessonname, "java", 1, 0));
+		}
+		return summary;
 	}
 
 }

@@ -1,17 +1,18 @@
-@(students: List[Student])
+@(course: Course, summary: List[ProgressItem])
 
 @import helper._
-@import java.math.BigInteger; var i=1
+@import java.math.BigInteger; var i=0
 
-@main("Students") {
+@main(course.name+" course") {
     <div class="container">
 		<div class="row clearfix">
 			<div class="col-md-12 column">
 				<div class="page-header">
 					<h1>
-						@students.size() student(s)
+						Students of @course.name
 					</h1>
 				</div>
+				<br />
 				<table class="table table-hover">
 					<thead>
 						<tr>
@@ -19,43 +20,34 @@
 								#
 							</th>
 							<th>
-								Name
+								Students
 							</th>
 							<th>
-								Email
+								Progress
 							</th>
 							<th>
-								hashUUID
-							</th>
-							<th>
-								Actions
+								Action
 							</th>
 						</tr>
 					</thead>
 					<tbody>
-						@for(student <- students) {
+						@for(student <- course.students) {
 							<tr>
 								<td>
-									@i
+									@{i+1}
 								</td>
 								<td>
 									@student.name
 								</td>
 								<td>
-									@student.mail
-								</td>
-								<td>
-									@student.uuid
+									@if(summary.size() > i){
+										@summary.get(i).passed on @summary.get(i).total
+									}
 								</td>
 								<td>
 									<div class="col-md-4 column">
 										@form(routes.JGit.displayBranch(student.uuid, student.name)) {
 											<input class="btn btn-primary" type="submit" value="Show progress">
-										}
-									</div>
-									<div class="col-md-4 column">
-										 @form(routes.StudentController.deleteStudent(student.uuid)) {
-											<input class="btn btn-danger" type="submit" value="Delete">
 										}
 									</div>
 								</td>

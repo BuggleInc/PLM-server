@@ -1,17 +1,21 @@
-@(students: List[Student])
+@(courses: List[Course])
 
 @import helper._
 @import java.math.BigInteger; var i=1
 
-@main("Students") {
+@main("Courses") {
     <div class="container">
 		<div class="row clearfix">
 			<div class="col-md-12 column">
 				<div class="page-header">
 					<h1>
-						@students.size() student(s)
+						@courses.size() course(s)
 					</h1>
 				</div>
+				@form(routes.Application.createCourse()) {
+					<input class="btn btn-primary" type="submit" value="Create new course">
+				}
+				<br />
 				<table class="table table-hover">
 					<thead>
 						<tr>
@@ -22,39 +26,53 @@
 								Name
 							</th>
 							<th>
-								Email
+								Teacher(s)
 							</th>
 							<th>
-								hashUUID
+								Student count
 							</th>
 							<th>
-								Actions
+								Students
+							</th>
+							<th>
+								Action
 							</th>
 						</tr>
 					</thead>
 					<tbody>
-						@for(student <- students) {
+						@for(course <- courses) {
 							<tr>
 								<td>
 									@i
 								</td>
 								<td>
-									@student.name
+									@course.name
 								</td>
 								<td>
-									@student.mail
+									<ul>
+									@for(teacher <- course.teachers) {
+										<li>@teacher.name</li>
+									}
+									<ul>
 								</td>
 								<td>
-									@student.uuid
+									@course.students.size()
+								</td>
+								<td>
+									<ul>
+										@for(student <- course.students) {
+											<li>@student.name</li>
+										}
+									<ul>
 								</td>
 								<td>
 									<div class="col-md-4 column">
-										@form(routes.JGit.displayBranch(student.uuid, student.name)) {
-											<input class="btn btn-primary" type="submit" value="Show progress">
+										@form(routes.CourseController.course(course.name)) {
+											<input class="btn btn-primary" type="submit" value="Details">
 										}
 									</div>
 									<div class="col-md-4 column">
-										 @form(routes.StudentController.deleteStudent(student.uuid)) {
+										 @form(routes.CourseController.deleteCourse(course.name)) {
 											<input class="btn btn-danger" type="submit" value="Delete">
 										}
 									</div>

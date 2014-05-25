@@ -2,8 +2,7 @@ package models;
 
 import java.util.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import play.db.ebean.*;
 import play.data.validation.Constraints.*;
@@ -21,6 +20,9 @@ public class Student extends Model {
 	public String name;
 	
 	public String mail;
+	
+	@ManyToMany(cascade = CascadeType.REMOVE)
+	public List<Course> courses= new ArrayList<>();
 
 	public static Finder<String, Student> find = new Finder<String, Student>(String.class, Student.class);
 
@@ -48,11 +50,11 @@ public class Student extends Model {
 		System.out.println("Student :\n"
 				+ "name : " + student.name +"\n"
 				+ "uuid : "+ student.uuid);
-	  student.save();
+		student.save();
 	}
 	
 	public static void delete(String uuid, String s) {
-	  find.ref(uuid).delete();
+		find.byId(uuid).delete();
 	}
 	
 }

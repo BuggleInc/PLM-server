@@ -54,15 +54,15 @@
 								</div>
 							</div>
 							<h2>
-								Success rate per lesson and language
+								Success per lesson and language
 							</h2>
 							<ul>
 								@for(item <- summary) {
 									<li>
 										@item.lessonName @item.language
 										<div class="progress">
-											<div class="progress-bar" role="progressbar" aria-valuenow="@{item.passed}" aria-valuemin="0" aria-valuemax="@{item.total}" style="width: @{item.passed}%;">
-												@{item.passed}%
+											<div class="progress-bar" role="progressbar" aria-valuenow="@{item.passed}" aria-valuemin="0" aria-valuemax="@{item.total}" style="width: @{item.percent}%;">
+												@{item.percent}%
 											</div>
 										</div>
 									</li>
