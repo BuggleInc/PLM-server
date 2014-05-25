@@ -208,7 +208,7 @@ public class JGit extends Controller {
 					if (possible > 0) {
 						for (final String p : languages) { // for each programming language, how many exercises are done
 							if (p.equals(ext)) {
-								System.out.println(lessonName + "   " + p + "   " + possible);
+								//System.out.println(lessonName + "   " + p + "   " + possible);
 								//Game.getInstance().studentWork.setPossibleExercises((String) lessonName, p, possible);
 								String pattern = lessonName + ".*." + p + ".DONE";
 								FileSystem fs = FileSystems.getDefault();
@@ -231,7 +231,7 @@ public class JGit extends Controller {
 								} catch (IOException ex) {
 
 								}
-								System.out.println(lessonName + "   " + p + "   " + possible + ", " + passed +" done");
+								//System.out.println(lessonName + "   " + p + "   " + possible + ", " + passed +" done");
 								summary.add(new ProgressItem(lessonName, p, possible, passed));
 							}
 						}
