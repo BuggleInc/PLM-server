@@ -291,7 +291,6 @@ public class JGit extends Controller {
 							if (possible > 0) {
 								for (final String p : languages) { // for each programming language, how many exercises are done
 									if (p.equals(ext)) {
-										System.out.println(" PPPPAAAAAAASSSSSSSS    DDDDDDEEEEEE   BBBBUUUUUUGGGGG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 										//System.out.println(lessonName + "   " + p + "   " + possible);
 										//Game.getInstance().studentWork.setPossibleExercises((String) lessonName, p, possible);
 										String pattern = lessonName + ".*." + p + ".DONE";
@@ -330,9 +329,9 @@ public class JGit extends Controller {
 			} catch (IOException ex) {
 
 			}
-		}
-		if(cpt != summary.size()) {	// the files concerning the lesson doesn't exists
-			summary.add(new ProgressItem(lessonname, "java", 1, 0));
+			if(cpt != summary.size()) {	// the files concerning the lesson doesn't exists
+				summary.add(new ProgressItem(lessonname, "java", 1, -1));
+			}
 		}
 		return summary;
 	}

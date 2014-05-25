@@ -41,7 +41,11 @@
 								</td>
 								<td>
 									@if(summary.size() > i){
-										@summary.get(i).passed on @summary.get(i).total
+										@if(summary.get(i).passed == -1) {
+											Not yet attemped
+										} else {
+											@summary.get(i).passed on @summary.get(i).total
+										}
 									}
 								</td>
 								<td>

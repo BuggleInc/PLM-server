@@ -45,10 +45,9 @@ public class CourseController extends Controller {
 
 			summary = JGit.computeStudentForLesson(studentsName, lessonName);
 		} catch(IOException|GitAPIException ex) {
-			System.out.println("BBBBUUUUUUGGGGG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			System.out.println(ex);
 		}
-		System.out.println("TTAAIILLEE : "+summary.size());
+
 		return ok(
 			views.html.course.render(
 			Course.find.byId(name),
