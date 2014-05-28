@@ -122,4 +122,82 @@ PLM doit se loguer sur GitHub pour poster les messages d'erreurs.
 \item Utilisation exclusive du git pour stocker le code en local ?
 \item Le serveur alerte le professeur d'un élève en difficultés à partir des données du git pushé en temps réel ? (Commit log en JSON -> données récupérables avec un fetch moins coûteux qu'un pull)
 \end{itemize}
+
+\section{Mercredi 26 mars 2014}
+
+%Une branche par élèves mais attention, plusieurs appareils par élèves.
+%
+%Seul le prof peut retrouver ses élèves.
+
+Le code est un sur un serveur git public :
+\begin{itemize}
+\item il n'y a aucune information personnelle ou identifiante ;
+\item il est librement accessible en lecture/écriture car git assure que rien n'est détruit (taille max des commits pour décourager les attaquants et éviter les pb de quota disque) ;
+\item les branches des élèves sont identifiées par le uuid stocké localement dans PLM.
+\end{itemize}
+
+Scénario :
+\begin{enumerate}
+\item les élèves peuvent pousser sur leur branche ;
+\item un élève a plusieurs papareils ;
+\item l'élève veut connecter/rattacher plusieurs UUID ;
+\item le prof veut suivre ses élèves ;
+\item l'élève peut retrouver sa session sur une machine fraiche ;
+\item au démarrage : 
+	\begin{itemize}
+	\item nouvelle partie anonyme ;
+	\item continuer partie anonyme ;
+	\item se connecter à une identité ;
+	\item créer une nouvelle identité ;
+	\end{itemize}
+\item créer un UUID au premier démarrage ;
+\item une fois identifié, revendiquer une partie anonyme.
+\end{enumerate}
+
+Il y a un mapping UUID(s) <-> identité optionnel et on peut le faire à postériori.
+
+Scénario bonus :
+\begin{itemize}
+\item les élèves peuvent se créer une identité ;
+\item l'élève veut voir la version de son code d'il y a deux jours.
+\end{itemize}
+
+%Java uuid est un identifiant unique de session stocké localement et qui est le nom de branche sur le serveur. Si plusieurs machines, on peut merge.
+
+Il faut changer les ZipSessions et GitSessions :
+\begin{itemize}
+\item aucune écriture ;
+\item lecture sur le même layout que ZipSession ;
+\item attention : je change d'exo après avoir édité mais pas exécuté ;
+\item attention : savoir rapidement quels exos réussi en quel langage.
+\end{itemize}
+
+Tables :
+\begin{itemize}
+\item une table des identités : clé, nom complet, UUID(s), mail, ... ;
+\item une table authentifications : login, mot de passe, clé utilisateur ;
+\item une table participants : id individu, id classe ;
+\item une table classe : nom, descriptif, id classe, prof(s).
+\end{itemize}
+
+
+
+%
+%Tout le monde peut tirer/pousser n'importe quoi. Ne pas autoriser les commits de plus de 4 ko par exemple. Git ne permet que d'ajouter de l'information, pas de détruire.
+%
+%Pousser le code sur un GitHub car les données sont anonymes par constructions.
+
+\section{Mercredi 23 avril 2014}
+
+Pour gérer le multiutilisateur sur une machine, on remplace le dossier repository par un dossier dont le nom est le début du UUID.
+
+Le nom de la branche associé à un UUID est son hashé.
+
+Un utilisateur pour continuer sa session sur une nouvelle machine (ou pas nouvelle) en saisissant son UUID.
+
+Ceci permet d'éviter de continuer une partie anonyme d'un autre (en récupérant son UUID à partir d'un git clone).
+
+Continuer session avec JList des sessions locales
+Crée nouvelle session
+Ajouter une session à partir d'un UUID
 \end{document}
