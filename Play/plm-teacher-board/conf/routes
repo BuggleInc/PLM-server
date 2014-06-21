@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index()
+GET     /                           controllers.Application.students()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
@@ -16,9 +16,9 @@ GET 	/cloneRepo					controllers.JGit.cloneRepo()
 GET		/courses					controllers.Application.courses()
 GET		/handleCourse				controllers.CourseController.createCourse(name:String,teacherName:String)
 GET		/teachers					controllers.Application.teachers()
-GET		/link						controllers.Identity.linkForm(hashUUID:String)
+GET		/link						controllers.Identity.linkForm(UUID:String)
 POST	/jgit/:uuid/displayBranch	controllers.JGit.displayBranch(uuid:String, studentname:String)
-GET		/handleRequest				controllers.Identity.linkIdentity(username:String, hashUUID:String, mail:String)
+GET		/handleRequest				controllers.Identity.linkIdentity(username:String, UUID:String, mail:String)
 GET		/students					controllers.Application.students()
 GET		/student					controllers.StudentController.student(uuid:String)
 GET		/joinCourse					controllers.StudentController.joinCourse(courseName:String, uuid:String)
