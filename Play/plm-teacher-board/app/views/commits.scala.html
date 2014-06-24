@@ -1,0 +1,126 @@
+@(commits: List[Commit], studentName: String, summary: List[ProgressItem], eventSummary:List[Double])
+
+@import helper._
+@import java.math.BigInteger; var i=1
+
+@displayClass(c: Commit) = {
+	@if(!c.evt_class.equals("")) {
+		class="@{c.evt_class}"
+	}
+}
+
+
+@main(studentName +" activity") {
+	
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="page-header">
+					<h1>
+						@studentName activity
+					</h1>
+				</div>
+				@form(routes.Application.students()) {
+					<input class="btn btn-primary" type="submit" value="Back to students list">
+				}
+				<br />
+				<div class="tabbable" id="tabs-51763">
+					<ul class="nav nav-tabs">
+						<li class="active">
+							<a href="#panel-796129" data-toggle="tab">Summary</a>
+						</li>
+						<li>
+							<a href="#panel-173090" data-toggle="tab">Details</a>
+						</li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="panel-796129">
+							<br />
+							<h2>
+								Event type distribution
+							</h2>
+							<div class="progress">
+								<div class="progress-bar progress-bar-warning" style="width: @{eventSummary.get(0)}%">
+									switch
+								</div>
+								<div class="progress-bar progress-bar-success" style="width: @{eventSummary.get(1)}%">
+									success
+								</div>
+								<div class="progress-bar progress-bar-danger" style="width: @{eventSummary.get(2)}%">
+									fail
+								</div>
+								<div class="progress-bar" style="width: @{eventSummary.get(3)}%">
+									start
+								</div>
+							</div>
+							<h2>
+								Success per lesson and language
+							</h2>
+							<ul>
+								@for(item <- summary) {
+									<li>
+										@item.lessonName @item.language
+										<div class="progress">
+											<div class="progress-bar" role="progressbar" aria-valuenow="@{item.passed}" aria-valuemin="0" aria-valuemax="@{item.total}" style="width: @{item.percent}%;">
+												@{item.percent}%
+											</div>
+										</div>
+									</li>
+								}
+							</ul>
+						</div>
+						<div class="tab-pane" id="panel-173090">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>
+											#
+										</th>
+										<th>
+											Event_type
+										</th>
+										<th>
+											Exercice
+										</th>
+										<th>
+											Date
+										</th>
+										<th>
+											Comment
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+								@for(commit <- commits) {
+									@if(commit.evt_type != "") {		
+										<tr @displayClass(commit)">
+											<td>
+												@i
+											</td>
+											<td>
+												@commit.evt_type
+												<!--@*<img src="@{routes.Assets.at("images/" + commit.evt_type)}" width="5%" height="5%" />*@-->
+											</td>
+											<td>
+												@commit.exoname
+											</td>
+											<td>
+												@commit.commitTime
+											</td>
+											<td>
+												@commit.comment
+											</td>
+										</tr>
+										@{i=i+1}
+									}
+								}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+   
+}

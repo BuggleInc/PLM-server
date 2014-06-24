@@ -1,0 +1,203 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{mathced}
+\usepackage{graphicx}
+\usepackage{eurosym}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage{pgfplots}
+\author{HUGUENIN Cédric}
+\everymath{\displaystyle}
+\begin{document}
+\entete{TELECOM Nancy}{PIDR}{Serveur d'application PLM}{}
+% Section : les dates
+% Titre du PIDR en haut
+\section{15 janvier 2014}
+\subsection{Données à conserver}
+
+\begin{itemize}
+\item \'Enoncé de l'exercice ;
+\item code de l'élève ;
+\item nombre tentatives ;
+\item temps entre chaque tentatives ;
+\item changement d'exercice alors que l'actuel n'est pas résolu.
+\end{itemize}
+
+\subsection{Structure stockage}
+
+\begin{itemize}
+\item Un dépôt par utilisateur ;
+\item une branche par leçon ;
+\item une branche par exercice dans chaque branche de leçon.
+\end{itemize}
+$ $\\
+\begin{itemize}
+\item Message du commit : FAIL ou SUCCESS, l'ID de l'exercice, date, langage, indice utilisé, nombre de tests passés.
+\item Contenu du commit : code source, le message d'erreur s'il existe, le template et l'énoncé.
+\end{itemize}
+
+Fichiers avec le code source, le template et le résultat.
+
+Commit lors de la compilation.
+Quand il est en ligne, il push.
+
+\subsection{Questions}
+
+\begin{itemize}
+\item Serveurs ?
+	\begin{itemize}
+	\item \url{http://www.loria.fr/~oster/plm-cloud/}
+	\item \url{http://jlmserver-chmod0.appspot.com}
+	\end{itemize}
+\item Utilisation de Play ? Utilité de Google App Engine (a priori non compatible avec Play 2.x) ?
+\end{itemize}
+
+\section{24 janvier 2014}
+\subsection{Git}
+Git pourrait faire l'espion et la session.
+
+Il faut plutôt faire une branche par exercice.
+
+%Gestionnaire de sessions en GIT qui commit plein de trucs.
+Template, source, énoncé dans un seul commit.
+Chargeur qui récupère les données depuis le git.
+Faire le git en local et le push sur un serveur. 
+
+Première version pour monter les gits : (premier tiers de notre travail). Commit en local. Monter automatiquement sur le serveur.
+\subsection{Modification du code de la PLM}
+Regarder le code de la session de la PLM.
+
+Besoins d'authentification des élèves.
+
+ImportCloudSession.java
+SessionDB.java Exo, language, fichier : en mémoire ; ISessionKit gère l'écriture sur le disque.
+Exercice.java -> SourceFile.java : template et le body (ce que l'élève à tapé) actuel.
+Finir de mettre dans SessionDB le code de l'élève.
+SourceFile : ce qui vient du jar.
+SessionDB : ce qu'il faut écrire sur le disque.
+Qui est en charge de getCompilableContent ?
+
+Ramener code de l'élève dans SessionDB.
+
+Les tests doivent passer.
+
+\subsection{Mode professeur}
+Mode professeur à reprendre. Fonctionnalités attendues (serveur d'utilisation) :
+\begin{itemize}
+\item explorer graphiquement l'évolution de chaque élèves ;
+\item mise en forme des données : représentation ;
+\item alertes configurables (nombre essai, temps passé) ;
+\item détection d'exercices infaisable : personne n'y arrive ;
+\item traces utilisées en direct : savoir qui aider, et après coup, pour repérer les exercices qui marchent ou pas.
+\end{itemize}
+
+\subsection{Autres}
+
+Google App Engine était une première tentative. Play plus simple et plus portable. Il faut éviter de dépendre d'une technique.
+
+Système de badges : \url{openbadges.org}
+
+Récupérer des leçons sur un serveur.
+
+Notre rapport doit permettre de faire gagner du temps à la prochaine équipe. Rapport à rendre pour le 22 mai 2014. Soutenance : 28 mai 2014
+
+Gestion de projet : ToDo liste, planning des grandes étapes.
+
+Trois cibles : apprenants, auteurs de ressources : création de contenu, enseignants : faire leur séquences d'exo : éditeur d'exercice et de séquences.
+Moulinette d'extraction des données. Modélisation apprenante.
+
+Prendre le contrôle à distance de la machine de l'élèves / chat vidéo
+
+Nouveaux langages : scratch, js, C.
+
+Forum collaboratif : commenter et proposer des exercices (les élèves par exemple). On propose aux autres élèves et les notes. (Recapcha) 
+
+
+Bonus :
+Poster sur GitHub pour le feedback des problèmes : dans les issues.
+PLM doit se loguer sur GitHub pour poster les messages d'erreurs.
+\url{http://developer.github.com/v3/issues/#create-an-issue}
+
+\subsection{Questions}
+\begin{itemize}
+\item Différences entre SessionDB et ExecutionProgress ?
+\item Utilisation exclusive du git pour stocker le code en local ?
+\item Le serveur alerte le professeur d'un élève en difficultés à partir des données du git pushé en temps réel ? (Commit log en JSON -> données récupérables avec un fetch moins coûteux qu'un pull)
+\end{itemize}
+
+\section{Mercredi 26 mars 2014}
+
+%Une branche par élèves mais attention, plusieurs appareils par élèves.
+%
+%Seul le prof peut retrouver ses élèves.
+
+Le code est un sur un serveur git public :
+\begin{itemize}
+\item il n'y a aucune information personnelle ou identifiante ;
+\item il est librement accessible en lecture/écriture car git assure que rien n'est détruit (taille max des commits pour décourager les attaquants et éviter les pb de quota disque) ;
+\item les branches des élèves sont identifiées par le uuid stocké localement dans PLM.
+\end{itemize}
+
+Scénario :
+\begin{enumerate}
+\item les élèves peuvent pousser sur leur branche ;
+\item un élève a plusieurs papareils ;
+\item l'élève veut connecter/rattacher plusieurs UUID ;
+\item le prof veut suivre ses élèves ;
+\item l'élève peut retrouver sa session sur une machine fraiche ;
+\item au démarrage : 
+	\begin{itemize}
+	\item nouvelle partie anonyme ;
+	\item continuer partie anonyme ;
+	\item se connecter à une identité ;
+	\item créer une nouvelle identité ;
+	\end{itemize}
+\item créer un UUID au premier démarrage ;
+\item une fois identifié, revendiquer une partie anonyme.
+\end{enumerate}
+
+Il y a un mapping UUID(s) <-> identité optionnel et on peut le faire à postériori.
+
+Scénario bonus :
+\begin{itemize}
+\item les élèves peuvent se créer une identité ;
+\item l'élève veut voir la version de son code d'il y a deux jours.
+\end{itemize}
+
+%Java uuid est un identifiant unique de session stocké localement et qui est le nom de branche sur le serveur. Si plusieurs machines, on peut merge.
+
+Il faut changer les ZipSessions et GitSessions :
+\begin{itemize}
+\item aucune écriture ;
+\item lecture sur le même layout que ZipSession ;
+\item attention : je change d'exo après avoir édité mais pas exécuté ;
+\item attention : savoir rapidement quels exos réussi en quel langage.
+\end{itemize}
+
+Tables :
+\begin{itemize}
+\item une table des identités : clé, nom complet, UUID(s), mail, ... ;
+\item une table authentifications : login, mot de passe, clé utilisateur ;
+\item une table participants : id individu, id classe ;
+\item une table classe : nom, descriptif, id classe, prof(s).
+\end{itemize}
+
+
+
+%
+%Tout le monde peut tirer/pousser n'importe quoi. Ne pas autoriser les commits de plus de 4 ko par exemple. Git ne permet que d'ajouter de l'information, pas de détruire.
+%
+%Pousser le code sur un GitHub car les données sont anonymes par constructions.
+
+\section{Mercredi 23 avril 2014}
+
+Pour gérer le multiutilisateur sur une machine, on remplace le dossier repository par un dossier dont le nom est le début du UUID.
+
+Le nom de la branche associé à un UUID est son hashé.
+
+Un utilisateur pour continuer sa session sur une nouvelle machine (ou pas nouvelle) en saisissant son UUID.
+
+Ceci permet d'éviter de continuer une partie anonyme d'un autre (en récupérant son UUID à partir d'un git clone).
+
+Continuer session avec JList des sessions locales
+Crée nouvelle session
+Ajouter une session à partir d'un UUID
+\end{document}

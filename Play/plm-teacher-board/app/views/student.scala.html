@@ -1,0 +1,109 @@
+@(student: Student, courses: List[Course])
+
+@import helper._
+@import java.math.BigInteger; var i=1
+
+@main(student.name) {
+    <div class="container">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="page-header">
+					<h1>
+						@student.name
+					</h1>
+				</div>
+				<h2>
+					Current course(s)
+				</h2>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>
+								#
+							</th>
+							<th>
+								Name
+							</th>
+							<th>
+								Teacher
+							</th>
+							<th>
+								Student count
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for(course <- student.courses) {
+							<tr>
+								<td>
+									@i
+								</td>
+								<td>
+									@course.name
+								</td>
+								<td>
+									@for(teacher <- course.teachers) {
+										@teacher.name 
+									}
+								</td>
+								<td>
+									@course.students.size()
+								</td>
+							</tr>
+							@{i=i+1}
+						}
+					</tbody>
+				</table>
+				<h2>
+					Join course
+				</h2>
+				<form class="form-horizontal" role="form" action="joinCourse" method="get">
+					<input type="hidden" name="uuid" value="@student.uuid"> 
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="select">Course</label>
+						<div class="col-sm-10">
+							<div class="btn-group" data-toggle="buttons">
+								<select class="form-control" id="select" name="courseName">
+									@for(course <- courses) {
+										@if(!student.courses.contains(course)) {
+											<option>@course.name</option>
+										}
+									}
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							 <button class="btn btn-default" type="submit">Join course</button>
+						</div>
+					</div>
+				</form>
+				<br />
+				<h2>
+					Leave course
+				</h2>
+				<form class="form-horizontal" role="form" action="leaveCourse" method="get">
+					<input type="hidden" name="uuid" value="@student.uuid"> 
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="select">Course</label>
+						<div class="col-sm-10">
+							<div class="btn-group" data-toggle="buttons">
+								<select class="form-control" id="select" name="courseName">
+									@for(course <- student.courses) {
+										<option>@course.name</option>
+									}
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							 <button class="btn btn-default" type="submit">Leave course</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+}

@@ -1,0 +1,29 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.students()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Clone a remote repository
+GET		/createCourse				controllers.Application.createCourse()
+GET		/createTeacher				controllers.Application.createTeacher()
+GET		/handleTeacher				controllers.TeacherController.createTeacher(name:String)
+GET 	/cloneRepo					controllers.JGit.cloneRepo()
+GET		/courses					controllers.Application.courses()
+GET		/handleCourse				controllers.CourseController.createCourse(name:String,teacherName:String)
+GET		/teachers					controllers.Application.teachers()
+GET		/link						controllers.Identity.linkForm(UUID:String)
+POST	/jgit/:uuid/displayBranch	controllers.JGit.displayBranch(uuid:String, studentname:String)
+GET		/handleRequest				controllers.Identity.linkIdentity(username:String, UUID:String, mail:String)
+GET		/students					controllers.Application.students()
+GET		/student					controllers.StudentController.student(uuid:String)
+GET		/joinCourse					controllers.StudentController.joinCourse(courseName:String, uuid:String)
+GET		/leaveCourse				controllers.StudentController.leaveCourse(courseName:String, uuid:String)
+POST	/student/:uuid/delete		controllers.StudentController.deleteStudent(uuid:String)
+POST	/teacher/:name/delete		controllers.TeacherController.deleteTeacher(name:String)
+POST	/course/:name/delete		controllers.CourseController.deleteCourse(name:String)
+POST	/course/:name/course		controllers.CourseController.course(name:String)
