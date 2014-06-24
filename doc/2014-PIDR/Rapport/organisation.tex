@@ -1,0 +1,115 @@
+
+Après avoir analysé l'état de la PLM au début du projet, nous devions nous organiser, aussi bien avec nos encadrants qu'entre nous, pour pouvoir mener à bien notre PIDR. Cette partie a donc pour but de décrire notre méthode de travail et la façon dont nous nous sommes réparti les tâches au cours des quatre mois du projet.
+
+\subsection{Méthode de travail}
+
+Au commencement du projet, nous avons convenu avec Martin Quinson et Gérald Oster de nous réunir chaque mercredi afin de faire le point sur les progrès réalisés mais également et surtout de définir les limites et le cadre du projet. En effet, beaucoup d'améliorations peuvent encore être apportées à la PLM et les premières réunions étaient surtout des brainstormings afin de trouver des idées et de voir ce qui pouvait être fait dans le cadre temporel limité du PIDR.
+
+
+\`A la fin de chaque réunion, nous nous fixions une liste de choses à faire pour la prochaine réunion et entre chaque réunion nous nous efforcions donc de mener à bien ces tâches. Lorsque les limites du projet étaient mieux définies et que les tâches à effectuer commençaient à devenir plus complexes, les fréquences des réunions se sont espacées afin de toujours nous permettre de mener à bien nos tâches. Lorsque les réunions ne pouvaient vraiment pas avoir lieues pour cause d'indisponibilités ou d'incompatibilité des emplois de temps, nous envoyions tout de même un mail récapitulatif quand l'avancement nous semblait assez significatif.
+
+
+Pour nous permettre de prendre facilement part au développement de la PLM, nous avons également forké le dépôt GitHub de la PLM\cite{OsterGitHub} afin de pouvoir faire des pulls requests dès que nous avions des modifications stables à incorporer à la PLM.
+
+
+\subsection{Comptes-rendus des réunions}
+
+Afin de mieux se rendre de l'évolution des attentes et des tâches à réaliser au fur et à mesure de l'évolution du temps, nous avons décidé d'écrire dans cette section les résumés des principales réunions que nous avons eues avec nos encadrants.
+
+\begin{description}
+\item[15/01/2014] : $ $
+	\begin{description}
+	\item[Ordre du jour] : présentation du contexte, de la PLM et des attentes vis-à-vis du PIDR.
+	\item[Décisions prises] : utiliser Git pour stocker les données des utilisateurs. Cela permettra de ne pas dépendre d'une technologie en particulier pour accéder à ces données.
+	\item[\`A faire pour la prochaine réunion] : protocole sur papier, s'informer sur JGit, étudier le code de la PLM, notamment la partie sur les espions (\texttt{plm.core.model.tracking}).
+	\end{description}
+\end{description}
+
+\begin{description}
+\item[24/01/2014] : $ $
+	\begin{description}
+	\item[Ordre du jour] : présentation des buts à long terme de la PLM. Cadrage des limites du projet et des objectifs à court terme attendus.
+	\item[Décisions prises] : ne pas essayer de tout faire, mais créer une base stable qui pourra être réutilisée ultérieurement.
+	\item[À faire] : créer un espion Git qui commit localement.
+	\end{description}
+\end{description}
+
+\begin{description}
+\item[31/01/2014] $ $
+	\begin{description}
+	\item[Ordre du jour] : aller dans les détails et voir techniquement ce qu'il est possible de faire avec les outils à disposition.
+	\item[Décisions prises] : écrire des Use Cases pour voir quelles implémentations et solutions sont envisageables en pratique.
+	\item[À faire] : écrire les Use Cases, améliorer l'espion Git, se familiariser avec le framework Play.
+	\end{description}
+\end{description}
+
+\begin{description}
+\item[17/02/2014] $ $
+	\begin{description}
+	\item[Ordre du jour] : étudier les Use Cases.
+	\item[Décisions prises] : demander le moins d'informations à l'utilisateur au démarrage de la PLM (éviter les mots de passe et les authentifications). Faire un lien entre une identité anonyme et un utilisateur.
+	\item[À faire] : $ $
+		\begin{itemize}
+		\item - trouver un moyen de pusher anonymement avec JGit tout en permettant aux professeurs de trouver l'identité d'un élève derrière un commit anonyme ;
+		\item simplifier les Use Cases ;
+		\item  faire les premiers essais de push vers un dépôt Git distant avec JGit.
+		\end{itemize}
+	\end{description}
+\end{description}
+
+\begin{description}
+\item[26/03/2014] $ $
+	\begin{description}
+	\item[Ordre du jour] : évaluation de l'état d'avancement et des solutions concrètes proposées.
+	\item[Décisions prises] : rédaction des Use Cases/scénarios définitifs. Les utilisateurs seront identifiés par un identifiant unique.
+	\item[À faire] : $ $
+		\begin{itemize}
+		\item - implémenter GitSessionKit pour remplacer ZipSessionKit ;
+		\item faire en sorte que l'espion Git enregistre les changements aussi lorsqu'un utilisateur change d'exercice à l'intérieur de la PLM ;
+		\item implémenter les différents scénarios.
+		\end{itemize}
+	\end{description}
+\end{description}
+
+\subsection{Tâches et répartition du travail}
+
+Notre cheminement pour résoudre les différents problèmes posés au cours des réunions a connu plusieurs étapes. Nous nous sommes réparti les tâches selon la nature et la complexité de ces étapes et avons souvent dû réfléchir et programmer ensemble. Dans cette partie, nous allons donc présenter ces étapes d'une manière claire et simplifiée.
+
+\begin{description}
+\item[Première étape (5h)] : arriver à faire compiler correctement la PLM sur nos machines.
+
+Pour compiler sous Eclipse, nous ne devions pas oublier d'installer le plugin Scala (\url{http://scala-ide.org/download/current.html}) et le plugin Python (\url{http://pydev.org/download.html}) et de bien configurer le Build Path.
+
+\item[Deuxième étape (20 h)] : prendre connaissance du code et de la structure de la PLM.
+
+Lors de cette étape, nous avons découvert un certain nombre de petits bugs que nous avons pu corriger et nous avons alors soumis la correction par Pull Requests. Ces bugs incluaient :
+
+	\begin{itemize}
+	\item correction des numéros de ligne affichés sous Windows lors d'une exception générée par le code d'un utilisateur ;
+	\item encryption SSL des messages automatiques de succès postés sur Twitter ;
+	\item correction d'un problème de synchronisation entre la vue utilisateur dans la PLM et le code sur le disque du à une frappe au clavier trop rapide ;
+	\end{itemize}
+
+Nous avons également incorporé quelques nouvelles fonctionnalités, parmis lesquelles :
+	\begin{itemize}
+	\item la possibilité de poster les rapports de bugs directement sur le projet GitHub ;
+	\item la possibilité d'accéder à une leçon en double-cliquant sur son icône au lieu de cliquer sur le bouton \og Aller\fg{} ;
+	\item la sensibilité de l'interface aux changements effectués dans le code exécuté pour le monde des Buggles.
+	\end{itemize}
+	
+\item[Troisième étape (25 h)] : création et gestion d'un dépôt local pour un utilisateur.
+Cette étape a nécessité beaucoup de recherches et de tests étant donné que la documentation de JGit était assez limitée, bien qu'elle nous a semblé être la librairie Java permettant d'effectuer des commandes Git ayant la plus grande base d'utilisateurs. Durant cette étape, nous avons travaillé ensemble sur la création d'un espion Git, via la classe GitSpy que nous avons implémentée.
+
+
+\item[Quatrième étape (40 h)] : push des données sur un dépôt Git distant dans une branche spécifique et possibilité de pull cette branche uniquement, prise en main du framework Play et remplacement de ZipSessionKit par GitSessionKit afin de charger le code du dépôt local dans la PLM lors de son démarrage.
+
+C'est là le c\oe ur du projet. Nous avons travaillé la plupart du temps ensemble sur chacun des points cités étant donné qu'ils nécessitaient tous beaucoup de recherches, de tests mais également de discussions afin de trouver les meilleures solutions à utiliser dans chacun des cas.
+
+
+\item[Cinquième étape (30 h)] : gestion des utilisateurs et de la liaison d'identité.
+
+Cette dernière étape n'a pas pu être menée à bien aussi loin que nous l'aurions voulu, notamment la phase de liaison d'identité, pour cause de manque de temps. Néanmoins, nous nous sommes efforcés de faire en sorte que la reprise du code de ces fonctionnalités par quelqu'un d'autre soit simple et déjà bien entamée.
+
+\end{description}
+
+Pour conclure cette partie, nous avons donc travaillé environ 120 heures sans compter la rédaction du rapport et la préparation de la soutenance. Nous nous sommes en général réparti le travail sur la résolution des petits bugs et l'ajout de nouvelles fonctionnalités, mais nous avons plutôt souvent réfléchi et programmé ensemble sur les points les plus complexes et importants.

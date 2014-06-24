@@ -1,0 +1,35 @@
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{redW}{rgb}{1,0.5,0.3}
+
+\lstset{frame=tb,
+  aboveskip=1mm,
+  belowskip=1mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\footnotesize\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=2
+}
+
+\lstdefinelanguage{plm}
+{
+keywordstyle=[2]
+morekeywords={interface, Vlan, line, ip, hostname, no},
+sensitive=false,
+morecomment=[l]{!},
+morecomment=[s]{/*}{*/},
+%morestring=[b]",
+%classoffset=0,
+%morekeywords={standby},keywordstyle=\color{redW},
+classoffset=1,
+morekeywords={os, plm_version, evt_type, java_version, start_date, course, exolang, exoswitchto, totaltests, passedtests, exoname},keywordstyle=\color{blue},
+classoffset=0
+}

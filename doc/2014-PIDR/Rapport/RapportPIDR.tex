@@ -1,0 +1,90 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{mathced}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[left=2.5cm,right=2.5cm,top=3cm,bottom=2cm]{geometry}
+
+\usepackage[hyperref=true,backend=bibtex,citestyle=alphabetic,bibstyle=ieee,style=alphabetic,backref=true]{biblatex}
+\bibliography{bibli.bib}
+
+\input{setListing.tex}
+
+\usepackage{tikz}
+\usetikzlibrary{backgrounds,calc,shadings,shapes.arrows,shapes.symbols,shadows}
+\tikzset{every picture/.style={execute at begin picture={
+   \shorthandoff{:;!?};}
+}}
+
+\input{setTikz.tex}
+
+\author{Mathieu Morainville et Cédric Huguenin}
+\title{Rapport PIDR}
+\newcommand{\reporttitle}{Serveur d'application pour la Programmer's Learning Machine}     % Titre
+\newcommand{\reportauthor}{Mathieu \textsc{Morainville} \\ \& Cédric \textsc{Huguenin}} % Auteurs
+\newcommand{\reportresponsables}{Martin \textsc{Quinson} \\ \& Gérald \textsc{Oster}} % Responsables
+\newcommand{\reportsubject}{Projet Interdisciplinaire ou Découverte de la Recherche} % Sujet
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\setlength{\parskip}{1ex} % Espace entre les paragraphes
+
+\begin{document}
+  \include{title}
+  \cleardoublepage % Dans le cas du recto verso, ajoute une page blanche si besoin
+  \sloppy          % Justification moins stricte : des mots ne dépasseront pas des paragraphes
+  \cleardoublepage
+\section*{Remerciements}
+  \input{remerciements.tex}  
+  \tableofcontents % Table des matières
+  \cleardoublepage
+
+\section{Introduction}
+	\input{intro.tex}
+
+%* Préciser le contexte du problème : qui est concerné ? Dans quel cadre spatial et temporel ?
+
+%* En quoi la situation actuelle est-elle insatisfaisante ? Quelle(s) amélioration(s) faudrait-il apporter ?
+
+%* Quels sont les enjeux ?
+\newpage
+\section{Analyse du problème}
+\input{analyse.tex}
+%Montrer précisément la différence entre la situation actuelle et le but à atteindre.
+%
+%* Connaissance des causes de la situation insatisfaisante
+%
+%* Description des améliorations à apporter et des objectifs poursuivis (ex. : gain de temps, d'argent, etc.) : cahier des charges du projet.
+\newpage
+\section{Organisation}
+\input{organisation.tex}
+%* méthode de travail
+%
+%* matériel utilisé
+%
+%* répartition des tâches, planning.
+\newpage
+\section{Résolution}
+\input{resolution.tex}
+
+%
+%* solution(s) proposée(s)
+%
+%* critères de choix
+\newpage
+\section{Conclusion}
+
+Nous espérons que les modifications que nous avons apporté à la PLM permettront à terme aux professeurs de mieux cerner les besoins et les difficultés de leurs élèves et aux utilisateurs de pouvoir mieux visualiser leurs progrès grâce à la gestion de versions apportée par l'utilisation de Git comme moyen de stockage privilégié. Nous pensons avoir réussi à faire en sorte que la PLM soit bien préparée à se voir ajouter de nouvelles fonctionnalités destinées aux professeurs. Le chemin reste cependant encore long avant un usage efficace de la PLM par ces derniers. Les données collectées seront utilisables non seulement par les professeurs à partir du moment où elles sont authentifiables mais également par les chercheurs puisqu'elles seront anonymes et accessibles à tous. Une perspective directement envisageable qui serait la suite directe de notre travail serait de traiter toutes ces données pour en tirer des représentations graphiques plus facilement interprétables. Dans le cadre des cours à Telecom Nancy, le traitement pourrait être réalisé par le serveur Play, ce qui fournirait aux professeurs une interface graphique agréable à utiliser pour suivre les progrès des élèves. Nous aurions aimé pouvoir réaliser nous-même cette étape si nous n'avions pas été pris par le temps vers la fin du PIDR. Néanmoins, nous pensons avoir laissé une base stable à nos éventuels successeurs pour réaliser ces améliorations et porter encore plus loin la PLM dans son objectif d'enseignement pédagogique de la programmation.
+
+
+%* résultats actuels
+%
+%* limites et/ou perspectives
+
+\newpage
+
+\begin{flushleft}
+\printbibliography
+\end{flushleft}
+
+\listoffigures  % table des figures
+\end{document}

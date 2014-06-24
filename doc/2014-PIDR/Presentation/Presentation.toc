@@ -1,0 +1,5 @@
+\beamer@endinputifotherversion {3.27pt}
+\select@language {french}
+\beamer@sectionintoc {1}{Probl\IeC {\'e}matiques}{4}{0}{1}
+\beamer@sectionintoc {2}{Solutions}{6}{0}{2}
+\beamer@sectionintoc {3}{Conclusion}{17}{0}{3}

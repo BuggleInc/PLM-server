@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[server](PC1) at (-3,0) {};
+\node[xshift=-0.8cm,yshift=0.2cm,left of = PC1,align=left](PC1label) {Utilisateurs A};
+
+\node(GitA1) at (-5.5,-2) {\includegraphics[scale=0.25]{images/git.ps}}; 
+\node[below of = GitA1,align=left](GitAlabel1) {Git local utilisateur A1};
+
+\node(GitA2) at (-0.5,-2) {\includegraphics[scale=0.25]{images/git.ps}}; 
+\node[below of = GitA2,align=left](GitAlabel1) {Git local utilisateur A2};
+
+\draw[thick,darkgray!10!gray] (PC1.south east)--(GitA1);
+\draw[thick,darkgray!10!gray] (PC1.south west)--(GitA2);
+\end{tikzpicture}

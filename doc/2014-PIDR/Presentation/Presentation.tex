@@ -1,0 +1,74 @@
+\documentclass{beamer}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc} %pour les accents
+\usepackage[T1]{fontenc} %pour les accents
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{makeidx}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage[francais]{babel}
+\usepackage{eurosym}
+\usepackage{tikz}
+
+\usepackage{xcolor}
+\usepackage{listings}
+
+\usetikzlibrary{backgrounds,calc,shadings,shapes.arrows,shapes.symbols,shadows}
+\tikzset{every picture/.style={execute at begin picture={
+   \shorthandoff{:;!?};}
+}}
+
+\input{setTikz.tex}
+
+\input{setListing.tex}
+
+\usetheme{Luebeck}
+\useoutertheme{split}
+\useinnertheme{rectangles}
+\usecolortheme{whale}
+\usecolortheme{orchid}
+\setbeamertemplate{navigation symbols}{\insertframenumber/\inserttotalframenumber}
+\title[Serveur d’application pour la PLM]{Serveur d’application pour la Programmer’s Learning Machine}
+\subtitle{Mathieu Morainville \& Cédric Huguenin}
+\institute{Encadrants : Martin Quinson \& Gérald Oster \\ TELECOM Nancy}
+\titlegraphic{\includegraphics[width=2.5cm,height=2.5cm,keepaspectratio]{images/TN}
+$\quad$ \includegraphics[width=2.5cm,height=2.5cm,keepaspectratio]{images/loria}
+} 
+\begin{document}
+ \begin{frame}
+  \titlepage
+ \end{frame}
+ \begin{frame}
+ 	\frametitle{Introduction} % Introduction
+ 	La PLM permet :
+ 	\begin{itemize}
+ 	\item d'initier les étudiants venant des CPGE à la programmation ;
+ 	\item de faire des exercices d'algorithmiques plus avancés ;
+ 	\item de simplement apprendre à programmer.
+ 	\end{itemize}
+ 	\begin{center}
+ 	\onslide \includegraphics[scale=0.1]{images/buggle.eps}
+ 	\end{center}
+ \end{frame}
+  \begin{frame}
+  \tableofcontents
+ \end{frame}
+\section{Problématiques}
+	\input{problemes.tex}
+
+\section{Solutions}
+	\input{solutions.tex}
+\section{Conclusion} % Les problèmes de la voiture électrique
+	\begin{frame}
+	\frametitle{Conclusion}
+		\begin{itemize}
+			\item PLM bien préparée à recevoir des modifications destinées aux professeurs ;
+			\item Base stable pour évoluer ;
+			\item Données collectées anonymes consultables publiquement ;
+			\item Représentation graphique (\texttt{D3.js}).
+		\end{itemize}
+	\end{frame}	
+\end{document}

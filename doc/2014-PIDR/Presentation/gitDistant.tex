@@ -1,0 +1,44 @@
+
+\begin{tikzpicture}[scale=0.5, every node/.style={scale=0.6}]
+\node[server](PC1) at (-3,-1) {};
+\node[xshift=-0.8cm,yshift=0.2cm,left of = PC1,align=left](PC1label) {Utilisateurs A};
+
+\node(GitA1) at (-5,-2.5) {\includegraphics[scale=0.25]{images/git.ps}}; 
+\node[below of = GitA1,align=left](GitAlabel1) {Git local A1};
+
+\node(GitA2) at (-2,-2.5) {\includegraphics[scale=0.25]{images/git.ps}}; 
+\node[below of = GitA2,align=left](GitAlabel2) {Git local A2};
+
+\node[server](PC2) at (3,-1) {};
+\node[xshift=-0.8cm,yshift=0.2cm,left of = PC2,align=left](PC2label) {Utilisateur B};
+
+\node(GitB) at (3,-2.5) {\includegraphics[scale=0.25]{images/git.ps}}; 
+\node[xshift=-0.5cm,left of = GitB,align=left](GitBlabel) {Git local B};
+\node[red,inner sep=0mm](croix) at (1.3,0.8) {\begin{LARGE}$\times$\end{LARGE}};
+
+\node[server](PC3) at (4.5,0.5) {};
+\node[xshift=0.6cm,right of = PC3,align=left](PC3label) {Utilisateur C};
+
+\node(GitC) at (5.5,-0.5) {\includegraphics[scale=0.25]{images/git.ps}}; 
+\node[xshift=0.7cm,right of = GitC,align=left](GitClabel) {Git local C};
+
+
+\node[my cloud, minimum width=1.25cm, minimum height=1.55cm,font=\large] (cloud) at (0,2) {Internet};
+
+\node(Git) at (-3.5,3) {\includegraphics[scale=0.5]{images/git.ps}}; 
+\node[xshift=-1cm,left of = Git,align=left](Gitlabel) {Git central};
+
+
+\draw[thick,darkgray!10!gray] (PC1.north west)--(cloud);
+\draw[thick,darkgray!10!gray] (PC1.south east)--(GitA1);
+\draw[thick,darkgray!10!gray] (PC1.south west)--(GitA2);
+\draw[thick,darkgray!10!gray] (PC2.north east)--(1.3,0.8);
+\draw[thick,darkgray!10!gray] (PC2.south)--(GitB);
+\draw[thick,darkgray!10!gray] (PC3.north east)--(cloud);
+\draw[thick,darkgray!10!gray] (PC3.south)--(GitC);
+\draw[thick,darkgray!10!gray] (Git.east)--(cloud);
+\path[<->, blue,line width = 0.5mm] (GitA2)  edge   [bend left=-80]   node {} (Git.east);
+
+\path[<->, blue,line width = 0.5mm] (0,-5)  edge [auto]  node {Git push/pull} (2.5,-5);
+
+\end{tikzpicture}

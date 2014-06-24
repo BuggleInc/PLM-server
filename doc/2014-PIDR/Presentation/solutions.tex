@@ -1,0 +1,108 @@
+\begin{frame}
+	\tableofcontents[currentsection]
+\end{frame}
+\begin{frame}
+	\frametitle{GitSession \& GitSpy}
+	\begin{itemize}
+		\item Dépôt git local ;
+		\item un dépôt par utilisateur.
+	\end{itemize}
+	\begin{center}
+		\begin{tikzpicture}
+			\node[server](PC1) at (-3,0) {};
+			\node[xshift=-0.8cm,yshift=0.2cm,left of = PC1,align=left](PC1label) {Utilisateurs A};
+			
+			\node(GitA1) at (-5.5,-2) {\includegraphics[scale=0.25]{images/git.ps}}; 
+			\node[below of = GitA1,align=left](GitAlabel1) {Git local utilisateur A1};
+			
+			\node(GitA2) at (-0.5,-2) {\includegraphics[scale=0.25]{images/git.ps}}; 
+			\node[below of = GitA2,align=left](GitAlabel1) {Git local utilisateur A2};
+			
+			\draw[thick,darkgray!10!gray] (PC1.south east)--(GitA1);
+			\draw[thick,darkgray!10!gray] (PC1.south west)--(GitA2);
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+\begin{frame}[containsverbatim]
+	\frametitle{Exemples de commit}
+	\begin{itemize}
+		\item Type de l'évènement, exercice, nombre de tests passés / total, etc.
+	\end{itemize}
+		\begin{lstlisting}[language = plm,basicstyle={\scriptsize\ttfamily}, caption= Message de commit]
+{"os":"Windows 8 (version: 6.2; arch: amd64)","plm_version":"2.3beta (20140125)","evt_type":"started","java_version":"1.7.0_51 (VM: Java HotSpot(TM) 64-Bit Server VM; version: 24.51-b03)","start_date":"2014\/05\/21 13:08:26"}
+
+{"course":"","exolang":"Java","evt_type":"executed","totaltests":"1", "passedtests":"1","exoname":"Welcome in the Buggles' World"}
+		\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Serveur distant}
+	\begin{itemize}
+	\item Git distant qui centralise les données :
+	\end{itemize}
+	\begin{center}
+		\input{gitDistant.tex}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Serveur distant}
+	\begin{itemize}
+	\item Une branche par utilisateur identifié par le hash d'un numéro unique :
+	\end{itemize}
+	\begin{center}
+		\includegraphics[scale=0.5]{images/tree.eps}
+	\end{center}
+\end{frame}
+
+\begin{frame}[containsverbatim]
+	\frametitle{Multi utilisateur}
+	\begin{itemize}
+	\item Chaque utilisateur a un numéro unique.
+	\item Le champs lastUsed permet de charger la bonne session.
+	\item Le tout formaté en JSON et sauvegardé dans un fichier dans \texttt{.plm}.
+	\end{itemize}
+	\begin{lstlisting}[language = plm,basicstyle={\tiny\ttfamily}, caption= plm.users]
+[{"username":"Ced","lastUsed":true,"userUUID":"bed299bd-c446-4b06-b61d-6b5b9f310e64"}, {"username":"Viking","lastUsed":false,"userUUID":"9809cbb3-2264-4221-87a4-5d32d0a69d72"}, {"username":"Mat","lastUsed":false,"userUUID":"05cfd3d9-4a99-47f8-bec0-85e01f38d121"}]
+	\end{lstlisting}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Serveur Play}
+	\begin{center}
+		\input{schema.tex}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Liaison d'identité}
+	\begin{itemize}
+	\item L'utilisateur peut lier sa véritable identité.
+	\end{itemize}
+	\begin{center}
+		\includegraphics[scale=0.33]{images/menu.eps} $ \qquad$
+		\includegraphics[scale=0.28]{images/link.eps}
+	\end{center}
+\end{frame}
+\begin{frame}
+	\frametitle{Liste des étudiants}
+	\begin{itemize}
+	\item Liste récapitulative des étudiants :
+	\end{itemize}
+	\begin{center}
+		\includegraphics[scale=0.3]{images/students.eps}
+	\end{center}
+\end{frame}
+\begin{frame}
+	\frametitle{Récapitulatif d'un étudiant}
+	\begin{center}
+		\includegraphics[scale=0.25]{images/summary.eps}
+	\end{center}
+\end{frame}
+\begin{frame}
+	\frametitle{Récapitulatif détaillé d'un étudiant}
+	\begin{center}
+		\includegraphics[scale=0.25]{images/details.eps}
+	\end{center}
+\end{frame}

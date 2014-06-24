@@ -1,0 +1,66 @@
+Tout d'abord, nous allons dans cette première partie présenter l'état de la PLM au début du projet puis analyser les problèmes à traiter pour faire en sorte qu'elle réponde aux besoins du sujet. Nous énoncerons alors plus clairement le but à atteindre et décrirons les améliorations à apporter afin de remplir les objectifs poursuivis.
+
+\subsection{Situation de départ}
+
+La PLM existe depuis 2007 et se trouve donc dans un stade de développement très avancé, ayant également été amélioré au travers d'autres PIDR. Le nombre élevé de classes et de packages la composant nécessite donc de la modifier avec soin et de s'assurer que chaque modification n'entrave pas son fonctionnement. Pour cela des tests unitaires concernant les exercices existent (\texttt{plm.core}, fichier ExoTest.java) et nous devions nous assurer qu'après chaque modification importante nous pouvions encore passer chacun de ces tests.
+
+
+Au départ, et comme nous l'avons stipulé dans l'introduction, la PLM est déjà un outil pédagogique très utile pour les élèves. Néanmoins, à ce moment, ces derniers ne pouvaient récupérer leur ancien code que s'ils se connectaient sur la même session que celle sur laquelle ils avaient ouvert la PLM pour la dernière fois. Ceci afin de pouvoir récupérer les données stockées dans le répertoire .plm, qui stocke sous forme de fichiers zip diverses informations sur l'avancement de l'utilisateur en question et notamment le code source de chaque exercice qu'il a tenté et/ou réussi. Le classe qui s'occupe d'enregistrer et de charger le code source de l'élève s'appelle ZipSessionKit, du package \texttt{plm.core.model.session}.
+
+
+Cette classe n'est cependant pas très adaptée à une utilisation de la PLM en mode \og connecté\fg{} pour ainsi dire. En effet, la compression opérée sur les fichiers ne permet pas un traitement aisée des données. Ainsi pour l'instant, l'utilisateur n'a aucun moyen de récupérer son code sur une autre machine autre que celui de copier son répertoire .plm sur une clé et de le coller au bon endroit sur un autre ordinateur.
+
+
+Avec la volonté de déporter les données des utilisateurs vers un serveur pour y avoir accès plus facilement, d'autres questions se sont posées et, pour résumer également ce qui a été dit précédemment, les problèmes suivants ont été remarqués :
+\begin{itemize}
+\item l'utilisateur n'a pas de moyen simple de retrouver son avancement sur une autre machine ;
+\item l'utilisateur et les professeurs n'ont pas de moyen simple de consulter les résultats des exercices réalisés ;
+\item l'historique des modifications n'est pas sauvegardé ;
+\item il y a un seulement un utilisateur par machine.
+\end{itemize}
+
+\subsection{But à atteindre}
+
+
+À terme, la PLM devrait pouvoir être utilisé efficacement non seulement par les élèves mais également les professeurs, qui pourront avoir accès aux données des élèves via une interface d'administration sur un serveur distant afin d'en tirer éventuellement des statistiques ou des conclusions quant au travail effectué par les élèves. Cela leur permettrait alors d'être plus efficace lors des séances de travail PLM et de pouvoir adapter leurs objectifs d'enseignement.
+
+
+Afin de déporter les données générées par la PLM et de permettre son utilisation sur différentes machines,  les améliorations suivantes seront à traiter :
+
+\begin{itemize}
+\item les modifications d'un utilisateur sont stockés à la fois localement mais aussi sur un serveur distant ;
+\item dès lors que les données d'un utilisateur sont stockées \og dans le nuage\fg{}, les progrès de cet élève sont consultables à distance via une interface web par les professeurs ;
+\item l'utilisateur devrait être en mesure de pouvoir récupérer sa progression sur n'importe quel machine ;
+\item il pourrait alors être intéressant de gérer plusieurs utilisateurs sur une même machine et de permettre de passer de l'un à l'autre facilement.
+\end{itemize}
+
+
+\subsection{Problèmes rencontrés}
+
+Lors de l'analyse du problème et de la recherche de solutions pour mener à bien notre projet, plusieurs problèmes se sont posés. Cette partie va nous servir à faire le point sur ces différentes difficultés et à les expliquer plus en détail.
+
+\subsubsection[ZipSessionKit]{ZipSessionKit \hyperref[zipSessionSol]{$\downarrow$}}
+\label{zipSessionPb}
+
+La PLM actuelle propose une interface ISessionKit qui doit être implémentée par les objets dont la responsabilité est de stocker le code de l'utilisateur sur le disque mais aussi de le charger pour qu'il puisse continuer son travail. En plus, il doit renseigner la PLM sur les exercices déjà réussis en fonction des langages de programmation disponible.
+
+L'objet qui est actuellement utilisé est ZipSessionKit. Comme son nom l'indique, il sauvegarde toutes les données utiles dans des archives zip : une par leçon. Chaque archive contient un dossier par langage et ces dossiers contiennent chacun autant de dossiers qu'il y a d'exercices dans la leçon.
+
+Cette solution de stockage ne permet pas d'être facilement lue. Ainsi, elle ne convient pas à notre démarche d'extraction de données des travaux des élèves. De plus, elle ne donne que la dernière version du code de l'utilisateur. Nous aurions aimé profiter de la possibilité de changer cette façon de stocker les sessions des utilisateurs pour mettre en place un système qui conserverait toutes les étapes du code de l'utilisateur.
+
+\subsubsection[Serveur distant]{Serveur distant \hyperref[serveurDistantSol]{$\downarrow$}}
+\label{serveurDistantPb}
+
+En imaginant avoir un objet implémentant l'interface ISessionKit d'une façon qui permette de remplir nos objectifs plus simplement, le code de l'élève resterait pour le moment toujours sur sa machine locale. Le but de notre projet étant de pouvoir récupérer le code de tous les utilisateurs de la PLM qui sont connectés à Internet, il faudrait donc que l'implémentation d'ISessionKit permette d'envoyer le code sur un serveur distant.
+
+\subsubsection[Anonymat des données]{Anonymat des données \hyperref[anonymatSol]{$\downarrow$}}
+\label{anonymatPb}
+
+L'anonymat des données est primordial. Les utilisateurs avertis se méfient de plus en plus du respect de la vie privée dans le monde numérique. Les données recueillies doivent être accessible au plus grand nombre sans permettre d'identifier les utilisateurs. En effet, les données pourront alors servir aux chercheurs et aux professeurs.
+
+\subsubsection[Identification des utilisateurs]{Identification des utilisateurs \hyperref[identifSol]{$\downarrow$}}
+\label{identifPb}
+
+En apparente contradiction directe avec le problème précédent, il est à noter que comme les données doivent aussi permettre aux professeurs de suivre le travail de leurs élèves, il est impératif d'avoir un système capable de lier une identité sur un utilisateur anonyme. Ce système serait indépendant de l'implémentation du ISessionKit utilisé. Le système doit aussi être simple pour les utilisateurs : il devrait, dans l'idéal, ne pas nécessiter de mot de passe mais tout de même permettre une certaine sécurité. Ce système ne sera utilisé que dans le cadre éducatif a priori et donc seuls les professeurs pourront effectivement faire le lien entre une identité anonyme et un élève en particulier.
+
+

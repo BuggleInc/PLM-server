@@ -1,0 +1,126 @@
+%% Informations générales
+\NeedsTeXFormat{LaTeX2e}[1999/01/01]
+\ProvidesPackage{mathced}[2011/01/22]
+%% Chargement des extensions
+\RequirePackage[utf8]{inputenc} %pour les accents
+\RequirePackage[T1]{fontenc} %pour les accents
+\RequirePackage[francais]{babel} %pour la typographie française
+\RequirePackage{amsmath}
+\RequirePackage{amsfonts}
+\RequirePackage{amssymb}
+\RequirePackage{stmaryrd}
+\RequirePackage{makeidx}
+\RequirePackage{amsthm}
+\RequirePackage{mathrsfs}
+\RequirePackage{esint} %intégrale fermée
+%\RequirePackage{yhmath}
+\RequirePackage[hidelinks]{hyperref} %pour les bookmarks
+%% Déclaration des options
+%% Définition des commandes
+\newcommand{\entete}[4]
+{
+ {\noindent
+   {\Large\texttt{#1}}
+   \hfill 
+   \textit{#2} \\
+ }
+ {\noindent }
+ \begin{center} 
+  \textsc{{\Large #3}}
+ \end{center}
+ \begin{flushright}
+  #4
+ \end{flushright}
+ \hrule
+ \vspace*{1cm}
+}
+
+\newcommand{\ch} {	
+ \text{ch}\, 
+}
+\newcommand{\sh} {	
+ \text{sh}\,
+}
+\newcommand{\cotan} {	
+ \text{cotan}\,
+}
+\newcommand{\Arccos} {	
+ \text{Arccos}\,
+}
+\newcommand{\Arcsin} {	
+ \text{Arcsin}\,
+}
+\newcommand{\Argsh} {	
+ \text{Argsh}\,
+}
+\newcommand{\Arctan} {	
+ \text{Arctan}\,
+}
+\newcommand{\Argth} {	
+ \text{Argth}\,
+}
+\newcommand{\Th} {	
+ \text{th}\,
+}
+\newcommand{\sinc} {	
+ \text{sinc}\,
+}
+\newcommand{\ab} {
+ {[a,b]}
+}
+\newcommand{\cd} {
+ {[c,d]}
+}
+\newcommand{\ixj} {
+ {I \times J}
+}
+\newcommand{\inte} {
+  \text{int}
+}
+\newcommand{\exte} {
+  \text{ext}
+}
+\newcommand{\iin} {
+  _{i=1}^n
+}
+\newcommand{\ii} {
+  {i \in I}
+}
+\newcommand{\codim} {
+  \text{codim}\ 
+}
+\newcommand{\mn} {
+  \mathcal{M}_n(\mathbb{K})
+}
+\newcommand{\lee} {
+  \mathcal{L}(E)
+}
+\newcommand{\lc} {
+  \mathcal{L}^1\mathcal{C}
+}
+\newcommand{\llc} {
+  \mathcal{L}^2\mathcal{C}
+}
+\newcommand{\notO} {
+  \setminus\{ 0_E \}
+}
+\newcommand{\kx} {
+  \mathbb{K}[X]
+}
+\newcommand{\Mom}[1] {
+  \overrightarrow{\mathcal{M}}_{/#1}
+}
+\newcommand{\mom}[1] {
+  \mathcal{M}_{/#1}
+}
+\newcommand{\fct}[2] {	
+ $#1 : #2 \rightarrow \mathbb{R}$
+}
+\newcommand{\cs} {
+  \overset{\text{c.s.}}{\longrightarrow}
+}
+\newcommand{\cu} {
+  \overset{\text{c.u.}}{\longrightarrow}
+}
+%% Fin du package
+\endinput
