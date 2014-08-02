@@ -48,12 +48,13 @@
 									@student.uuid
 								</td>
 								<td>
-									<div class="col-md-4 column">
+									<div class="col-md-5 column">
 										@form(routes.JGit.displayBranch(student.uuid, student.name)) {
 											<input class="btn btn-primary" type="submit" value="Show progress">
 										}
 									</div>
-									<div class="col-md-4 column">
+									
+									<div class="col-md-3 column">
 										 @form(routes.StudentController.deleteStudent(student.uuid)) {
 											<input class="btn btn-danger" type="submit" value="Delete">
 										}

@@ -1,0 +1,41 @@
+# Student
+
+- &ced !!models.Student
+    uuid: c66370ad7f9f6c2aacd49e485a4e9b2a034ad6a9
+    name: Ced
+    mail: ced@example.com
+
+- &user1 !!models.Student
+    uuid:      jbeef0490c59c2866f60e3a38c632fc483de69544
+    name:       Student1
+    mail:   user1@example.com
+
+
+#Teacher
+
+- &teacher1 !!models.Teacher
+    name:       Teacher1
+
+- &teacher2 !!models.Teacher
+    name:       Teacher2
+
+
+# Course
+- &maze !!models.Course
+    name:         maze
+    displayName:  Labyrinthes
+    programmingLanguage: Java
+    # students:
+        # - *ced
+    # teachers:
+       # -*teacher2
+
+- &PPP !!models.Course
+    name:       PPP
+    displayName:  Premiers pas programmation
+    programmingLanguage: Scala
+    # students:
+        # - *ced
+        # - *user1
+    teachers:
+       -*teacher1

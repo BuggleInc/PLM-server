@@ -17,6 +17,10 @@ public class Course extends Model {
 	@Id
 	public String name;
 	
+	public String displayName;
+	
+	public String programmingLanguage;
+	
 	@ManyToMany(cascade = CascadeType.REMOVE)
 	public List<Student> students = new ArrayList<>();
 	
@@ -28,7 +32,6 @@ public class Course extends Model {
 	public Course(String name) {
 		this.name = name;
 	}
-
 
     public static int count() {
         return find.findRowCount();

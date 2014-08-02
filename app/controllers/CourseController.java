@@ -28,22 +28,21 @@ import play.api.data.Forms.*;
 import models.*;
 
 import java.io.IOException;
-import org.eclipse.jgit.api.errors.*
-;
+import org.eclipse.jgit.api.errors.*;
+
 public class CourseController extends Controller {
 
 	public static Result course(String name) {
 		final String lessonName = name;
-		Course course =  Course.find.byId(name);
-		List<Student> students = course.students;
-		ArrayList<String> studentsName = new ArrayList<>();
+		Course course =  Course.find.byId(name); // get the course from the db
+		List<Student> students = course.students; // get the studdents
+		ArrayList<String> studentsNames = new ArrayList<>(); // store their name to display on the view
 		for(Student s : students) {
-			studentsName.add(s.uuid);
+			studentsNames.add(s.uuid);
 		}
 		ArrayList<ProgressItem> summary = null;
 		try {
-
-			summary = JGit.computeStudentForLesson(studentsName, lessonName);
+			summary = JGit.computeStudentForLesson(studentsNames, course); // compute progression of each student for the current lesson
 		} catch(IOException|GitAPIException ex) {
 			System.out.println(ex);
 		}
@@ -56,10 +55,13 @@ public class CourseController extends Controller {
 		);
 	}
 	
-	public static Result createCourse(String name, String teacherName) {
+	public static Result createCourse(String name, String teacherName, String displayName, String programmingLanguage) {
 		Teacher teacher = Teacher.find.byId(teacherName);
-		System.out.println("Teacher name :"+teacher.name);
+		// System.out.println("Teacher name :"+teacher.name);
+		
 		Course course = new Course(name);
+		course.displayName = displayName;
+		course.programmingLanguage = programmingLanguage;
 		
 		course.teachers.add(teacher);
 		teacher.courses.add(course);

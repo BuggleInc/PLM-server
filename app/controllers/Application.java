@@ -7,11 +7,22 @@ import views.html.*;
 
 import models.*;
 
+import java.util.List;
+import play.libs.Yaml;
+import com.avaje.ebean.Ebean;
+
 public class Application extends Controller {
 
     public static Result index() {
-        return ok(index.render("PLM Teacher Board will be here."));
+        return ok(views.html.home.render());
     }
+	
+	public static Result init() {
+		Ebean.save((List) Yaml.load("test-data.yml"));
+	  return ok(
+		views.html.students.render(Student.all())
+	  );
+	}
 	
 	public static Result students() {
 	  return ok(
