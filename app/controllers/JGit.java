@@ -206,28 +206,28 @@ public class JGit extends Controller {
 	 * Compute the progression of students for a given course
 	 *
 	 * @param uuidList the list of students uuid
-	 * @param lessonname the course name
+	 * @param course the course
 	 */
-	public static ArrayList<ProgressItem> computeStudentForLesson(ArrayList<String> uuidList, final String lessonName) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+	public static ArrayList<ProgressItem> computeStudentForLesson(ArrayList<String> uuidList, Course course) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
 		final ArrayList<ProgressItem> summary = new ArrayList<>();
 		int cpt = 0;
 		for(String uuid : uuidList) { // for each student
 		cpt++;
 			ArrayList<Commit> commits = computeCommits(uuid);
 			int possible = 0, passed = 0 ;
-			String p = "Java"; // for the programming language
+			String p = course.programmingLanguage; // for the programming language
 			possible = 0;
 			passed = 0;
 			final File path = new File("repo");
 			
 			passed = 0;
-			Path sourcePath = Paths.get("repo/"+lessonName+".summary");
+			Path sourcePath = Paths.get("repo/"+course.name+".summary");
 			String summaryLine = "";
 			try (BufferedReader reader = Files.newBufferedReader(sourcePath, StandardCharsets.UTF_8)) {
 				summaryLine = reader.readLine();
 				//System.out.println("Summary : "+ summaryLine);
 			} catch (IOException ex) { // file does not exists maybe
-				summary.add(new ProgressItem(lessonName, p, 1, -1));
+				summary.add(new ProgressItem(course.name, p, 1, -1));
 				return summary;
 			}
 			// Retrieve informations on per language progression
@@ -239,11 +239,11 @@ public class JGit extends Controller {
 				passed = jo.get("passed"+p).getAsInt();
 			} catch (Exception ex) { // passed information for the current language not available
 			}
-			//System.out.println(lessonName + "   " + p + "   " + possible + ", " + passed +" done");
+			//System.out.println(course.name + "   " + p + "   " + possible + ", " + passed +" done");
 			if(passed > 0) {
-				summary.add(new ProgressItem(lessonName, p, possible, passed));
+				summary.add(new ProgressItem(course.name, p, possible, passed));
 			} else { // not attemp
-				summary.add(new ProgressItem(lessonName, p, 1, -1));
+				summary.add(new ProgressItem(course.name, p, 1, -1));
 			}
 		}
 		return summary;

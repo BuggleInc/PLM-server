@@ -22,7 +22,9 @@
 
 # Course
 - &maze !!models.Course
-    name:       maze
+    name:         maze
+    displayName:  Labyrinthes
+    programmingLanguage: Java
     # students:
         # - *ced
     # teachers:
@@ -30,8 +32,10 @@
 
 - &PPP !!models.Course
     name:       PPP
+    displayName:  Premiers pas programmation
+    programmingLanguage: Scala
     # students:
         # - *ced
         # - *user1
-    # teachers:
-       # -*teacher1
+    teachers:
+       -*teacher1
