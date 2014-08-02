@@ -28,8 +28,8 @@ import play.api.data.Forms.*;
 import models.*;
 
 import java.io.IOException;
-import org.eclipse.jgit.api.errors.*
-;
+import org.eclipse.jgit.api.errors.*;
+
 public class CourseController extends Controller {
 
 	public static Result course(String name) {
