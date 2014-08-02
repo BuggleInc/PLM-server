@@ -34,16 +34,15 @@ public class CourseController extends Controller {
 
 	public static Result course(String name) {
 		final String lessonName = name;
-		Course course =  Course.find.byId(name);
-		List<Student> students = course.students;
-		ArrayList<String> studentsName = new ArrayList<>();
+		Course course =  Course.find.byId(name); // get the course from the db
+		List<Student> students = course.students; // get the studdents
+		ArrayList<String> studentsName = new ArrayList<>(); // store their name to display on the view
 		for(Student s : students) {
 			studentsName.add(s.uuid);
 		}
 		ArrayList<ProgressItem> summary = null;
 		try {
-
-			summary = JGit.computeStudentForLesson(studentsName, lessonName);
+			summary = JGit.computeStudentForLesson(studentsName, lessonName); // compute progression of each student for the current lesson
 		} catch(IOException|GitAPIException ex) {
 			System.out.println(ex);
 		}

@@ -12,6 +12,9 @@
 						Students of @course.name
 					</h1>
 				</div>
+				@form(routes.Application.courses()) {
+					<input class="btn btn-primary" type="submit" value="Back to courses list">
+				}
 				<br />
 				<table class="table table-hover">
 					<thead>
