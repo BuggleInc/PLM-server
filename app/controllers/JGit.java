@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -15,12 +16,16 @@ import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Collection;
 
-import java.util.Calendar;
-import java.util.Iterator;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Iterator;
+
+import com.google.gson.JsonParser;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,7 +56,7 @@ import play.mvc.Result;
 import models.*;
 
 public class JGit extends Controller {
-	private static final String REMOTE_URL = "https://PLM-Test@bitbucket.org/PLM-Test/plm-test-repo.git";
+	private static final String REMOTE_URL = "https://github.com/mquinson/PLM-data.git";
 	
 	public static String filePath;
 	
@@ -108,6 +113,7 @@ public class JGit extends Controller {
 	
 	
 	private static ArrayList<Commit> computeCommits(String uuid)  throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+		uuid = "PLM"+uuid;
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
 			localPath.mkdir();
@@ -151,7 +157,6 @@ public class JGit extends Controller {
 		while (i.hasNext()) {
 			commit = walk.parseCommit(i.next());
 			String commitJson = commit.getFullMessage();
-			String commitMsg;
 			commits.add(new Commit(commitJson, commit.getCommitTime()));
 		}
 		repository.close();
@@ -180,7 +185,7 @@ public class JGit extends Controller {
 				break;
 			}
 		}
-		cptEvt--;
+		cptEvt-=2; // 2 useless commits for statistics: "Empty initial commit" and "Create README.md"
 		for(int j =0; j<eventSummary.size(); j++) {
 			eventSummary.set(j, eventSummary.get(j)*100/cptEvt);
 		}
@@ -190,7 +195,7 @@ public class JGit extends Controller {
 		
 		passed = 0;
 		
-		String pattern = "*.[0-9]*";
+		String pattern = "*.summary";
 		FileSystem fs = FileSystems.getDefault();
 		final PathMatcher matcher = fs.getPathMatcher("glob:" + pattern); // to match file names ending with digits
 
@@ -198,46 +203,40 @@ public class JGit extends Controller {
 			@Override
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attribs) {
 				Path name = file.getFileName();
-				String[] languages = {"java", "py", "scala"};
+				String[] languages = {"Java", "Python", "Scala", "C"};
 				if (matcher.matches(name)) { // if the file exists, the tests were run at least once
 					String s = name + "";
 					String[] tab = s.split("\\.", 0);
 					String lessonNameTmp = "";
-					for (int i = 0; i < tab.length - 2; i++) { // get the lesson id
+					for (int i = 0; i <= tab.length - 2; i++) { // get the lesson id
 						lessonNameTmp += tab[i];
 					}
 					final String lessonName = lessonNameTmp;
-					String ext = tab[tab.length - 2]; // get the programming language
-					int possible = Integer.parseInt(tab[tab.length - 1]); // get the number of exercises
-					if (possible > 0) {
-						for (final String p : languages) { // for each programming language, how many exercises are done
-							if (p.equals(ext)) {
-								//System.out.println(lessonName + "   " + p + "   " + possible);
-								//Game.getInstance().studentWork.setPossibleExercises((String) lessonName, p, possible);
-								String pattern = lessonName + ".*." + p + ".DONE";
-								FileSystem fs = FileSystems.getDefault();
-								final PathMatcher matcher = fs.getPathMatcher("glob:" + pattern);
-
-								FileVisitor<Path> matcherVisitor = new SimpleFileVisitor<Path>() {
-
-									@Override
-									public FileVisitResult visitFile(Path file, BasicFileAttributes attribs) {
-										Path name = file.getFileName();
-										if (matcher.matches(name)) {
-											passed = passed + 1; // incr each time we found a correctly done exercise for the programming language p
-										}
-										return FileVisitResult.CONTINUE;
-									}
-								};
-								try {
-									passed = 0;
-									Files.walkFileTree(Paths.get(path.getPath()), matcherVisitor);
-								} catch (IOException ex) {
-
-								}
-								System.out.println(lessonName + "   " + p + "   " + possible + ", " + passed +" done");
-								summary.add(new ProgressItem(lessonName, p, possible, passed));
-							}
+					
+					// Read lessonID.summary
+					Path sourcePath = Paths.get("repo/"+lessonName+".summary");
+					String summaryLine = "";
+					try (BufferedReader reader = Files.newBufferedReader(sourcePath, StandardCharsets.UTF_8)) {
+						summaryLine = reader.readLine();
+						//System.out.println("Summary : "+ summaryLine);
+					} catch (IOException ex) {
+						//System.out.println("Can't open "+sourcePath);
+					}
+					// Retrieve informations on per language progression
+					JsonParser jsonParser = new JsonParser();
+					JsonObject jo = (JsonObject)jsonParser.parse(summaryLine);
+					int possible = 0, passed = 0 ;
+					for (final String p : languages) { // for each programming language, how many exercises are done/possible 
+						possible = 0;
+						passed = 0;
+						possible = jo.get("possible"+p).getAsInt();
+						try {
+							passed = jo.get("passed"+p).getAsInt();
+						} catch (Exception ex) { // passed information for the current language not available
+						}
+						//System.out.println(lessonName + "   " + p + "   " + possible + ", " + passed +" done");
+						if(passed > 0) {
+							summary.add(new ProgressItem(lessonName, p, possible, passed));
 						}
 					}
 				}

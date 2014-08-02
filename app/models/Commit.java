@@ -38,7 +38,7 @@ public class Commit {
 			JsonObject jo = (JsonObject)jsonParser.parse(json);
 			//System.out.println(jo.get("evt_type").getAsString());
 			try {
-				switch(jo.get("evt_type").getAsString()) {
+				switch(jo.get("kind").getAsString()) {
 					case "switched":
 						evt_class = "warning";
 						evt_type = "Switched";
@@ -47,7 +47,7 @@ public class Commit {
 						try {
 							totaltests = jo.get("totaltests").getAsString();
 							passedtests = jo.get("passedtests").getAsString();
-							exolang = jo.get("exolang").getAsString();
+							exolang = jo.get("lang").getAsString();
 							if(totaltests.equals(passedtests)) {
 								evt_class = "success";
 								evt_type = "Success";
@@ -58,12 +58,12 @@ public class Commit {
 						} catch(Exception ex) {
 						}
 						break;
-					case "started":
+					case "start":
 						evt_class = "active";
 						evt_type = "Start";
 						os = jo.get("os").getAsString();
-						plm_version = jo.get("plm_version").getAsString();
-						java_version = jo.get("java_version").getAsString();
+						plm_version = jo.get("plm").getAsString();
+						java_version = jo.get("java").getAsString();
 						break;
 				}
 			} catch(Exception ex) {
@@ -71,7 +71,7 @@ public class Commit {
 			}
 			try {
 				if(evt_type != null && evt_type.equals("Switched")) {
-					exoswitchto = jo.get("exoswitchto").getAsString();
+					exoswitchto = jo.get("switchto").getAsString();
 				} else {
 					exoswitchto = "";
 				}
@@ -79,7 +79,7 @@ public class Commit {
 
 			}
 			try{
-				exoname = jo.get("exoname").getAsString();
+				exoname = jo.get("exo").getAsString();
 			} catch(Exception ex) {
 				exoname = "";
 			}
