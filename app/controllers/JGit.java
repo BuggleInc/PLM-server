@@ -21,7 +21,9 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.GregorianCalendar;
 
 import com.google.gson.JsonParser;
 import com.google.gson.JsonObject;
@@ -29,6 +31,7 @@ import com.google.gson.JsonSyntaxException;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 import com.jcraft.jsch.JSchException;
 
@@ -163,13 +166,30 @@ public class JGit extends Controller {
 		return commits;
 	}
 	
-	public static Result displayBranch(String uuid, String studentname) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+	public static Result displayBranch(String uuid, String studentname) throws IOException, InvalidRemoteException, TransportException, GitAPIException, ParseException {
 		ArrayList<Commit> commits = computeCommits(uuid);
 		ArrayList<Double> eventSummary = new ArrayList<>();
-		eventSummary.add(0.0);eventSummary.add(0.0);eventSummary.add(0.0);eventSummary.add(0.0);
+		int chartDay = 15;
+		Integer[] eventCount = new Integer[chartDay];
 		int cptEvt = 0;
+		for(int i = 0; i<chartDay; i++) { // init eventCount for the chart
+			eventCount[i] = 0;
+		}
+		
+		eventSummary.add(0.0);eventSummary.add(0.0);eventSummary.add(0.0);eventSummary.add(0.0);
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+		Calendar cal = Calendar.getInstance(), endRange = Calendar.getInstance(), beginRange = Calendar.getInstance();
+		beginRange.add(Calendar.DAY_OF_YEAR, - (chartDay-1));
+		Date dateParsed;
 		for(Commit c : commits) {
 			cptEvt++;
+			
+			dateParsed = df.parse(c.commitTime); // get a Date object with the String
+			cal.setTime(dateParsed); // use a Calendar
+			if(cal.compareTo(endRange) <= 0 && cal.compareTo(beginRange) >= 0) { // if commit date is in the range of the chart
+				eventCount[cal.get(Calendar.DAY_OF_YEAR)-beginRange.get(Calendar.DAY_OF_YEAR)]++;
+			}
+			
 			switch(c.evt_type) {
 				case "Switched":
 					eventSummary.set(0, eventSummary.get(0)+1);
@@ -198,7 +218,7 @@ public class JGit extends Controller {
 		computeProgress(summary, path);
 		
 		return ok(
-			views.html.commits.render(commits, studentname, summary, eventSummary)
+			views.html.commits.render(commits, studentname, summary, eventSummary, eventCount)
 			);
 	}
 	

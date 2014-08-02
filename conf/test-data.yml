@@ -6,9 +6,9 @@
     mail: ced@example.com
 
 - &user1 !!models.Student
-    uuid:      jbeef0490c59c2866f60e3a38c632fc483de69544
-    name:       Student1
-    mail:   user1@example.com
+    uuid: b3751d0380b31c7bd2de9841e43ea2c201ac8702
+    name: Ced2
+    mail: user1@example.com
 
 
 #Teacher
@@ -37,5 +37,5 @@
     # students:
         # - *ced
         # - *user1
-    teachers:
-       -*teacher1
+    #teachers:
+     #  -*teacher1
