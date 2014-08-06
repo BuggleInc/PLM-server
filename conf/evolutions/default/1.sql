@@ -5,6 +5,8 @@
 
 create table course (
   name                      varchar(255) not null,
+  display_name              varchar(255),
+  programming_language      varchar(255),
   constraint pk_course primary key (name))
 ;
 
