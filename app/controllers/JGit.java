@@ -287,12 +287,12 @@ public class JGit extends Controller {
 					String[] tab = s.split("\\.", 0);
 					String lessonNameTmp = "";
 					for (int i = 0; i <= tab.length - 2; i++) { // get the lesson id
-						lessonNameTmp += tab[i];
+						lessonNameTmp += tab[i]+"."; // build the lesson name
 					}
 					final String lessonName = lessonNameTmp;
 					
 					// Read lessonID.summary
-					Path sourcePath = Paths.get("repo/"+lessonName+".summary");
+					Path sourcePath = Paths.get("repo/"+lessonName+"summary"); // the last dot is added in the for loop
 					String summaryLine = "";
 					try (BufferedReader reader = Files.newBufferedReader(sourcePath, StandardCharsets.UTF_8)) {
 						summaryLine = reader.readLine();
@@ -302,6 +302,7 @@ public class JGit extends Controller {
 					}
 					// Retrieve informations on per language progression
 					JsonParser jsonParser = new JsonParser();
+					System.out.println(name + "  "+ sourcePath +"  :     "+ summaryLine);
 					JsonObject jo = (JsonObject)jsonParser.parse(summaryLine);
 					int possible = 0, passed = 0 ;
 					for (final String p : languages) { // for each programming language, how many exercises are done/possible 
