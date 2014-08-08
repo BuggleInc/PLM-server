@@ -1,7 +1,7 @@
-@(commits: List[Commit], studentName: String, summary: List[ProgressItem], eventSummary:List[Double], eventCount:Array[Integer])
+@(commits: List[Commit], studentName: String, summary: List[ProgressItem], eventSummary:List[Double], startCount:Array[Integer], switchCount:Array[Integer], successCount:Array[Integer], failCount:Array[Integer])
 
 @import helper._
-@import java.math.BigInteger; var i=1; var j=eventCount.length;
+@import java.math.BigInteger; var i=1; var j=startCount.length;
 
 @displayClass(c: Commit) = {
 	@if(!c.evt_class.equals("")) {
@@ -124,29 +124,99 @@
 							<h2>
 								Activity chart
 							</h2>
-							<canvas id="myChart" width="600" height="400"></canvas>
-							
+							<canvas id="myLineChart" width="600" height="400"></canvas>
 							<script>
 								var data = {
-									labels: [@for(d <- eventCount) {
+									labels: [@for(d <- startCount) {
 												@{j=j-1}
 												"J-@j",
 											}],
 									datasets: [
 										{
-											label: "Activity",
-											fillColor: "rgba(220,220,220,0.2)",
-											strokeColor: "rgba(220,220,220,1)",
-											pointColor: "rgba(220,220,220,1)",
+											label: "Start",
+											fillColor: "rgba(127,150,255,0.2)",
+											strokeColor: "rgba(127,150,255,1)",
+											pointColor: "rgba(127,150,255,1)",
 											pointStrokeColor: "#fff",
 											pointHighlightFill: "#fff",
-											pointHighlightStroke: "rgba(220,220,220,1)",
-											data: [ @for(d <- eventCount) {@d,}]
+											pointHighlightStroke: "rgba(191,201,255,1)",
+											data: [ @for(d <- startCount) {@d,}]
+										},{
+											label: "Switch",
+											fillColor: "rgba(249,226,109,0.2)",
+											strokeColor: "rgba(249,226,109,1)",
+											pointColor: "rgba(249,226,109,1)",
+											pointStrokeColor: "#fff",
+											pointHighlightFill: "#fff",
+											pointHighlightStroke: "rgba(250,242,204,1)",
+											data: [ @for(d <- switchCount) {@d,}]
+										},{
+											label: "Success",
+											fillColor: "rgba(145,239,105,0.2)",
+											strokeColor: "rgba(145,239,105,1)",
+											pointColor: "rgba(145,239,105,1)",
+											pointStrokeColor: "#fff",
+											pointHighlightFill: "#fff",
+											pointHighlightStroke: "rgba(208,233,198,1)",
+											data: [ @for(d <- successCount) {@d,}]
+										},{
+											label: "Fail",
+											fillColor: "rgba(239,119,119,0.2)",
+											strokeColor: "rgba(239,119,119,1)",
+											pointColor: "rgba(239,119,119,1)",
+											pointStrokeColor: "#fff",
+											pointHighlightFill: "#fff",
+											pointHighlightStroke: "rgba(235,204,204,1)",
+											data: [ @for(d <- failCount) {@d,}]
 										}
 									]
 								};
-								var ctx = document.getElementById("myChart").getContext("2d");
+								var ctx = document.getElementById("myLineChart").getContext("2d");
 								var myLineChart = new Chart(ctx).Line(data);
+							</script>
+							
+							<canvas id="myBarChart" width="600" height="400"></canvas>
+							@{j=startCount.length}
+							<script>
+								var data = {
+									labels: [@for(d <- startCount) {
+												@{j=j-1}
+												"J-@j",
+											}],
+									datasets: [
+										{
+											label: "Start",
+											fillColor: "rgba(127,150,255,1)",
+											strokeColor: "rgba(127,150,255,1)",
+											HighlightFill: "#fff",
+											HighlightStroke: "rgba(127,150,255,1)",
+											data: [ @for(d <- startCount) {@d,}]
+										},{
+											label: "Switch",
+											fillColor: "rgba(249,226,109,1)",
+											strokeColor: "rgba(249,226,109,1)",
+											HighlightFill: "#fff",
+											HighlightStroke: "rgba(249,226,109,1)",
+											data: [ @for(d <- switchCount) {@d,}]
+										},{
+											label: "Success",
+											fillColor: "rgba(145,239,105,1)",
+											strokeColor: "rgba(145,239,105,1)",
+											HighlightFill: "#fff",
+											HighlightStroke: "rgba(145,239,105,1)",
+											data: [ @for(d <- successCount) {@d,}]
+										},{
+											label: "Fail",
+											fillColor: "rgba(239,119,119,1)",
+											strokeColor: "rgba(239,119,119,1)",
+											HighlightFill: "#fff",
+											HighlightStroke: "rgba(239,119,119,1)",
+											data: [ @for(d <- failCount) {@d,}]
+										}
+									]
+								};
+								var ctx = document.getElementById("myBarChart").getContext("2d");
+								var myLineChart = new Chart(ctx).Bar(data);
 							</script>
 						</div>
 					</div>

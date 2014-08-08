@@ -170,10 +170,13 @@ public class JGit extends Controller {
 		ArrayList<Commit> commits = computeCommits(uuid);
 		ArrayList<Double> eventSummary = new ArrayList<>();
 		int chartDay = 15;
-		Integer[] eventCount = new Integer[chartDay];
+		Integer[] startCount = new Integer[chartDay], switchCount = new Integer[chartDay], successCount = new Integer[chartDay], failCount = new Integer[chartDay];
 		int cptEvt = 0;
 		for(int i = 0; i<chartDay; i++) { // init eventCount for the chart
-			eventCount[i] = 0;
+			startCount[i] = 0;
+			switchCount[i] = 0;
+			successCount[i] = 0;
+			failCount[i] = 0;
 		}
 		
 		eventSummary.add(0.0);eventSummary.add(0.0);eventSummary.add(0.0);eventSummary.add(0.0);
@@ -181,27 +184,41 @@ public class JGit extends Controller {
 		Calendar cal = Calendar.getInstance(), endRange = Calendar.getInstance(), beginRange = Calendar.getInstance();
 		beginRange.add(Calendar.DAY_OF_YEAR, - (chartDay-1));
 		Date dateParsed;
+		boolean addToChartEvent = false;
 		for(Commit c : commits) {
 			cptEvt++;
+			addToChartEvent = false;
 			
 			dateParsed = df.parse(c.commitTime); // get a Date object with the String
 			cal.setTime(dateParsed); // use a Calendar
 			if(cal.compareTo(endRange) <= 0 && cal.compareTo(beginRange) >= 0) { // if commit date is in the range of the chart
-				eventCount[cal.get(Calendar.DAY_OF_YEAR)-beginRange.get(Calendar.DAY_OF_YEAR)]++;
+				addToChartEvent = true;
 			}
 			
 			switch(c.evt_type) {
 				case "Switched":
 					eventSummary.set(0, eventSummary.get(0)+1);
+					if(addToChartEvent) {
+						switchCount[cal.get(Calendar.DAY_OF_YEAR)-beginRange.get(Calendar.DAY_OF_YEAR)]++;
+					}
 				break;
 				case "Success":
 					eventSummary.set(1, eventSummary.get(1)+1);
+					if(addToChartEvent) {
+						successCount[cal.get(Calendar.DAY_OF_YEAR)-beginRange.get(Calendar.DAY_OF_YEAR)]++;
+					}
 				break;
 				case "Failed":
 					eventSummary.set(2, eventSummary.get(2)+1);
+					if(addToChartEvent) {
+						failCount[cal.get(Calendar.DAY_OF_YEAR)-beginRange.get(Calendar.DAY_OF_YEAR)]++;
+					}
 				break;
 				case "Start":
 					eventSummary.set(3, eventSummary.get(3)+1);
+					if(addToChartEvent) {
+						startCount[cal.get(Calendar.DAY_OF_YEAR)-beginRange.get(Calendar.DAY_OF_YEAR)]++;
+					}
 				break;
 			}
 		}
@@ -218,8 +235,8 @@ public class JGit extends Controller {
 		computeProgress(summary, path);
 		
 		return ok(
-			views.html.commits.render(commits, studentname, summary, eventSummary, eventCount)
-			);
+			views.html.commits.render(commits, studentname, summary, eventSummary, startCount, switchCount, successCount, failCount)
+		);
 	}
 	
 	/**
@@ -232,7 +249,7 @@ public class JGit extends Controller {
 		final ArrayList<ProgressItem> summary = new ArrayList<>();
 		int cpt = 0;
 		for(String uuid : uuidList) { // for each student
-		cpt++;
+			cpt++;
 			ArrayList<Commit> commits = computeCommits(uuid);
 			int possible = 0, passed = 0 ;
 			String p = course.programmingLanguage; // for the programming language
