@@ -1,14 +1,14 @@
 package controllers;
 
-import play.*;
-import play.mvc.*;
-
-import views.html.*;
-
-import models.*;
-
 import java.util.List;
+
+import models.Course;
+import models.Student;
+import models.Teacher;
 import play.libs.Yaml;
+import play.mvc.Controller;
+import play.mvc.Result;
+
 import com.avaje.ebean.Ebean;
 
 public class Application extends Controller {

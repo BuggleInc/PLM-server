@@ -1,34 +1,18 @@
 package controllers;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.*;
+import models.Course;
+import models.ProgressItem;
+import models.Student;
+import models.Teacher;
+
+import org.eclipse.jgit.api.errors.GitAPIException;
 
 import play.mvc.Controller;
 import play.mvc.Result;
-
-import play.api.data.*;
-import play.api.data.Forms.*;
-
-import models.*;
-
-import java.io.IOException;
-import org.eclipse.jgit.api.errors.*;
 
 public class CourseController extends Controller {
 

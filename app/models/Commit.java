@@ -6,11 +6,12 @@
 
 package models;
 
-import com.google.gson.JsonParser;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 /**
  *

@@ -1,25 +1,13 @@
 package controllers;
 
-import java.io.File;
-import java.io.IOException;
-
-import java.util.Calendar;
-import java.util.Iterator;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import com.jcraft.jsch.JSchException;
-
-import play.mvc.Controller;
-import play.mvc.Result;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import javax.persistence.PersistenceException;
 
-import models.*;
+import models.Student;
+import play.mvc.Controller;
+import play.mvc.Result;
 
 public class Identity extends Controller {
 	

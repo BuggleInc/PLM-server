@@ -1,15 +1,14 @@
 package models;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.persistence.*;
-
-import play.db.ebean.*;
-import play.data.validation.Constraints.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 import play.db.ebean.Model;
-
-import models.*;
 
 @Entity
 public class Teacher extends Model {
