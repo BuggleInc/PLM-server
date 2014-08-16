@@ -102,7 +102,7 @@ public class JGit extends Controller {
 	
 	
 	private static ArrayList<Commit> computeCommits(String uuid)  throws IOException, InvalidRemoteException, TransportException, GitAPIException {
-		uuid = "PLM"+uuid;
+		uuid = "PLM"+Identity.hashed(uuid);
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
 			localPath.mkdir();

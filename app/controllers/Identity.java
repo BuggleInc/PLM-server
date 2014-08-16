@@ -22,13 +22,7 @@ public class Identity extends Controller {
 		
 		System.out.println(s);
 		
-		String hashUUID = "";
-		
-		try {
-			hashUUID = sha1(UUID);
-		} catch (NoSuchAlgorithmException ex) {
-			//System.err.println(ex.getMessage());
-		}
+		String hashUUID = hashed(UUID);
 		
 		Student stu = new Student(username, mail, hashUUID);
 		try {
@@ -52,15 +46,18 @@ public class Identity extends Controller {
 			);
 	}
 	
-		// Helper methods
-	private static String sha1(String input) throws NoSuchAlgorithmException {
-		MessageDigest mDigest = MessageDigest.getInstance("SHA1");
-		byte[] result = mDigest.digest(input.getBytes());
+	// Helper methods
+	public static String hashed(String input) {
 		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < result.length; i++) {
-			sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
+		try {
+			MessageDigest mDigest = MessageDigest.getInstance("SHA1");
+			byte[] result = mDigest.digest(input.getBytes());
+			for (int i = 0; i < result.length; i++) {
+				sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
+			}
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
 		}
-
 		return sb.toString();
 	}
 
