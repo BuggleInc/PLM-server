@@ -29,7 +29,6 @@ import models.ProgressItem;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
@@ -42,7 +41,6 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -130,8 +128,6 @@ public class JGit extends Controller {
 
 		}
 
-		PullCommand pullCmd = git.pull();
-
 		// checkout the branch of the current user
 		git.checkout().setName(uuid).call();
 		
@@ -143,7 +139,6 @@ public class JGit extends Controller {
 		Iterable<RevCommit> logs = git.log().call();
 		Iterator<RevCommit> i = logs.iterator();
 			
-		Gson gson = new Gson();
 		ArrayList<Commit> commits = new ArrayList<>();
 		while (i.hasNext()) {
 			commit = walk.parseCommit(i.next());
@@ -235,16 +230,12 @@ public class JGit extends Controller {
 	 */
 	public static ArrayList<ProgressItem> computeStudentForLesson(ArrayList<String> uuidList, Course course) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
 		final ArrayList<ProgressItem> summary = new ArrayList<>();
-		int cpt = 0;
 		for(String uuid : uuidList) { // for each student
 			//System.out.println(uuid);
-			cpt++;
 			ArrayList<Commit> commits = computeCommits(uuid);
 			int possible = 0, passed = 0 ;
 			String p = course.programmingLanguage; // for the programming language
 			possible = 0;
-			passed = 0;
-			final File path = new File("repo");
 			
 			passed = 0;
 			Path sourcePath = Paths.get("repo/"+course.name+".summary");

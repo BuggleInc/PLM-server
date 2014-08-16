@@ -22,10 +22,7 @@ public class Commit {
 	public String course, exolang, exoswitchto, evt_type, evt_class, totaltests,
 		passedtests, exoname, commitTime, comment, os, plm_version, java_version;
 
-	private String json;
-
 	public Commit(String json, int commitTime) {
-		this.json = json;
 		this.commitTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                           .format(new Date(commitTime * 1000L));
 						  
