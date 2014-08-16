@@ -249,6 +249,7 @@ public class JGit extends Controller {
 		final ArrayList<ProgressItem> summary = new ArrayList<>();
 		int cpt = 0;
 		for(String uuid : uuidList) { // for each student
+			//System.out.println(uuid);
 			cpt++;
 			ArrayList<Commit> commits = computeCommits(uuid);
 			int possible = 0, passed = 0 ;
@@ -263,25 +264,27 @@ public class JGit extends Controller {
 			try (BufferedReader reader = Files.newBufferedReader(sourcePath, StandardCharsets.UTF_8)) {
 				summaryLine = reader.readLine();
 				//System.out.println("Summary : "+ summaryLine);
+				
+				// Retrieve informations on per language progression
+				
+				JsonParser jsonParser = new JsonParser();
+				JsonObject jo = (JsonObject)jsonParser.parse(summaryLine);
+				
+				possible = jo.get("possible"+p).getAsInt();
+				try {
+					passed = jo.get("passed"+p).getAsInt();
+				} catch (Exception ex) { // passed information for the current language not available
+				}
+				//System.out.println(course.name + "   " + p + "   " + possible + ", " + passed +" done");
+				if(passed > 0) {
+					summary.add(new ProgressItem(course.name, p, possible, passed));
+				} else { // not attemp
+					summary.add(new ProgressItem(course.name, p, 1, -1));
+				}
 			} catch (IOException ex) { // file does not exists maybe
 				summary.add(new ProgressItem(course.name, p, 1, -1));
-				return summary;
 			}
-			// Retrieve informations on per language progression
-			JsonParser jsonParser = new JsonParser();
-			JsonObject jo = (JsonObject)jsonParser.parse(summaryLine);
 			
-			possible = jo.get("possible"+p).getAsInt();
-			try {
-				passed = jo.get("passed"+p).getAsInt();
-			} catch (Exception ex) { // passed information for the current language not available
-			}
-			//System.out.println(course.name + "   " + p + "   " + possible + ", " + passed +" done");
-			if(passed > 0) {
-				summary.add(new ProgressItem(course.name, p, possible, passed));
-			} else { // not attemp
-				summary.add(new ProgressItem(course.name, p, 1, -1));
-			}
 		}
 		return summary;
 	}
