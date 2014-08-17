@@ -30,6 +30,12 @@ public class Application extends Controller {
 	  );
 	}
 	
+	public static Result allStudents() {
+	  return ok(
+		views.html.studentsAll.render(StudentController.getAllStudents())
+	  );
+	}
+	
 	public static Result courses() {
 	  return ok(
 		views.html.courses.render(Course.all())

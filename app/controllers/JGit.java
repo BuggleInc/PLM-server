@@ -45,7 +45,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class JGit extends Controller {
-	private static final String REMOTE_URL = "https://github.com/mquinson/PLM-data.git";
+	public static final String REMOTE_URL = "https://github.com/mquinson/PLM-data.git";
 	
 	public static String filePath;
 	
