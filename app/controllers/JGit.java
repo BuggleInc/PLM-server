@@ -117,7 +117,7 @@ public class JGit extends Controller {
 		Git git = new Git(repository);
 
 		git.checkout().setName("master").call();
-
+		git.fetch().call();
 		try {
 			CreateBranchCommand create = git.branchCreate();
 			create.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM);
