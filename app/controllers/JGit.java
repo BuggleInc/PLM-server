@@ -101,8 +101,8 @@ public class JGit extends Controller {
 	}
 	
 	
-	private static ArrayList<Commit> computeCommits(String uuid)  throws IOException, InvalidRemoteException, TransportException, GitAPIException {
-		uuid = "PLM"+Identity.hashed(uuid);
+	private static ArrayList<Commit> computeCommits(String hashedUuid)  throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+		hashedUuid = "PLM"+hashedUuid;
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
 			localPath.mkdir();
@@ -121,15 +121,15 @@ public class JGit extends Controller {
 		try {
 			CreateBranchCommand create = git.branchCreate();
 			create.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM);
-			create.setName(uuid);
-			create.setStartPoint("origin/" + uuid);
+			create.setName(hashedUuid);
+			create.setStartPoint("origin/" + hashedUuid);
 			create.call();
 		} catch (RefAlreadyExistsException ex) {
 
 		}
 
 		// checkout the branch of the current user
-		git.checkout().setName(uuid).call();
+		git.checkout().setName(hashedUuid).call();
 		
 		git.pull().call();
 		
