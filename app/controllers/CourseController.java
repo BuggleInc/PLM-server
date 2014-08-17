@@ -18,7 +18,7 @@ public class CourseController extends Controller {
 
 	public static Result course(String name) {
 		Course course =  Course.find.byId(name); // get the course from the db
-		List<Student> students = course.students; // get the studdents
+		List<Student> students = course.students; // get the students
 		ArrayList<String> studentsNames = new ArrayList<>(); // store their name to display on the view
 		for(Student s : students) {
 			studentsNames.add(s.uuid);
