@@ -46,6 +46,12 @@ public class Identity extends Controller {
 			);
 	}
 	
+	public static Result linkFormUUID() {
+	return ok(
+		views.html.identityUUID.render()
+		);
+	}
+	
 	// Helper methods
 	public static String hashed(String input) {
 		StringBuffer sb = new StringBuffer();
