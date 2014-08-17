@@ -47,8 +47,6 @@ import com.google.gson.JsonParser;
 public class JGit extends Controller {
 	public static final String REMOTE_URL = "https://github.com/mquinson/PLM-data.git";
 	
-	public static String filePath;
-	
 	public static int passed;
 
 	public static Result index() {
@@ -59,7 +57,6 @@ public class JGit extends Controller {
 		// prepare a new folder for the cloned repository
 		File localPath = File.createTempFile("TestGitRepository", "");
 		localPath.delete();
-		filePath = localPath.getAbsolutePath();
 		
 		// then clone
 		System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
@@ -106,7 +103,6 @@ public class JGit extends Controller {
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
 			localPath.mkdir();
-			filePath = localPath.getAbsolutePath();
 
 			// clone
 			System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
