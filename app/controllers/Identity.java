@@ -16,22 +16,20 @@ public class Identity extends Controller {
 	}
 
 	public static Result linkIdentity(String username, String UUID, String mail) {
-		String s;
-		
-		s = "Username : "+ username + "\nUUID : " + UUID +"\nMail : " + mail + "\n";
-		
-		System.out.println(s);
-		
+				
 		String hashUUID = hashed(UUID);
+		
+		System.out.println("Username: "+ username + 
+				"\nUUID : " + UUID + 
+				" -- hashed UUID : " + hashUUID + 
+				"\nMail : " + mail + "\n");
 		
 		Student stu = new Student(username, mail, hashUUID);
 		try {
 			stu.save();
 			stu.saveManyToManyAssociations("courses");
 		} catch(PersistenceException ex) {
-			s += "\n"
-				+ "ERROR executing DML bindLog[] error[Unique index or primary key violation: PRIMARY_KEY_B ON PUBLIC.STUDENT(UUID)"
-				+ "\n";
+			System.out.println("ERROR executing DML bindLog[] error[Unique index or primary key violation: PRIMARY_KEY_B ON PUBLIC.STUDENT(UUID)");
 		}
 		
 		return ok(
