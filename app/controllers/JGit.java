@@ -53,51 +53,6 @@ public class JGit extends Controller {
 		return ok("You called the index method of the Git controller.");
 	}
 
-	public static Result cloneRepo() throws IOException, InvalidRemoteException, TransportException, GitAPIException {
-		// prepare a new folder for the cloned repository
-		File localPath = File.createTempFile("TestGitRepository", "");
-		localPath.delete();
-		
-		// then clone
-		System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
-		Git.cloneRepository().setURI(REMOTE_URL).setDirectory(localPath).call();
-
-		// now open the created repository
-		FileRepositoryBuilder builder = new FileRepositoryBuilder();
-		Repository repository = builder.setGitDir(localPath).readEnvironment() // scan environment GIT_* variables
-				.findGitDir() // scan up the file system tree
-				.build();
-
-		System.out.println("Having repository: " + repository.getDirectory());
-
-		// Repository localRepo = new FileRepository(localPath + "/.git");
-		// Git git = new Git(localRepo);
-		// git.pull().call();
-
-		
-		
-		repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
-		Git git = new Git(repository);
-		RevWalk walk = new RevWalk(repository);
-		RevCommit commit = null;
-		String s = "";
-		
-		Iterable<RevCommit> logs = git.log().call();
-		Iterator<RevCommit> i = logs.iterator();
-
-		while (i.hasNext()) {
-			commit = walk.parseCommit(i.next());
-			s = s + commit.getFullMessage() + "\n";
-
-		}
-		repository.close();
-		
-		System.out.println(s);
-		
-		return ok(s);
-	}
-	
-	
 	private static ArrayList<Commit> computeCommits(String hashedUuid)  throws IOException, InvalidRemoteException, TransportException, GitAPIException {
 		hashedUuid = "PLM"+hashedUuid;
 		File localPath = new File("repo/");
@@ -276,7 +231,7 @@ public class JGit extends Controller {
 			@Override
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attribs) {
 				Path name = file.getFileName();
-				String[] languages = {"Java", "Python", "Scala", "C"};
+				String[] languages = {"Java", "Python", "Scala", "C", "lightbot"};
 				if (matcher.matches(name)) { // if file matches
 					String s = name + "";
 					String[] tab = s.split("\\.", 0);
@@ -303,11 +258,16 @@ public class JGit extends Controller {
 					for (final String p : languages) { // for each programming language, how many exercises are done/possible 
 						possible = 0;
 						passed = 0;
-						possible = jo.get("possible"+p).getAsInt();
 						try {
-							passed = jo.get("passed"+p).getAsInt();
-						} catch (Exception ex) { // passed information for the current language not available
-						}
+							possible = jo.get("possible"+p).getAsInt();
+							System.out.println(p + "  "+ possible +"----------------");
+							try {
+								passed = jo.get("passed"+p).getAsInt();
+								System.out.println(p + "  "+ passed +"!!!!!!!!!!!");
+							} catch (Exception ex) { // passed information for the current language not available
+							}
+						} catch (Exception ex) { // in case possibleC is not in summary
+							}
 						//System.out.println(lessonName + "   " + p + "   " + possible + ", " + passed +" done");
 						if(passed > 0) {
 							summary.add(new ProgressItem(lessonName, p, possible, passed));
