@@ -68,7 +68,11 @@ public class JGit extends Controller {
 		Git git = new Git(repository);
 
 		git.checkout().setName("master").call();
-		git.fetch().call();
+		try {
+			git.fetch().call();
+		} catch (TransportException ex) {
+			System.out.println("Not connected to Internet to fetch the repo.");
+		}
 		try {
 			CreateBranchCommand create = git.branchCreate();
 			create.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM);
@@ -82,8 +86,11 @@ public class JGit extends Controller {
 		// checkout the branch of the current user
 		git.checkout().setName(hashedUuid).call();
 		
-		git.pull().call();
-		
+		try {
+			git.pull().call();
+		} catch (TransportException ex) {
+			System.out.println("Not connected to Internet to fetch the repo.");
+		}
 		RevWalk walk = new RevWalk(repository);
 		RevCommit commit = null;
 		
