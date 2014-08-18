@@ -60,7 +60,7 @@ public class JGit extends Controller {
 			localPath.mkdir();
 
 			// clone
-			System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
+			//System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
 			Git.cloneRepository().setURI(REMOTE_URL).setDirectory(localPath).call();
 		}
 		
@@ -252,7 +252,7 @@ public class JGit extends Controller {
 					}
 					// Retrieve informations on per language progression
 					JsonParser jsonParser = new JsonParser();
-					System.out.println(name + "  "+ sourcePath +"  :     "+ summaryLine);
+					//System.out.println(name + "  "+ sourcePath +"  :     "+ summaryLine);
 					JsonObject jo = (JsonObject)jsonParser.parse(summaryLine);
 					int possible = 0, passed = 0 ;
 					for (final String p : languages) { // for each programming language, how many exercises are done/possible 
@@ -260,10 +260,8 @@ public class JGit extends Controller {
 						passed = 0;
 						try {
 							possible = jo.get("possible"+p).getAsInt();
-							System.out.println(p + "  "+ possible +"----------------");
 							try {
 								passed = jo.get("passed"+p).getAsInt();
-								System.out.println(p + "  "+ passed +"!!!!!!!!!!!");
 							} catch (Exception ex) { // passed information for the current language not available
 							}
 						} catch (Exception ex) { // in case possibleC is not in summary
