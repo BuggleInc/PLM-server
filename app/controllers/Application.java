@@ -30,9 +30,9 @@ public class Application extends Controller {
 		CourseController.addTeacher("maze", "Teacher1");
 		CourseController.addTeacher("maze", "Teacher2");
 		CourseController.addTeacher("PPP", "Teacher1");
-	  return ok(
-		views.html.students.render(Student.all())
-	  );
+		session().clear();
+		flash("success", "Database fill with test data");
+	  	return login();
 	}
 	
 	public static Result login() {

@@ -54,6 +54,10 @@ public class Course extends Model {
 		course.save();
 		course.saveManyToManyAssociations("students");
 		course.saveManyToManyAssociations("teachers");
+		
+		teacher.courses.add(course);		
+		teacher.save();
+		teacher.saveManyToManyAssociations("courses");
 	}
 	
 	public static void delete(String name, String s) {
