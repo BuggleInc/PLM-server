@@ -2,7 +2,6 @@
 @import java.math.BigInteger; var i=1
 
 @main("Create a new teacher") {
-	
 	<div class="container">
 		<div class="row clearfix">
 			<div class="col-md-12 column">
@@ -15,17 +14,32 @@
 					<input class="btn btn-primary" type="submit" value="Back to courses list">
 				}
 				<br />
-				<form role="form" action="handleTeacher" method="get">
-					<div class="form-group">
-						 <label for="exampleInputEmail1">Name</label>
-						 <input class="form-control" id="nameID" type="text" name="name" required/>
-						 <input class="form-control" id="nameID" type="password" name="password" required/>
+				<div class="row clearfix">
+					<div class="col-md-5 column">
+						<form role="form" action="handleTeacher" method="get" class="form-horizontal">
+							<div class="form-group">
+								 <label class="col-sm-2 control-label" for="name">Nom</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="name" type="text" name="name" />
+								</div>
+							</div>
+							<div class="form-group">
+								 <label class="col-sm-2 control-label" for="password">Password</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="password" type="password" name="password" />
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									 <button class="btn btn-default" type="submit">Create</button>
+								</div>
+							</div>
+						</form>
 					</div>
-					<button class="btn btn-default" type="submit">Submit</button>
-				</form>
-
+					<div class="col-md-7 column">
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-   
+	</div>   
 }
