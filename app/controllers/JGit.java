@@ -53,7 +53,47 @@ public class JGit extends Controller {
 		return ok("You called the index method of the Git controller.");
 	}
 
-	private static ArrayList<Commit> computeCommits(String hashedUuid)  throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+	private static void checkoutUserBranch(String hashedUuid) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+		hashedUuid = "PLM"+hashedUuid;
+		File localPath = new File("repo/");
+		if (!localPath.exists()) {
+			localPath.mkdir();
+
+			// clone
+			//System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
+			Git.cloneRepository().setURI(REMOTE_URL).setDirectory(localPath).call();
+		}
+		
+		Repository repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
+		Git git = new Git(repository);
+
+		git.checkout().setName("master").call();
+		try {
+			git.fetch().call();
+		} catch (TransportException ex) {
+			System.out.println("Not connected to Internet to fetch the repo.");
+		}
+		try {
+			CreateBranchCommand create = git.branchCreate();
+			create.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM);
+			create.setName(hashedUuid);
+			create.setStartPoint("origin/" + hashedUuid); 
+			create.call();
+		} catch (RefAlreadyExistsException ex) {
+
+		}
+
+		// checkout the branch of the current user
+		git.checkout().setName(hashedUuid).call();
+		
+		try {
+			git.pull().call();
+		} catch (TransportException ex) {
+			System.out.println("Not connected to Internet to fetch the repo.");
+		}
+	}
+	
+	private static ArrayList<Commit> computeCommits(String hashedUuid) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
 		hashedUuid = "PLM"+hashedUuid;
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
@@ -190,7 +230,7 @@ public class JGit extends Controller {
 		final ArrayList<ProgressItem> summary = new ArrayList<>();
 		for(String uuid : uuidList) { // for each student
 			//System.out.println(uuid);
-			ArrayList<Commit> commits = computeCommits(uuid);
+			checkoutUserBranch(uuid);
 			int possible = 0, passed = 0 ;
 			String p = course.programmingLanguage; // for the programming language
 			possible = 0;
