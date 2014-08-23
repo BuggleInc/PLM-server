@@ -26,15 +26,53 @@
 		
     </head>
     <body>
-		@helper.form(action = routes.Application.authenticate()) {
-			@if(form.hasGlobalErrors) {
-				<p class="error">
-					@form.globalError.message
-				</p>
-			}
-		    @helper.inputText(form("login"))
-		    @helper.inputPassword(form("password"))
-		    <button class="btn btn-default" type="submit">Submit</button>
-		}
+    	<div class="container">
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					<div class="page-header">
+						<h1>
+							PLM-Server <small>Login</small>
+						</h1>
+					</div>
+					<div class="row clearfix">
+						<div class="col-md-5 column">
+							@helper.form(action = routes.Application.authenticate(), 'class -> "form-horizontal") {
+								@if(form.hasGlobalErrors) {
+									<div class="alert alert-danger alert-dismissible" role="alert">
+									  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+									  <strong>Error!</strong> @form.globalError.message
+									</div>
+								}
+								@if(flash.contains("success")) {
+									<div class="alert alert-success alert-dismissible" role="alert">
+									  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+									  <strong>Success!</strong> @flash.get("success")
+									</div>
+								}
+								<div class="form-group">
+									 <label class="col-sm-2 control-label" for="login">Login</label>
+									<div class="col-sm-10">
+										<input class="form-control" id="login" type="text" name="login" />
+									</div>
+								</div>
+								<div class="form-group">
+									 <label class="col-sm-2 control-label" for="password">Password</label>
+									<div class="col-sm-10">
+										<input class="form-control" id="password" type="password" name="password" />
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										 <button class="btn btn-default" type="submit">Sign in</button>
+									</div>
+								</div>
+							}
+						</div>
+						<div class="col-md-7 column">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
     </body>
 </html>

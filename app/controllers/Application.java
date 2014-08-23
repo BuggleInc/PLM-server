@@ -20,8 +20,9 @@ import com.avaje.ebean.Ebean;
 
 public class Application extends Controller {
 
+	@Security.Authenticated(Secured.class)
     public static Result index() {
-        return ok(views.html.home.render());
+        return ok(views.html.home.render(request().username()));
     }
 	
 	public static Result init() {
@@ -40,6 +41,14 @@ public class Application extends Controller {
 	    );
 	}
 	
+	public static Result logout() {
+	    session().clear();
+	    flash("success", "You've been logged out");
+	    return redirect(
+	        routes.Application.login()
+	    );
+	}
+	
 	public static Result authenticate() {
 	    Form<Login> loginForm = form(Login.class).bindFromRequest();
 	    if (loginForm.hasErrors()) {
@@ -54,35 +63,42 @@ public class Application extends Controller {
 
 	}
 	
+	@Security.Authenticated(Secured.class)
 	public static Result students() {
 	  return ok(
 		views.html.students.render(Student.all())
 	  );
 	}
 	
+	@Security.Authenticated(Secured.class)
 	public static Result allStudents() {
 	  return ok(
 		views.html.studentsAll.render(StudentController.getAllStudents())
 	  );
 	}
 	
+	@Security.Authenticated(Secured.class)
 	public static Result courses() {
 	  return ok(
 		views.html.courses.render(Course.all())
 	  );
 	}
 	
+	@Security.Authenticated(Secured.class)
 	public static Result teachers() {
 	  return ok(
 		views.html.teachers.render(Teacher.all())
 	  );
 	}
 	
+	@Security.Authenticated(Secured.class)
 	public static Result createCourse() {
 	  return ok(
 		views.html.createCourse.render(Teacher.all())
 	  );
 	}
+	
+	@Security.Authenticated(Secured.class)
 	public static Result createTeacher() {
 	  return ok(
 		views.html.createTeacher.render()

@@ -13,7 +13,9 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 
+@Security.Authenticated(Secured.class)
 public class CourseController extends Controller {
 
 	public static Result course(String name) {

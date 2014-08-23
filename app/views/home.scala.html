@@ -1,14 +1,25 @@
+@(user: String)
 @import helper._
 
 @main("Home") {
 	<div class="container">
 		<div class="row clearfix">
 			<div class="col-md-12 column">
-				<div class="page-header">
-					<h1>
-						Home <small>PLM-server</small>
-					</h1>
+				<div class="row clearfix">
+					<div class="col-md-9 column">
+						<div class="page-header">
+							<h1>
+								Home <small>PLM-server</small>
+							</h1>
+						</div>
+					</div>
+					<div class="col-md-3 column">
+						<div class="alert alert-dismissable alert-info">
+							Logged as <strong>@user</strong> -- <a href="@routes.Application.logout()">Logout</a>
+						</div>
+					</div>
 				</div>
+
 				@form(routes.Application.students()) {
 					<button class="btn btn-primary btn-lg" type="submit">Students</button>  
 				}

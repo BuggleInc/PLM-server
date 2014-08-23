@@ -9,8 +9,7 @@ import java.io.IOException;
 import models.Course;
 import models.Student;
 
-import play.mvc.Controller;
-import play.mvc.Result;
+import play.mvc.*;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
@@ -19,6 +18,7 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
+@Security.Authenticated(Secured.class)
 public class StudentController extends Controller {
 	
 	public static Result joinCourse(String courseName, String uuid) {
