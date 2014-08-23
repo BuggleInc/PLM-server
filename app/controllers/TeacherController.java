@@ -6,8 +6,8 @@ import play.mvc.Result;
 
 public class TeacherController extends Controller {
 	
-	public static Result createTeacher(String name) {
-		Teacher teacher = new Teacher(name);
+	public static Result createTeacher(String name, String password) {
+		Teacher teacher = new Teacher(name, password);
 		
 		Teacher.create(teacher);
 		

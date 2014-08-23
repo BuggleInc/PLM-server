@@ -19,6 +19,7 @@ create table student (
 
 create table teacher (
   name                      varchar(255) not null,
+  password                  varchar(255),
   constraint pk_teacher primary key (name))
 ;
 

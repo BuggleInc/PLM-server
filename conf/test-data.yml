@@ -15,9 +15,11 @@
 
 - &teacher1 !!models.Teacher
     name:       Teacher1
+    password:   Teacher1
 
 - &teacher2 !!models.Teacher
     name:       Teacher2
+    password:   Teacher2
 
 
 # Course

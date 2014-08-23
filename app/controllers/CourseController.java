@@ -38,6 +38,15 @@ public class CourseController extends Controller {
 		);
 	}
 	
+	public static Result addTeacher(String courseName, String teacherName) {
+		Teacher teacher = Teacher.find.byId(teacherName);
+		Course course = Course.find.byId(courseName);
+		Course.addTeacher(course, teacher);
+		return ok(
+				views.html.courses.render(Course.all())
+			  );
+	}
+	
 	public static Result createCourse(String name, String teacherName, String displayName, String programmingLanguage) {
 		Teacher teacher = Teacher.find.byId(teacherName);
 		// System.out.println("Teacher name :"+teacher.name);

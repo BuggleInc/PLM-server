@@ -20,10 +20,13 @@ public class Teacher extends Model {
 	@ManyToMany(cascade = CascadeType.REMOVE)
 	public List<Course> courses = new ArrayList<>();
 	
+	public String password;
+	
 	public static Finder<String, Teacher> find = new Finder<String, Teacher>(String.class, Teacher.class);
 
-	public Teacher(String name) {
+	public Teacher(String name, String password) {
 		this.name = name;
+		this.password = password;
 		courses = new ArrayList<>();
 	}
 
@@ -45,6 +48,11 @@ public class Teacher extends Model {
 	
 	public static void delete(String name, String s) {
 	  find.byId(name).delete();
+	}
+
+
+	public static Object authenticate(String login, String password) {
+		return find.where().eq("name", login).eq("password", password).findUnique();
 	}
 	
 }

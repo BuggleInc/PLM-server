@@ -11,10 +11,12 @@ GET     /init						controllers.Application.init()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
-# Clone a remote repository
+GET     /login                      controllers.Application.login()
+POST    /login                      controllers.Application.authenticate()
+
 GET		/createCourse				controllers.Application.createCourse()
 GET		/createTeacher				controllers.Application.createTeacher()
-GET		/handleTeacher				controllers.TeacherController.createTeacher(name:String)
+GET		/handleTeacher				controllers.TeacherController.createTeacher(name:String, password:String)
 GET		/courses					controllers.Application.courses()
 GET		/handleCourse				controllers.CourseController.createCourse(name:String,teacherName:String,displayName:String,programmingLanguage:String)
 GET		/teachers					controllers.Application.teachers()
