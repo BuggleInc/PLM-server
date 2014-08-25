@@ -3,82 +3,71 @@
 @import helper._
 @import java.math.BigInteger; var i=1
 
-@main("Courses") {
-    <div class="container">
-		<div class="row clearfix">
-			<div class="col-md-12 column">
-				<div class="page-header">
-					<h1>
-						@courses.size() course(s)
-					</h1>
-				</div>
-				@form(routes.Application.createCourse()) {
-					<input class="btn btn-primary" type="submit" value="Create new course">
-				}
-				<br />
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>
-								#
-							</th>
-							<th>
-								Name
-							</th>
-							<th>
-								Teacher(s)
-							</th>
-							<th>
-								Student count
-							</th>
-							<th>
-								Language
-							</th>
-							<th>
-								Action
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						@for(course <- courses) {
-							<tr>
-								<td>
-									@i
-								</td>
-								<td>
-									@course.name
-								</td>
-								<td>
-									<ul>
-									@for(teacher <- course.teachers) {
-										<li>@teacher.name</li>
-									}
-									<ul>
-								</td>
-								<td>
-									@course.students.size()
-								</td>
-								<td>
-									@course.programmingLanguage
-								</td>
-								<td>
-									<div class="col-md-4 column">
-										@form(routes.CourseController.course(course.name)) {
-											<input class="btn btn-primary" type="submit" value="Details">
-										}
-									</div>
-									<div class="col-md-4 column">
-										 @form(routes.CourseController.deleteCourse(course.name)) {
-											<input class="btn btn-danger" type="submit" value="Delete">
-										}
-									</div>
-								</td>
-							</tr>
-							@{i=i+1}
+@main("Courses", courses.size() + " course(s)", "") {
+	@form(routes.Application.createCourse()) {
+		<input class="btn btn-primary" type="submit" value="Create new course">
+	}
+	<br />
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>
+					#
+				</th>
+				<th>
+					Name
+				</th>
+				<th>
+					Teacher(s)
+				</th>
+				<th>
+					Student count
+				</th>
+				<th>
+					Language
+				</th>
+				<th>
+					Action
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for(course <- courses) {
+				<tr>
+					<td>
+						@i
+					</td>
+					<td>
+						@course.name
+					</td>
+					<td>
+						<ul>
+						@for(teacher <- course.teachers) {
+							<li>@teacher.name</li>
 						}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
+						<ul>
+					</td>
+					<td>
+						@course.students.size()
+					</td>
+					<td>
+						@course.programmingLanguage
+					</td>
+					<td>
+						<div class="col-md-4 column">
+							@form(routes.CourseController.course(course.name)) {
+								<input class="btn btn-primary" type="submit" value="Details">
+							}
+						</div>
+						<div class="col-md-4 column">
+							 @form(routes.CourseController.deleteCourse(course.name)) {
+								<input class="btn btn-danger" type="submit" value="Delete">
+							}
+						</div>
+					</td>
+				</tr>
+				@{i=i+1}
+			}
+		</tbody>
+	</table>
 }

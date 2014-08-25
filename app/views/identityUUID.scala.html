@@ -1,42 +1,32 @@
-@main("Link your identity") {
-    <div class="container">
-		<div class="row clearfix">
-			<div class="col-md-12 column">
-				<div class="page-header">
-					<h1>
-						Link your unique ID to your identity
-					</h1>
-				</div>
-					<p>Use this form to add your students to the list of identified users.  
-					You can find the UUID of your students in the "About the PLM" window. 
-					This is something like 7ced9d14-3d19-4d95-b189-381758a0adb8. 
-					Please type it in below with the hyphen and everything.</p> 
-				<form class="form-horizontal" action="handleRequest" role="form" method="get">
-					<div class="form-group">
-						 <label class="col-sm-2 control-label" for="inputEmail3">Email</label>
-						<div class="col-sm-10">
-							<input class="form-control" name="mail" id="inputEmail3" type="email" required/>
-						</div>
-					</div>
-					<div class="form-group">
-						 <label class="col-sm-2 control-label" for="inputName3">Name</label>
-						<div class="col-sm-10">
-							<input class="form-control" name="username" id="inputName3" type="text" required/>
-						</div>
-					</div>
-					<div class="form-group">
-						 <label class="col-sm-2 control-label" for="uuid3">UUID</label>
-						<div class="col-sm-10">
-							<input class="form-control" name="UUID" id="uuid3" type="text"/>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-sm-offset-2 col-sm-10">
-							 <button class="btn btn-default" type="submit">Link</button>
-						</div>
-					</div>
-				</form>
+@main("Link your identity", "Link your unique ID to your identity", "") {
+	<p>Use this form to add your students to the list of identified users.  
+	You can find the UUID of your students in the "About the PLM" window. 
+	This is something like 7ced9d14-3d19-4d95-b189-381758a0adb8. 
+	Please type it in below with the hyphen and everything.</p> 
+	
+	<form class="form-horizontal" action="handleRequest" role="form" method="get">
+		<div class="form-group">
+			 <label class="col-sm-2 control-label" for="inputEmail3">Email</label>
+			<div class="col-sm-10">
+				<input class="form-control" name="mail" id="inputEmail3" type="email" required/>
 			</div>
 		</div>
-	</div>
+		<div class="form-group">
+			 <label class="col-sm-2 control-label" for="inputName3">Name</label>
+			<div class="col-sm-10">
+				<input class="form-control" name="username" id="inputName3" type="text" required/>
+			</div>
+		</div>
+		<div class="form-group">
+			 <label class="col-sm-2 control-label" for="uuid3">UUID</label>
+			<div class="col-sm-10">
+				<input class="form-control" name="UUID" id="uuid3" type="text"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				 <button class="btn btn-default" type="submit">Link</button>
+			</div>
+		</div>
+	</form>
 }

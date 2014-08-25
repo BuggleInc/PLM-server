@@ -10,217 +10,205 @@
 }
 
 
-@main(studentName +" activity") {
-	
-	<div class="container">
-		<div class="row clearfix">
-			<div class="col-md-12 column">
-				<div class="page-header">
-					<h1>
-						@studentName activity
-					</h1>
-				</div>
-				@form(routes.Application.students()) {
-					<input class="btn btn-primary" type="submit" value="Back to students list">
-				}
+@main(studentName +" activity", studentName + " activity", "") {
+	@form(routes.Application.students()) {
+		<input class="btn btn-primary" type="submit" value="Back to students list">
+	}
+	<br />
+	<div class="tabbable" id="tabs-51763">
+		<ul class="nav nav-tabs">
+			<li class="active">
+				<a href="#panel-summary" data-toggle="tab">Summary</a>
+			</li>
+			<li>
+				<a href="#panel-details" data-toggle="tab">Details</a>
+			</li>
+			<li>
+				<a href="#panel-chart" data-toggle="tab">Chart</a>
+			</li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active" id="panel-summary">
 				<br />
-				<div class="tabbable" id="tabs-51763">
-					<ul class="nav nav-tabs">
-						<li class="active">
-							<a href="#panel-summary" data-toggle="tab">Summary</a>
-						</li>
-						<li>
-							<a href="#panel-details" data-toggle="tab">Details</a>
-						</li>
-						<li>
-							<a href="#panel-chart" data-toggle="tab">Chart</a>
-						</li>
-					</ul>
-					<div class="tab-content">
-						<div class="tab-pane active" id="panel-summary">
-							<br />
-							<h2>
-								Event type distribution
-							</h2>
-							<div class="progress">
-								<div class="progress-bar progress-bar-warning" style="width: @{eventSummary.get(0)}%">
-									switch
-								</div>
-								<div class="progress-bar progress-bar-success" style="width: @{eventSummary.get(1)}%">
-									success
-								</div>
-								<div class="progress-bar progress-bar-danger" style="width: @{eventSummary.get(2)}%">
-									fail
-								</div>
-								<div class="progress-bar" style="width: @{eventSummary.get(3)}%">
-									start
-								</div>
-							</div>
-							<h2>
-								Success per lesson and language
-							</h2>
-							<ul>
-								@for(item <- summary) {
-									<li>
-										@item.lessonName @item.language
-										<div class="progress">
-											<div class="progress-bar" role="progressbar" aria-valuenow="@{item.passed}" aria-valuemin="0" aria-valuemax="@{item.total}" style="width: @{item.percent}%;">
-												@{item.percent}%
-											</div>
-										</div>
-									</li>
-								}
-							</ul>
-						</div>
-						<div class="tab-pane" id="panel-details">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th>
-											#
-										</th>
-										<th>
-											Event_type
-										</th>
-										<th>
-											Exercice
-										</th>
-										<th>
-											Date
-										</th>
-										<th>
-											Comment
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-								@for(commit <- commits) {
-									@if(commit.evt_type != "") {
-										<tr @displayClass(commit)">
-											<td>
-												@i
-											</td>
-											<td>
-												@commit.evt_type
-												<!--@*<img src="@{routes.Assets.at("images/" + commit.evt_type)}" width="5%" height="5%" />*@-->
-											</td>
-											<td>
-												@commit.exoname
-											</td>
-											<td>
-												@commit.commitTime
-											</td>
-											<td>
-												@commit.comment
-											</td>
-										</tr>
-										@{i=i+1}
-									}
-								}
-								</tbody>
-							</table>
-						</div>
-						<div class="tab-pane" id="panel-chart">
-							<h2>
-								Activity chart
-							</h2>
-							<canvas id="myLineChart" width="600" height="400"></canvas>
-							<script>
-								var data = {
-									labels: [@for(d <- startCount) {
-												@{j=j-1}
-												"J-@j",
-											}],
-									datasets: [
-										{
-											label: "Start",
-											fillColor: "rgba(127,150,255,0.2)",
-											strokeColor: "rgba(127,150,255,1)",
-											pointColor: "rgba(127,150,255,1)",
-											pointStrokeColor: "#fff",
-											pointHighlightFill: "#fff",
-											pointHighlightStroke: "rgba(191,201,255,1)",
-											data: [ @for(d <- startCount) {@d,}]
-										},{
-											label: "Switch",
-											fillColor: "rgba(249,226,109,0.2)",
-											strokeColor: "rgba(249,226,109,1)",
-											pointColor: "rgba(249,226,109,1)",
-											pointStrokeColor: "#fff",
-											pointHighlightFill: "#fff",
-											pointHighlightStroke: "rgba(250,242,204,1)",
-											data: [ @for(d <- switchCount) {@d,}]
-										},{
-											label: "Success",
-											fillColor: "rgba(145,239,105,0.2)",
-											strokeColor: "rgba(145,239,105,1)",
-											pointColor: "rgba(145,239,105,1)",
-											pointStrokeColor: "#fff",
-											pointHighlightFill: "#fff",
-											pointHighlightStroke: "rgba(208,233,198,1)",
-											data: [ @for(d <- successCount) {@d,}]
-										},{
-											label: "Fail",
-											fillColor: "rgba(239,119,119,0.2)",
-											strokeColor: "rgba(239,119,119,1)",
-											pointColor: "rgba(239,119,119,1)",
-											pointStrokeColor: "#fff",
-											pointHighlightFill: "#fff",
-											pointHighlightStroke: "rgba(235,204,204,1)",
-											data: [ @for(d <- failCount) {@d,}]
-										}
-									]
-								};
-								var ctx = document.getElementById("myLineChart").getContext("2d");
-								var myLineChart = new Chart(ctx).Line(data);
-							</script>
-							
-							<canvas id="myBarChart" width="600" height="400"></canvas>
-							@{j=startCount.length}
-							<script>
-								var data = {
-									labels: [@for(d <- startCount) {
-												@{j=j-1}
-												"J-@j",
-											}],
-									datasets: [
-										{
-											label: "Start",
-											fillColor: "rgba(127,150,255,1)",
-											strokeColor: "rgba(127,150,255,1)",
-											HighlightFill: "#fff",
-											HighlightStroke: "rgba(127,150,255,1)",
-											data: [ @for(d <- startCount) {@d,}]
-										},{
-											label: "Switch",
-											fillColor: "rgba(249,226,109,1)",
-											strokeColor: "rgba(249,226,109,1)",
-											HighlightFill: "#fff",
-											HighlightStroke: "rgba(249,226,109,1)",
-											data: [ @for(d <- switchCount) {@d,}]
-										},{
-											label: "Success",
-											fillColor: "rgba(145,239,105,1)",
-											strokeColor: "rgba(145,239,105,1)",
-											HighlightFill: "#fff",
-											HighlightStroke: "rgba(145,239,105,1)",
-											data: [ @for(d <- successCount) {@d,}]
-										},{
-											label: "Fail",
-											fillColor: "rgba(239,119,119,1)",
-											strokeColor: "rgba(239,119,119,1)",
-											HighlightFill: "#fff",
-											HighlightStroke: "rgba(239,119,119,1)",
-											data: [ @for(d <- failCount) {@d,}]
-										}
-									]
-								};
-								var ctx = document.getElementById("myBarChart").getContext("2d");
-								var myLineChart = new Chart(ctx).Bar(data);
-							</script>
-						</div>
+				<h2>
+					Event type distribution
+				</h2>
+				<div class="progress">
+					<div class="progress-bar progress-bar-warning" style="width: @{eventSummary.get(0)}%">
+						switch
+					</div>
+					<div class="progress-bar progress-bar-success" style="width: @{eventSummary.get(1)}%">
+						success
+					</div>
+					<div class="progress-bar progress-bar-danger" style="width: @{eventSummary.get(2)}%">
+						fail
+					</div>
+					<div class="progress-bar" style="width: @{eventSummary.get(3)}%">
+						start
 					</div>
 				</div>
+				<h2>
+					Success per lesson and language
+				</h2>
+				<ul>
+					@for(item <- summary) {
+						<li>
+							@item.lessonName @item.language
+							<div class="progress">
+								<div class="progress-bar" role="progressbar" aria-valuenow="@{item.passed}" aria-valuemin="0" aria-valuemax="@{item.total}" style="width: @{item.percent}%;">
+									@{item.percent}%
+								</div>
+							</div>
+						</li>
+					}
+				</ul>
+			</div>
+			<div class="tab-pane" id="panel-details">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>
+								#
+							</th>
+							<th>
+								Event_type
+							</th>
+							<th>
+								Exercice
+							</th>
+							<th>
+								Date
+							</th>
+							<th>
+								Comment
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+					@for(commit <- commits) {
+						@if(commit.evt_type != "") {
+							<tr @displayClass(commit)">
+								<td>
+									@i
+								</td>
+								<td>
+									@commit.evt_type
+									<!--@*<img src="@{routes.Assets.at("images/" + commit.evt_type)}" width="5%" height="5%" />*@-->
+								</td>
+								<td>
+									@commit.exoname
+								</td>
+								<td>
+									@commit.commitTime
+								</td>
+								<td>
+									@commit.comment
+								</td>
+							</tr>
+							@{i=i+1}
+						}
+					}
+					</tbody>
+				</table>
+			</div>
+			<div class="tab-pane" id="panel-chart">
+				<h2>
+					Activity chart
+				</h2>
+				<canvas id="myLineChart" width="600" height="400"></canvas>
+				<script>
+					var data = {
+						labels: [@for(d <- startCount) {
+									@{j=j-1}
+									"J-@j",
+								}],
+						datasets: [
+							{
+								label: "Start",
+								fillColor: "rgba(127,150,255,0.2)",
+								strokeColor: "rgba(127,150,255,1)",
+								pointColor: "rgba(127,150,255,1)",
+								pointStrokeColor: "#fff",
+								pointHighlightFill: "#fff",
+								pointHighlightStroke: "rgba(191,201,255,1)",
+								data: [ @for(d <- startCount) {@d,}]
+							},{
+								label: "Switch",
+								fillColor: "rgba(249,226,109,0.2)",
+								strokeColor: "rgba(249,226,109,1)",
+								pointColor: "rgba(249,226,109,1)",
+								pointStrokeColor: "#fff",
+								pointHighlightFill: "#fff",
+								pointHighlightStroke: "rgba(250,242,204,1)",
+								data: [ @for(d <- switchCount) {@d,}]
+							},{
+								label: "Success",
+								fillColor: "rgba(145,239,105,0.2)",
+								strokeColor: "rgba(145,239,105,1)",
+								pointColor: "rgba(145,239,105,1)",
+								pointStrokeColor: "#fff",
+								pointHighlightFill: "#fff",
+								pointHighlightStroke: "rgba(208,233,198,1)",
+								data: [ @for(d <- successCount) {@d,}]
+							},{
+								label: "Fail",
+								fillColor: "rgba(239,119,119,0.2)",
+								strokeColor: "rgba(239,119,119,1)",
+								pointColor: "rgba(239,119,119,1)",
+								pointStrokeColor: "#fff",
+								pointHighlightFill: "#fff",
+								pointHighlightStroke: "rgba(235,204,204,1)",
+								data: [ @for(d <- failCount) {@d,}]
+							}
+						]
+					};
+					var ctx = document.getElementById("myLineChart").getContext("2d");
+					var myLineChart = new Chart(ctx).Line(data);
+				</script>
+				
+				<canvas id="myBarChart" width="600" height="400"></canvas>
+				@{j=startCount.length}
+				<script>
+					var data = {
+						labels: [@for(d <- startCount) {
+									@{j=j-1}
+									"J-@j",
+								}],
+						datasets: [
+							{
+								label: "Start",
+								fillColor: "rgba(127,150,255,1)",
+								strokeColor: "rgba(127,150,255,1)",
+								HighlightFill: "#fff",
+								HighlightStroke: "rgba(127,150,255,1)",
+								data: [ @for(d <- startCount) {@d,}]
+							},{
+								label: "Switch",
+								fillColor: "rgba(249,226,109,1)",
+								strokeColor: "rgba(249,226,109,1)",
+								HighlightFill: "#fff",
+								HighlightStroke: "rgba(249,226,109,1)",
+								data: [ @for(d <- switchCount) {@d,}]
+							},{
+								label: "Success",
+								fillColor: "rgba(145,239,105,1)",
+								strokeColor: "rgba(145,239,105,1)",
+								HighlightFill: "#fff",
+								HighlightStroke: "rgba(145,239,105,1)",
+								data: [ @for(d <- successCount) {@d,}]
+							},{
+								label: "Fail",
+								fillColor: "rgba(239,119,119,1)",
+								strokeColor: "rgba(239,119,119,1)",
+								HighlightFill: "#fff",
+								HighlightStroke: "rgba(239,119,119,1)",
+								data: [ @for(d <- failCount) {@d,}]
+							}
+						]
+					};
+					var ctx = document.getElementById("myBarChart").getContext("2d");
+					var myLineChart = new Chart(ctx).Bar(data);
+				</script>
 			</div>
 		</div>
 	</div>

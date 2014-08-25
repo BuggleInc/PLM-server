@@ -1,23 +1,8 @@
 @import helper._
 @import java.math.BigInteger; var i=1
 
-@main("Create a new teacher") {
-	
-	<div class="container">
-		<div class="row clearfix">
-			<div class="col-md-12 column">
-				<div class="page-header">
-					<h1>
-						New teacher created
-					</h1>
-				</div>
+@main("Create a new teacher", "New teacher created", "") {
 				@form(routes.Application.teachers()) {
 					<input class="btn btn-primary" type="submit" value="Back to teachers list">
-				}
-				<br />
-
-			</div>
-		</div>
-	</div>
-   
+				}   
 }

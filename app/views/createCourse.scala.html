@@ -3,66 +3,51 @@
 @import helper._
 @import java.math.BigInteger; var i=1
 
-@main("Create a new course") {
+@main("Create a new course", "Create a new Course", "") {
+	@form(routes.Application.courses()) {
+		<input class="btn btn-primary" type="submit" value="Back to courses list">
+	}
+	<br />
 	
-	<div class="container">
-		<div class="row clearfix">
-			<div class="col-md-12 column">
-				<div class="page-header">
-					<h1>
-						Create a new Course
-					</h1>
-				</div>
-				@form(routes.Application.courses()) {
-					<input class="btn btn-primary" type="submit" value="Back to courses list">
-				}
-				<br />
-				
-				<form class="form-horizontal" role="form" action="handleCourse" method="get">
-					<div class="form-group">
-						 <label class="col-sm-2 control-label" for="courseName">Name</label>
-						<div class="col-sm-10">
-							<input class="form-control" id="courseName" type="text"  name="name"/>
-						</div>
-					</div>
-					<div class="form-group">
-						 <label class="col-sm-2 control-label" for="displayName">Display name</label>
-						<div class="col-sm-10">
-							<input class="form-control" id="displayName" type="text"  name="displayName"/>
-						</div>
-					</div>
-					<div class="form-group">
-						 <label class="col-sm-2 control-label" for="programmingLanguage">Programming language (Java, C, Python or Scala)</label>
-						<div class="col-sm-10">
-							<select name="programmingLanguage" id="programmingLanguage" type="text">
-								@for(pl <- play.Play.application().configuration().getStringList("plm.programminglanguages")) {
-									<option value="@pl">@pl</option>
-								}
-							</select>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-2 control-label" for="select">Teacher</label>
-						<div class="col-sm-10">
-							<div class="btn-group" data-toggle="buttons">
-								<select class="form-control" id="select" name="teacherName">
-									@for(teacher <- teachers) {
-										<option>@teacher.name</option>
-									}
-								</select>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-sm-offset-2 col-sm-10">
-							 <button class="btn btn-default" type="submit">Create new course</button>
-						</div>
-					</div>
-				</form>
-
-				
+	<form class="form-horizontal" role="form" action="handleCourse" method="get">
+		<div class="form-group">
+			 <label class="col-sm-2 control-label" for="courseName">Name</label>
+			<div class="col-sm-10">
+				<input class="form-control" id="courseName" type="text"  name="name"/>
 			</div>
 		</div>
-	</div>
-   
+		<div class="form-group">
+			 <label class="col-sm-2 control-label" for="displayName">Display name</label>
+			<div class="col-sm-10">
+				<input class="form-control" id="displayName" type="text"  name="displayName"/>
+			</div>
+		</div>
+		<div class="form-group">
+			 <label class="col-sm-2 control-label" for="programmingLanguage">Programming language (Java, C, Python or Scala)</label>
+			<div class="col-sm-10">
+				<select name="programmingLanguage" id="programmingLanguage" type="text">
+					@for(pl <- play.Play.application().configuration().getStringList("plm.programminglanguages")) {
+						<option value="@pl">@pl</option>
+					}
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label" for="select">Teacher</label>
+			<div class="col-sm-10">
+				<div class="btn-group" data-toggle="buttons">
+					<select class="form-control" id="select" name="teacherName">
+						@for(teacher <- teachers) {
+							<option>@teacher.name</option>
+						}
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				 <button class="btn btn-default" type="submit">Create new course</button>
+			</div>
+		</div>
+	</form>
 }
