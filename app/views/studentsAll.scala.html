@@ -37,11 +37,11 @@
 						@student.mail
 					</td>
 					<td>
-						@student.uuid
+						@student.hashedUuid
 					</td>
 					<td>
 						<div class="col-md-5 column">
-							@form(routes.JGit.displayBranch(student.uuid, student.name)) {
+							@form(routes.JGit.displayBranch(student.hashedUuid, student.name)) {
 								<input class="btn btn-primary" type="submit" value="Show progress">
 							}
 						</div>

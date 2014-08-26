@@ -23,7 +23,7 @@ public class CourseController extends Controller {
 		List<Student> students = course.students; // get the students
 		ArrayList<String> studentsNames = new ArrayList<>(); // store their name to display on the view
 		for(Student s : students) {
-			studentsNames.add(s.uuid);
+			studentsNames.add(s.hashedUuid);
 		}
 		ArrayList<ProgressItem> summary = null;
 		try {
@@ -77,7 +77,7 @@ public class CourseController extends Controller {
 			teacher.saveManyToManyAssociations("courses");
 		}
 		for(Student s : course.students) {
-			Student student = Student.find.byId(s.uuid);
+			Student student = Student.find.byId(s.hashedUuid);
 			student.courses.remove(course);
 			student.saveManyToManyAssociations("courses");
 		}

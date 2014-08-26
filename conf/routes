@@ -34,3 +34,7 @@ POST	/student/:uuid/delete		controllers.StudentController.deleteStudent(uuid:Str
 POST	/teacher/:name/delete		controllers.TeacherController.deleteTeacher(name:String)
 POST	/course/:name/delete		controllers.CourseController.deleteCourse(name:String)
 POST	/course/:name/course		controllers.CourseController.course(name:String)
+
+POST    /callHelp                   controllers.AssistanceCallController.handle()
+GET     /callHelp					controllers.AssistanceCallController.getCallHelp()
+POST	/callHelp/:id/delete		controllers.AssistanceCallController.delete(id)

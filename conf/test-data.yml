@@ -1,12 +1,12 @@
 # Student
 
 - &ced !!models.Student
-    uuid: c66370ad7f9f6c2aacd49e485a4e9b2a034ad6a9
+    hashedUuid: c66370ad7f9f6c2aacd49e485a4e9b2a034ad6a9
     name: Ced
     mail: ced@example.com
 
 - &user1 !!models.Student
-    uuid: b3751d0380b31c7bd2de9841e43ea2c201ac8702
+    hashedUuid: b3751d0380b31c7bd2de9841e43ea2c201ac8702
     name: Ced2
     mail: user1@example.com
 

@@ -1,9 +1,9 @@
-@(students: List[Student])
+@(calls: List[AssistanceCall])
 
 @import helper._
 @import java.math.BigInteger; var i=1
 
-@main("Students", students.size() + " student(s)", "") {
+@main("Assistance calls", calls.size() + " call(s)", "") {
 	<table class="table table-hover">
 		<thead>
 			<tr>
@@ -11,13 +11,16 @@
 					#
 				</th>
 				<th>
-					Name
+					Date
 				</th>
 				<th>
-					Email
+					Student
 				</th>
 				<th>
-					hashUUID
+					Details
+				</th>
+				<th>
+					Hostname
 				</th>
 				<th>
 					Actions
@@ -25,29 +28,32 @@
 			</tr>
 		</thead>
 		<tbody>
-			@for(student <- students) {
+			@for(call <- calls) {
 				<tr>
 					<td>
 						@i
 					</td>
 					<td>
-						@student.name
+						@call.date
 					</td>
 					<td>
-						@student.mail
+						@call.student.name
 					</td>
 					<td>
-						@student.hashedUuid
+						@call.details
+					</td>
+					<td>
+						@call.hostname
 					</td>
 					<td>
 						<div class="col-md-5 column">
-							@form(routes.JGit.displayBranch(student.hashedUuid, student.name)) {
-								<input class="btn btn-primary" type="submit" value="Show progress">
+							@form(routes.JGit.displayBranch(call.student.hashedUuid, call.student.name)) {
+								<input class="btn btn-primary" type="submit" value="View student">
 							}
 						</div>
 						
 						<div class="col-md-3 column">
-							 @form(routes.StudentController.deleteStudent(student.hashedUuid)) {
+							 @form(routes.AssistanceCallController.delete(call.id)) {
 								<input class="btn btn-danger" type="submit" value="Delete">
 							}
 						</div>

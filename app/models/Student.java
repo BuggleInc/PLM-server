@@ -15,7 +15,7 @@ public class Student extends Model {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	public String uuid;
+	public String hashedUuid;
 	
 	public String name;
 	
@@ -27,7 +27,7 @@ public class Student extends Model {
 	public static Finder<String, Student> find = new Finder<String, Student>(String.class, Student.class);
 
 	public Student(String name, String mail, String uuid) {
-		this.uuid = uuid;
+		this.hashedUuid = uuid;
 		this.name = name;
 		this.mail = mail;
 	}
@@ -49,7 +49,7 @@ public class Student extends Model {
 	public static void create(Student student) {
 		System.out.println("Student :\n"
 				+ "name : " + student.name +"\n"
-				+ "uuid : "+ student.uuid);
+				+ "hashedUuid : "+ student.hashedUuid);
 		student.save();
 	}
 	
