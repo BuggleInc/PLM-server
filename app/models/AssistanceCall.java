@@ -33,7 +33,7 @@ public class AssistanceCall extends Model {
 
 	public AssistanceCall(String hostname, String date, String details, String uuid) {
 		String hashedUuid = Identity.hashed(uuid);
-		System.out.println("----!!!!!!!!!!-------- UUID : " + uuid +" ; hashed : " + hashedUuid);
+		//System.out.println("----!!!!!!!!!!-------- UUID : " + uuid +" ; hashed : " + hashedUuid);
 		this.student = Student.find.ref(hashedUuid);
 		this.hostname = hostname;
 		this.date = date;
@@ -50,12 +50,11 @@ public class AssistanceCall extends Model {
 
 	public static void create(AssistanceCall assistanceCall) {
 		assistanceCall.student = Student.find.ref(assistanceCall.student.hashedUuid);
-		System.out.println("Assistance call :\n"
-				+ "hashedUuid : " + assistanceCall.student.hashedUuid +"\n"
-				+ "details : "+ assistanceCall.details+"\n"
-				+ "hostname : "+ assistanceCall.hostname);
+//		System.out.println("Assistance call :\n"
+//				+ "hashedUuid : " + assistanceCall.student.hashedUuid +"\n"
+//				+ "details : "+ assistanceCall.details+"\n"
+//				+ "hostname : "+ assistanceCall.hostname);
 		assistanceCall.save();
-		System.out.println("-------------------Model--------------------"+assistanceCall.id);
 	}
 	
 	public static void delete(String id, String s) {
