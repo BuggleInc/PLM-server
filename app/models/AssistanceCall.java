@@ -55,6 +55,7 @@ public class AssistanceCall extends Model {
 				+ "details : "+ assistanceCall.details+"\n"
 				+ "hostname : "+ assistanceCall.hostname);
 		assistanceCall.save();
+		System.out.println("-------------------Model--------------------"+assistanceCall.id);
 	}
 	
 	public static void delete(String id, String s) {
