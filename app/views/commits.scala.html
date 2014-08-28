@@ -106,6 +106,9 @@
 								</td>
 								<td>
 									@commit.comment
+									@if(commit.link != null) {
+										<a href="@commit.link" class="btn btn-primary btn-mini">Code</a>
+									}
 								</td>
 							</tr>
 							@{i=i+1}

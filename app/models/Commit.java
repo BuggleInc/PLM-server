@@ -20,9 +20,9 @@ import com.google.gson.JsonSyntaxException;
 public class Commit {
 
 	public String course, exolang, exoswitchto, evt_type, evt_class, totaltests,
-		passedtests, exoname, commitTime, comment, os, plm_version, java_version;
+		passedtests, exoname, commitTime, comment, os, plm_version, java_version, link;
 
-	public Commit(String json, int commitTime) {
+	public Commit(String json, int commitTime, String commitID) {
 		this.commitTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                           .format(new Date(commitTime * 1000L));
 						  
@@ -92,14 +92,35 @@ public class Commit {
 			
 		}
 		
+		String extURL = "";
+		switch(exolang) {
+			case "Java":
+				extURL = "java";
+			break;
+			case "C":
+				extURL = "c";
+			break;
+			case "Scala":
+				extURL = "scala";
+			break;
+			case "Python":
+				extURL = "py";
+			break;
+			case "lightbot":
+				extURL = "ignored";
+			break;
+		}
+		
 		if(evt_type.equals("Switched")) {
 			comment = "Switched to " + exoswitchto;
 		} else if(evt_type.equals("Failed") || evt_type.equals("Success")) {
 			comment = "Language : " + exolang + ", total tests : " + totaltests + ", passed : " + passedtests;
+			link = "https://github.com/mquinson/PLM-data/blob/"+commitID+"/"+exoname+"."+extURL+".code";
 		} else if (evt_type.equals("Start")) {
 			comment = "OS : " + os + ", PLM_VERSION : " + plm_version + ", JAVA_VERSION : " + java_version;
 		} else if (evt_type.equals("Help")) {
 			comment = comment + " ; Language : " + exolang;
+			link = "https://github.com/mquinson/PLM-data/blob/"+commitID+"/"+exoname+"."+extURL+".code";
 		}
 	}
 }

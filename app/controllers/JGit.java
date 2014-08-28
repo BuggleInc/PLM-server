@@ -141,7 +141,7 @@ public class JGit extends Controller {
 		while (i.hasNext()) {
 			commit = walk.parseCommit(i.next());
 			String commitJson = commit.getFullMessage();
-			commits.add(new Commit(commitJson, commit.getCommitTime()));
+			commits.add(new Commit(commitJson, commit.getCommitTime(),commit.getName()));
 		}
 		repository.close();
 		return commits;
