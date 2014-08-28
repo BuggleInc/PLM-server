@@ -160,20 +160,21 @@ public class JGit extends Controller {
 			failCount[i] = 0;
 		}
 		
-		eventSummary.add(0.0);eventSummary.add(0.0);eventSummary.add(0.0);eventSummary.add(0.0);
+		for(int i = 0; i < 5; i++) { // init event distribution value
+			eventSummary.add(0.0);
+		}
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
 		Calendar cal = Calendar.getInstance(), endRange = Calendar.getInstance(), beginRange = Calendar.getInstance();
 		beginRange.add(Calendar.DAY_OF_YEAR, - (chartDay-1));
 		Date dateParsed;
-		boolean addToChartEvent = false;
+		boolean addToChartEvent = true;
 		for(Commit c : commits) {
 			cptEvt++;
-			addToChartEvent = false;
 			
 			dateParsed = df.parse(c.commitTime); // get a Date object with the String
 			cal.setTime(dateParsed); // use a Calendar
-			if(cal.compareTo(endRange) <= 0 && cal.compareTo(beginRange) >= 0) { // if commit date is in the range of the chart
-				addToChartEvent = true;
+			if(cal.compareTo(endRange) > 0 || cal.compareTo(beginRange) < 0) { // if commit date is not in the range of the chart
+				addToChartEvent = false;
 			}
 			
 			switch(c.evt_type) {
@@ -201,6 +202,9 @@ public class JGit extends Controller {
 						startCount[cal.get(Calendar.DAY_OF_YEAR)-beginRange.get(Calendar.DAY_OF_YEAR)]++;
 					}
 				break;
+				case "Help":
+					eventSummary.set(4, eventSummary.get(4)+1);
+				break; 
 			}
 		}
 		cptEvt-=2; // 2 useless commits for statistics: "Empty initial commit" and "Create README.md"

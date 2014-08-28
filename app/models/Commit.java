@@ -27,7 +27,7 @@ public class Commit {
                           .format(new Date(commitTime * 1000L));
 						  
 		evt_type = "";
-		evt_class = "";
+		evt_class = ""; // to color the row in table (bootstrap class)
 		comment = "";
 		exolang = "";
 		
@@ -63,6 +63,13 @@ public class Commit {
 						plm_version = jo.get("plm").getAsString();
 						java_version = jo.get("java").getAsString();
 						break;
+					case "callForHelp":
+					case "cancelCallForHelp": // no break : same operations
+						comment = jo.get("kind").getAsString();
+						evt_class = "";
+						evt_type = "Help";
+						exolang = jo.get("lang").getAsString();
+						break;
 				}
 			} catch(Exception ex) {
 
@@ -91,6 +98,8 @@ public class Commit {
 			comment = "Language : " + exolang + ", total tests : " + totaltests + ", passed : " + passedtests;
 		} else if (evt_type.equals("Start")) {
 			comment = "OS : " + os + ", PLM_VERSION : " + plm_version + ", JAVA_VERSION : " + java_version;
+		} else if (evt_type.equals("Help")) {
+			comment = comment + " ; Language : " + exolang;
 		}
 	}
 }
