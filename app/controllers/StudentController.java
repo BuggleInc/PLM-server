@@ -14,12 +14,45 @@ import play.mvc.*;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 @Security.Authenticated(Secured.class)
 public class StudentController extends Controller {
+	
+	public static Result students() {
+		JGit.fetchRepo();
+		ArrayList<String> lastActivity = new ArrayList<>();
+		List<Student> students = Student.all();
+		for(Student s : students) {
+			try {
+				lastActivity.add(JGit.getLastActivity(s.hashedUuid));
+			} catch (IOException|GitAPIException e) {
+				lastActivity.add("0");
+			}
+		}
+		return ok(
+			views.html.students.render(students, lastActivity)
+		);
+	}
+	
+	public static Result allStudents() {
+		ArrayList<String> lastActivity = new ArrayList<>();
+		List<Student> students = StudentController.getAllStudents();
+		for(Student s : students) {
+			try {
+				lastActivity.add(JGit.getLastActivity(s.hashedUuid));
+			} catch (IOException|GitAPIException e) {
+				lastActivity.add("0");
+			}
+		}
+		  return ok(
+			views.html.studentsAll.render(students, lastActivity)
+		  );
+		}
 	
 	public static Result joinCourse(String courseName, String uuid) {
 		Course course = Course.find.byId(courseName);
@@ -63,7 +96,7 @@ public class StudentController extends Controller {
 
 	public static Result deleteStudent(String uuid) {
 	  Student.delete(uuid, "");
-	  return redirect(routes.Application.students());
+	  return redirect(routes.StudentController.students());
 	}
 	
 		
@@ -85,15 +118,9 @@ public class StudentController extends Controller {
 
 	public static List<Student> getAllStudents() {
 		ArrayList<Student> students = new ArrayList<>();
+		JGit.fetchRepo();
 		try {
 			File localPath = new File("repo/");
-			if (!localPath.exists()) {
-				localPath.mkdir();
-
-				// clone
-				System.out.println("Cloning from " + JGit.REMOTE_URL + " to " + localPath);
-				Git.cloneRepository().setURI(JGit.REMOTE_URL).setDirectory(localPath).call();
-			}
 			
 			Repository repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
 			Git git = new Git(repository);

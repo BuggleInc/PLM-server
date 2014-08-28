@@ -1,14 +1,14 @@
-@(students: List[Student])
+@(students: List[Student], lastActivity: List[String])
 
 @import helper._
-@import java.math.BigInteger; var i=1
+@import java.math.BigInteger; var i=0
 
 @main("All students", students.size() + " student(s)", "") {
-	<table class="table table-hover">
+	<table class="table table-hover tablesorter" id="studentsTable" >
 		<thead>
 			<tr>
 				<th>
-					#
+					Last Activity
 				</th>
 				<th>
 					Name
@@ -28,7 +28,7 @@
 			@for(student <- students) {
 				<tr>
 					<td>
-						@i
+						@lastActivity.get(i)
 					</td>
 					<td>
 						@student.name
@@ -51,4 +51,12 @@
 			}
 		</tbody>
 	</table>
+	
+	<script>
+		$(document).ready(function() 
+		{ 
+			$("#studentsTable").tablesorter({sortList: [[0,1]]}); // sort by first column descending
+		} 
+	); 
+	</script>
 }

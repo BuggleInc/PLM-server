@@ -64,20 +64,6 @@ public class Application extends Controller {
 	}
 	
 	@Security.Authenticated(Secured.class)
-	public static Result students() {
-	  return ok(
-		views.html.students.render(Student.all())
-	  );
-	}
-	
-	@Security.Authenticated(Secured.class)
-	public static Result allStudents() {
-	  return ok(
-		views.html.studentsAll.render(StudentController.getAllStudents())
-	  );
-	}
-	
-	@Security.Authenticated(Secured.class)
 	public static Result courses() {
 	  return ok(
 		views.html.courses.render(Course.all())

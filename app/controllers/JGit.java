@@ -52,6 +52,32 @@ public class JGit extends Controller {
 	public static Result index() {
 		return ok("You called the index method of the Git controller.");
 	}
+	
+	public static void fetchRepo() {
+		File localPath = new File("repo/");
+		if (!localPath.exists()) {
+			localPath.mkdir();
+
+			// clone
+			//System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
+			try {
+				Git.cloneRepository().setURI(REMOTE_URL).setDirectory(localPath).call();
+			} catch (GitAPIException e) {
+			}
+		}
+		
+		Repository repository;
+		try {
+			repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
+			Git git = new Git(repository);
+
+			git.checkout().setName("master").call();
+			
+			git.fetch().call();
+		} catch (IOException|GitAPIException e) {
+		}
+		
+	}
 
 	private static void checkoutUserBranch(String hashedUuid) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
 		hashedUuid = "PLM"+hashedUuid;
@@ -91,6 +117,60 @@ public class JGit extends Controller {
 		} catch (TransportException ex) {
 			System.out.println("Not connected to Internet to fetch the repo.");
 		}
+	}
+	
+	public static String getLastActivity(String hashedUuid) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+		String result = "";
+		
+		hashedUuid = "PLM"+hashedUuid;
+		File localPath = new File("repo/");
+		if (!localPath.exists()) {
+			localPath.mkdir();
+
+			// clone
+			//System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
+			Git.cloneRepository().setURI(REMOTE_URL).setDirectory(localPath).call();
+		}
+		
+		Repository repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
+		Git git = new Git(repository);
+
+		git.checkout().setName("master").call();
+//		try {
+//			git.fetch().call();
+//		} catch (TransportException ex) {
+//			System.out.println("Not connected to Internet to fetch the repo.");
+//		}
+		try {
+			CreateBranchCommand create = git.branchCreate();
+			create.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM);
+			create.setName(hashedUuid);
+			create.setStartPoint("origin/" + hashedUuid);
+			create.call();
+		} catch (RefAlreadyExistsException ex) {
+
+		}
+
+		// checkout the branch of the current user
+		git.checkout().setName(hashedUuid).call();
+		
+//		try {
+//			git.pull().call();
+//		} catch (TransportException ex) {
+//			System.out.println("Not connected to Internet to fetch the repo.");
+//		}
+		RevWalk walk = new RevWalk(repository);
+		RevCommit commit = null;
+		
+		Iterable<RevCommit> logs = git.log().call();
+		Iterator<RevCommit> i = logs.iterator();
+			
+		if (i.hasNext()) {
+			commit = walk.parseCommit(i.next());
+			result = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(commit.getCommitTime() * 1000L));
+		}
+		repository.close();
+		return result;
 	}
 	
 	private static ArrayList<Commit> computeCommits(String hashedUuid) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
