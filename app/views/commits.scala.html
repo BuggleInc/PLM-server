@@ -85,6 +85,9 @@
 							<th>
 								Comment
 							</th>
+							<th>
+								Action
+							</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -106,8 +109,13 @@
 								</td>
 								<td>
 									@commit.comment
-									@if(commit.link != null) {
-										<a href="@commit.link" class="btn btn-primary btn-mini">Code</a>
+								</td>
+								<td>
+									@if(commit.codeLink != null) {
+										<a href="@commit.codeLink" class="btn btn-primary btn-mini">Code</a>
+									}
+									@if(commit.errorLink != null) {
+										<a href="@commit.errorLink" class="btn btn-danger btn-mini">Error</a>
 									}
 								</td>
 							</tr>
