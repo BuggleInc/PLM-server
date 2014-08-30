@@ -1,4 +1,4 @@
-@(commits: List[Commit], studentName: String, summary: List[ProgressItem], eventSummary:List[Double], startCount:Array[Integer], switchCount:Array[Integer], successCount:Array[Integer], failCount:Array[Integer])
+@(commits: List[Commit], studentName: String, summary: List[ProgressItem], eventSummary:List[Double], startCount:Array[Integer], switchCount:Array[Integer], successCount:Array[Integer], failCount:Array[Integer], hashedUuid:String)
 
 @import helper._
 @import java.math.BigInteger; var i=1; var j=startCount.length;
@@ -116,6 +116,9 @@
 									}
 									@if(commit.errorLink != null) {
 										<a href="@commit.errorLink" class="btn btn-danger btn-mini">Error</a>
+											@form(routes.ExerciseController.display(hashedUuid, commit.exoname, 10)) {
+												<input class="btn btn-warning btn-mini" type="submit" value="Exercise graph">
+											}
 									}
 								</td>
 							</tr>

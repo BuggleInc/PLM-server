@@ -1,0 +1,147 @@
+@(student: Student, quintuplets: List[Quintuplet], exoName: String)
+
+@import helper._
+
+@main(student.name, student.name, exoName) {
+	<div id="chart"></div>
+	
+	<style>
+	
+	#tooltip {
+	        position: absolute;
+	        width: 220px;
+	        height: auto;
+	        padding: 10px;
+	        background-color: white;
+	        -webkit-border-radius: 10px;
+	        -moz-border-radius: 10px;
+	        border-radius: 10px;
+	        -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	        -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	        pointer-events: none;
+	}
+	
+	#tooltip.hidden {
+	        display: none;
+	}
+	
+	#tooltip p {
+	        margin: 0;
+	        font-family: sans-serif;
+	        font-size: 16px;
+	        line-height: 20px;
+	}
+	
+	.axis text {
+		font: 10px sans-serif;
+	}
+	
+	.axis path,
+	.axis line {
+		fill: none;
+		stroke: #000;
+		shape-rendering: crispEdges;
+	}
+	
+	.x.axis path {
+		display: none;
+	}
+	
+	rect {
+		-moz-transition: all 0.3s;
+		-o-transition: all 0.3s;
+		-webkit-transition: all 0.3s;
+		transition: all 0.5s;
+		cursor:pointer;
+	}
+	
+	</style>
+	
+	<script>
+	var HU = (function() {
+	
+	var data = [
+			@for(q <- quintuplets) {
+		        {"time": "@q.time", "failed": "@q.failed", "passed": "@q.passed", "codeLink": "@q.codeLink", "errorLink": "@q.errorLink"},
+		    }
+	    ];
+	
+	init = function() {
+	
+	
+	    var margin = {
+	            top: 10, 
+	            right: 10, 
+	            bottom: 30, 
+	            left: 50
+	        },
+	        width = 1100 - margin.left - margin.right,
+	        height = 500 - margin.top - margin.bottom;
+	
+	    var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
+	
+	    var x = d3.time.scale().domain(d3.extent(data, function(d) { return parseDate(d.time); }))
+	            .range([0, width]);
+	
+	    var y = d3.scale.linear().domain([0, d3.max(data, function(d) { return d.failed; })])
+	            .range([height, 0]);
+	
+	    var xAxis = d3.svg.axis()
+	            .scale(x)
+	            .orient("bottom")
+	            .tickFormat(d3.time.format(("%H:%M:%S")));
+	
+	    var yAxis = d3.svg.axis()
+	            .scale(y)
+	            .orient("left");
+	
+	    var svg = d3.select("#chart").append("svg")
+	        .attr("width", width + margin.left + margin.right)
+	        .attr("height", height + margin.top + margin.bottom)
+	        .append("g")
+	        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+	    svg.append("g")
+	        .attr("class", "x axis")
+	        .attr("transform", "translate(0, " + height + ")")
+	        .call(xAxis);
+	
+	    svg.append("g")
+	        .attr("class", "y axis")
+	        .call(yAxis);
+	
+	    var bars = svg.selectAll("rect")
+	        .data(data)
+	        .enter();
+	    bars.append("rect")
+	        .attr("x", function(d) { return x(parseDate(d.time)); })
+	        .attr("y", function(d) { return y(d.failed); })
+	        .attr("width", 5)
+	        .attr("height", function(d) { return height - y(d.failed); })
+	        .attr("height", function(d) { return height - y(d.failed); })
+	        .style("fill", d3.rgb(217, 86, 79))
+			.on("click", function(d){  
+					window.open(d.errorLink, '_blank', 'location=yes,height=600,width=960,scrollbars=yes,status=yes');
+				});
+	    bars.append("rect")
+	        .attr("x", function(d) { return x(parseDate(d.time)); })
+	        .attr("y", function(d) { return y(d.passed); })
+	        .attr("width", 5)
+	        .attr("height", function(d) { return height - y(d.passed); })
+	        .style("fill", d3.rgb(92, 184, 92))
+			.on("click", function(d){  
+					window.open(d.codeLink, '_blank', 'location=yes,height=600,width=960,scrollbars=yes,status=yes');
+				});
+	
+	};
+	
+	return {
+	    init: init
+	};
+	
+	})();
+	
+	HU.init();
+	</script>
+}

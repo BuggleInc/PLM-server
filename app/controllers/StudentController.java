@@ -94,8 +94,8 @@ public class StudentController extends Controller {
 		);
 	}
 
-	public static Result deleteStudent(String uuid) {
-	  Student.delete(uuid, "");
+	public static Result deleteStudent(String hashedUuid) {
+	  Student.delete(hashedUuid, "");
 	  return redirect(routes.StudentController.students());
 	}
 	

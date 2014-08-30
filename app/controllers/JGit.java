@@ -173,7 +173,7 @@ public class JGit extends Controller {
 		return result;
 	}
 	
-	private static ArrayList<Commit> computeCommits(String hashedUuid) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+	public static ArrayList<Commit> computeCommits(String hashedUuid) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
 		hashedUuid = "PLM"+hashedUuid;
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
@@ -227,8 +227,8 @@ public class JGit extends Controller {
 		return commits;
 	}
 	
-	public static Result displayBranch(String uuid, String studentname) throws IOException, InvalidRemoteException, TransportException, GitAPIException, ParseException {
-		ArrayList<Commit> commits = computeCommits(uuid);
+	public static Result displayBranch(String hashedUuid, String studentname) throws IOException, InvalidRemoteException, TransportException, GitAPIException, ParseException {
+		ArrayList<Commit> commits = computeCommits(hashedUuid);
 		ArrayList<Double> eventSummary = new ArrayList<>();
 		int chartDay = 15;
 		Integer[] startCount = new Integer[chartDay], switchCount = new Integer[chartDay], successCount = new Integer[chartDay], failCount = new Integer[chartDay];
@@ -300,7 +300,7 @@ public class JGit extends Controller {
 		computeProgress(summary, path);
 		
 		return ok(
-			views.html.commits.render(commits, studentname, summary, eventSummary, startCount, switchCount, successCount, failCount)
+			views.html.commits.render(commits, studentname, summary, eventSummary, startCount, switchCount, successCount, failCount, hashedUuid)
 		);
 	}
 	

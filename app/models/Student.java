@@ -26,8 +26,8 @@ public class Student extends Model {
 
 	public static Finder<String, Student> find = new Finder<String, Student>(String.class, Student.class);
 
-	public Student(String name, String mail, String uuid) {
-		this.hashedUuid = uuid;
+	public Student(String name, String mail, String hashedUuid) {
+		this.hashedUuid = hashedUuid;
 		this.name = name;
 		this.mail = mail;
 	}
@@ -53,8 +53,8 @@ public class Student extends Model {
 		student.save();
 	}
 	
-	public static void delete(String uuid, String s) {
-		find.byId(uuid).delete();
+	public static void delete(String hashedUuid, String s) {
+		find.byId(hashedUuid).delete();
 	}
 	
 }

@@ -19,7 +19,7 @@ import com.google.gson.JsonSyntaxException;
  */
 public class Commit {
 
-	public String course, exolang, exoswitchto, evt_type, evt_class, totaltests,
+	public String exolang, exoswitchto, evt_type, evt_class, totaltests,
 		passedtests, exoname, commitTime, comment, os, plm_version, java_version, codeLink, errorLink;
 
 	public Commit(String json, int commitTime, String commitID) {

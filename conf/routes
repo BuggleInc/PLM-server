@@ -31,13 +31,16 @@ GET		/teachers					controllers.TeacherController.teachers()
 POST	/teacher/:name/delete		controllers.TeacherController.deleteTeacher(name:String)
 
 # Students
-POST	/student/:uuid/delete		controllers.StudentController.deleteStudent(uuid:String)
+POST	/student/:hashedUuid/delete	controllers.StudentController.deleteStudent(hashedUuid)
 GET		/students					controllers.StudentController.students()
 GET		/allStudents				controllers.StudentController.allStudents()
 GET		/student					controllers.StudentController.student(uuid:String)
-POST	/jgit/:uuid/displayBranch	controllers.JGit.displayBranch(uuid:String, studentname:String)
+POST	/jgit/:hashedUuid/displayBranch	controllers.JGit.displayBranch(hashedUuid:String, studentname:String)
 GET		/joinCourse					controllers.StudentController.joinCourse(courseName:String, uuid:String)
 GET		/leaveCourse				controllers.StudentController.leaveCourse(courseName:String, uuid:String)
+
+# Exercise
+POST /exercise/:hashedUuid/:exerciceName/:limit controllers.ExerciseController.display(hashedUuid:String, exerciceName:String, limit:Integer)
 
 # Link identity
 GET		/link						controllers.Identity.linkForm(UUID:String)
