@@ -20,7 +20,19 @@ public class TeacherController extends Controller {
 	
 	public static Result deleteTeacher(String name) {
 	  Teacher.delete(name, "");
-	  return redirect(routes.Application.teachers());
+	  return redirect(routes.TeacherController.teachers());
+	}
+	
+	public static Result teachers() {
+		return ok(
+			views.html.teachers.render(Teacher.all())
+		);
+	}
+	
+	public static Result createTeacherForm() {
+		return ok(
+			views.html.createTeacher.render()
+		);
 	}
 
 }

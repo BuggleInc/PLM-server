@@ -2,7 +2,7 @@
 @import java.math.BigInteger; var i=1
 
 @main("Create a new teacher", "Create a new teacher", "") {
-	@form(routes.Application.courses()) {
+	@form(routes.CourseController.courses()) {
 		<input class="btn btn-primary" type="submit" value="Back to courses list">
 	}
 	<br />
@@ -10,7 +10,7 @@
 		<div class="col-md-5 column">
 			<form role="form" action="handleTeacher" method="get" class="form-horizontal">
 				<div class="form-group">
-					 <label class="col-sm-2 control-label" for="name">Nom</label>
+					 <label class="col-sm-2 control-label" for="name">Name</label>
 					<div class="col-sm-10">
 						<input class="form-control" id="name" type="text" name="name" />
 					</div>

@@ -4,7 +4,7 @@
 @import java.math.BigInteger; var i=1
 
 @main("Teachers", teachers.size() + " teacher(s)", "") {
-	@form(routes.Application.createTeacher()) {
+	@form(routes.TeacherController.createTeacherForm()) {
 		<input class="btn btn-primary" type="submit" value="Add teacher">
 	}
 	<br />

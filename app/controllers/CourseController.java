@@ -40,13 +40,25 @@ public class CourseController extends Controller {
 		);
 	}
 	
+	public static Result courses() {
+		return ok(
+			views.html.courses.render(Course.all())
+		);
+	}
+	
+	public static Result createCourseForm() {
+		return ok(
+			views.html.createCourse.render(Teacher.all())
+		);
+	}
+	
 	public static Result addTeacher(String courseName, String teacherName) {
 		Teacher teacher = Teacher.find.byId(teacherName);
 		Course course = Course.find.byId(courseName);
 		Course.addTeacher(course, teacher);
 		return ok(
-				views.html.courses.render(Course.all())
-			  );
+			views.html.courses.render(Course.all())
+		);
 	}
 	
 	public static Result createCourse(String name, String teacherName, String displayName, String programmingLanguage) {
@@ -65,7 +77,7 @@ public class CourseController extends Controller {
 		teacher.save();	
 		teacher.saveManyToManyAssociations("courses");
 
-		return redirect(routes.Application.courses()); // redirect page
+		return redirect(routes.CourseController.courses()); // redirect page
 
 	}
 	
@@ -82,7 +94,7 @@ public class CourseController extends Controller {
 			student.saveManyToManyAssociations("courses");
 		}
 		Course.delete(name, "");
-		return redirect(routes.Application.courses());
+		return redirect(routes.CourseController.courses());
 	}
 
 }
