@@ -3,6 +3,15 @@
 
 # --- !Ups
 
+create table assistance_call (
+  id                        varchar(255) not null,
+  hostname                  varchar(255),
+  date                      varchar(255),
+  details                   varchar(255),
+  student_hashed_uuid       varchar(255),
+  constraint pk_assistance_call primary key (id))
+;
+
 create table course (
   name                      varchar(255) not null,
   display_name              varchar(255),
@@ -11,10 +20,10 @@ create table course (
 ;
 
 create table student (
-  uuid                      varchar(255) not null,
+  hashed_uuid               varchar(255) not null,
   name                      varchar(255),
   mail                      varchar(255),
-  constraint pk_student primary key (uuid))
+  constraint pk_student primary key (hashed_uuid))
 ;
 
 create table teacher (
@@ -26,8 +35,8 @@ create table teacher (
 
 create table course_student (
   course_name                    varchar(255) not null,
-  student_uuid                   varchar(255) not null,
-  constraint pk_course_student primary key (course_name, student_uuid))
+  student_hashed_uuid            varchar(255) not null,
+  constraint pk_course_student primary key (course_name, student_hashed_uuid))
 ;
 
 create table course_teacher (
@@ -37,9 +46,9 @@ create table course_teacher (
 ;
 
 create table student_course (
-  student_uuid                   varchar(255) not null,
+  student_hashed_uuid            varchar(255) not null,
   course_name                    varchar(255) not null,
-  constraint pk_student_course primary key (student_uuid, course_name))
+  constraint pk_student_course primary key (student_hashed_uuid, course_name))
 ;
 
 create table teacher_course (
@@ -47,24 +56,28 @@ create table teacher_course (
   course_name                    varchar(255) not null,
   constraint pk_teacher_course primary key (teacher_name, course_name))
 ;
+create sequence assistance_call_seq;
+
 create sequence course_seq;
 
 create sequence student_seq;
 
 create sequence teacher_seq;
 
+alter table assistance_call add constraint fk_assistance_call_student_1 foreign key (student_hashed_uuid) references student (hashed_uuid) on delete restrict on update restrict;
+create index ix_assistance_call_student_1 on assistance_call (student_hashed_uuid);
 
 
 
 alter table course_student add constraint fk_course_student_course_01 foreign key (course_name) references course (name) on delete restrict on update restrict;
 
-alter table course_student add constraint fk_course_student_student_02 foreign key (student_uuid) references student (uuid) on delete restrict on update restrict;
+alter table course_student add constraint fk_course_student_student_02 foreign key (student_hashed_uuid) references student (hashed_uuid) on delete restrict on update restrict;
 
 alter table course_teacher add constraint fk_course_teacher_course_01 foreign key (course_name) references course (name) on delete restrict on update restrict;
 
 alter table course_teacher add constraint fk_course_teacher_teacher_02 foreign key (teacher_name) references teacher (name) on delete restrict on update restrict;
 
-alter table student_course add constraint fk_student_course_student_01 foreign key (student_uuid) references student (uuid) on delete restrict on update restrict;
+alter table student_course add constraint fk_student_course_student_01 foreign key (student_hashed_uuid) references student (hashed_uuid) on delete restrict on update restrict;
 
 alter table student_course add constraint fk_student_course_course_02 foreign key (course_name) references course (name) on delete restrict on update restrict;
 
@@ -75,6 +88,8 @@ alter table teacher_course add constraint fk_teacher_course_course_02 foreign ke
 # --- !Downs
 
 SET REFERENTIAL_INTEGRITY FALSE;
+
+drop table if exists assistance_call;
 
 drop table if exists course;
 
@@ -91,6 +106,8 @@ drop table if exists teacher;
 drop table if exists teacher_course;
 
 SET REFERENTIAL_INTEGRITY TRUE;
+
+drop sequence if exists assistance_call_seq;
 
 drop sequence if exists course_seq;
 
