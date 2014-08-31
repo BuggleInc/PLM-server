@@ -23,24 +23,24 @@ public class ExerciseController extends Controller {
 			student = new Student(hashedUuid.substring(0,10), "mail@mail.mail", hashedUuid);
 		}
 		//System.out.println("Student name : " + student.name);
-		ArrayList<Quintuplet> triplets = new ArrayList<>();
+		ArrayList<Quintuplet> quintuplet = new ArrayList<>();
 		ArrayList<Commit> commits = new ArrayList<>();
 		try {
 			commits = JGit.computeCommits(hashedUuid);
 		} catch (IOException | GitAPIException e) { // TODO
 		}
 		for(Commit c : commits) {
-			if(triplets.size() < limit && (c.evt_type.equals("Success") || c.evt_type.equals("Failed")) && c.exoname.equals(exerciseName)) {
+			if(quintuplet.size() < limit && (c.evt_type.equals("Success") || c.evt_type.equals("Failed")) && c.exoname.equals(exerciseName)) {
 				if(c.totaltests.equals("-1")) { // compilation error
 					
 				}
-				triplets.add(new Quintuplet(c.commitTime, c.passedtests, c.totaltests, c.codeLink, c.errorLink));
+				quintuplet.add(new Quintuplet(c.commitTime, c.passedtests, c.totaltests, c.codeLink, c.errorLink));
 			}
 		}
 		return ok(
 			views.html.exerciseGraph.render(
 					student,
-					triplets,
+					quintuplet,
 					exerciseName
 			)
 		);

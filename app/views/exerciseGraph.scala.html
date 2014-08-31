@@ -63,7 +63,7 @@
 	
 	var data = [
 			@for(q <- quintuplets) {
-		        {"time": "@q.time", "failed": "@q.failed", "passed": "@q.passed", "codeLink": "@q.codeLink", "errorLink": "@q.errorLink"},
+		        {"time": "@q.time", "failed": "@q.failed", "total": "@q.total", "codeLink": "@q.codeLink", "errorLink": "@q.errorLink"},
 		    }
 	    ];
 	
@@ -119,16 +119,15 @@
 	        .attr("y", function(d) { return y(d.failed); })
 	        .attr("width", 5)
 	        .attr("height", function(d) { return height - y(d.failed); })
-	        .attr("height", function(d) { return height - y(d.failed); })
 	        .style("fill", d3.rgb(217, 86, 79))
 			.on("click", function(d){  
 					window.open(d.errorLink, '_blank', 'location=yes,height=600,width=960,scrollbars=yes,status=yes');
 				});
 	    bars.append("rect")
 	        .attr("x", function(d) { return x(parseDate(d.time)); })
-	        .attr("y", function(d) { return y(d.passed); })
+	        .attr("y", function(d) { return y(d.total); })
 	        .attr("width", 5)
-	        .attr("height", function(d) { return height - y(d.passed); })
+	        .attr("height", function(d) { return height - y(d.total); })
 	        .style("fill", d3.rgb(92, 184, 92))
 			.on("click", function(d){  
 					window.open(d.codeLink, '_blank', 'location=yes,height=600,width=960,scrollbars=yes,status=yes');
