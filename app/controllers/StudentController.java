@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,8 +15,6 @@ import play.mvc.*;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -24,31 +23,51 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 public class StudentController extends Controller {
 	
 	public static Result students() {
-		JGit.fetchRepo();
-		ArrayList<String> lastActivity = new ArrayList<>();
-		List<Student> students = Student.all();
-		for(Student s : students) {
-			try {
-				lastActivity.add(JGit.getLastActivity(s.hashedUuid));
-			} catch (IOException|GitAPIException e) {
-				lastActivity.add("0");
-			}
-		}
+        List<Student> students = Student.all();
+		String[] lastActivity = new String[students.size()];
+
+        int processors = Runtime.getRuntime().availableProcessors();
+        System.out.println(Integer.toString(processors) + " processor"
+                + (processors != 1 ? "s are " : " is ") + "available");
+
+        ForkLastActivity forkLastActivity = new ForkLastActivity(students, 0, students.size(), "", lastActivity);
+
+        ForkJoinPool pool = new ForkJoinPool();
+
+        long startTime = System.currentTimeMillis();
+        pool.invoke(forkLastActivity);
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("Get last activity took " + (endTime - startTime) + " milliseconds.");
+//		for(Student s : students) {
+//			try {
+//				lastActivity.add(JGit.getLastActivity(s.hashedUuid));
+//			} catch (IOException|GitAPIException e) {
+//				lastActivity.add("0");
+//			}
+//		}
 		return ok(
 			views.html.students.render(students, lastActivity)
 		);
 	}
 	
 	public static Result allStudents() {
-		ArrayList<String> lastActivity = new ArrayList<>();
 		List<Student> students = StudentController.getAllStudents();
-		for(Student s : students) {
-			try {
-				lastActivity.add(JGit.getLastActivity(s.hashedUuid));
-			} catch (IOException|GitAPIException e) {
-				lastActivity.add("0");
-			}
-		}
+        String[] lastActivity = new String[students.size()];
+
+        int processors = Runtime.getRuntime().availableProcessors();
+        System.out.println(Integer.toString(processors) + " processor"
+                + (processors != 1 ? "s are " : " is ") + "available");
+
+        ForkLastActivity forkLastActivity = new ForkLastActivity(students, 0, students.size(), "", lastActivity);
+
+        ForkJoinPool pool = new ForkJoinPool();
+
+        long startTime = System.currentTimeMillis();
+        pool.invoke(forkLastActivity);
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("Get last activity took " + (endTime - startTime) + " milliseconds.");
 		  return ok(
 			views.html.studentsAll.render(students, lastActivity)
 		  );

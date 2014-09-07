@@ -1,4 +1,4 @@
-@(students: List[Student], lastActivity: List[String])
+@(students: List[Student], lastActivity: Array[String])
 
 @import helper._
 @import java.math.BigInteger; var i=0
@@ -28,7 +28,7 @@
 			@for(student <- students) {
 				<tr>
 					<td>
-						@lastActivity.get(i)
+						@lastActivity(i)
 					</td>
 					<td>
 						@student.name
