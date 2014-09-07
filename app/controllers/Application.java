@@ -27,9 +27,7 @@ public class Application extends Controller {
 	
 	public static Result init() {
 		Ebean.save((List) Yaml.load("test-data.yml"));
-		CourseController.addTeacher("maze", "Teacher1");
-		CourseController.addTeacher("maze", "Teacher2");
-		CourseController.addTeacher("PPP", "Teacher1");
+
 		session().clear();
 		flash("success", "Database fill with test data");
 	  	return login();

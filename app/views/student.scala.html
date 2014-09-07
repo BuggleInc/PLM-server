@@ -25,28 +25,30 @@
 			</tr>
 		</thead>
 		<tbody>
-			@for(course <- student.courses) {
-				<tr>
-					<td>
-						@i
-					</td>
-					<td>
-						@course.name
-					</td>
-					<td>
-						@for(teacher <- course.teachers) {
-							@teacher.name 
-						}
-					</td>
-					<td>
-						@course.students.size()
-					</td>
-				</tr>
-				@{i=i+1}
+			@for(course <- courses) {
+            @if(course.students.contains(student)) {
+                    <tr>
+                        <td>
+                            @i
+                        </td>
+                        <td>
+                            @course.name
+                        </td>
+                        <td>
+                            @for(teacher <- course.teachers) {
+                                @teacher.name
+                            }
+                        </td>
+                        <td>
+                            @course.students.size()
+                        </td>
+                    </tr>
+                    @{i=i+1}
+                }
 			}
 		</tbody>
 	</table>
-	<h2>
+<h2>
 		Join course
 	</h2>
 	<form class="form-horizontal" role="form" action="joinCourse" method="get">
@@ -57,7 +59,7 @@
 				<div class="btn-group" data-toggle="buttons">
 					<select class="form-control" id="select" name="courseName">
 						@for(course <- courses) {
-							@if(!student.courses.contains(course)) {
+							@if(!course.students.contains(student)) {
 								<option>@course.name</option>
 							}
 						}
@@ -82,8 +84,10 @@
 			<div class="col-sm-10">
 				<div class="btn-group" data-toggle="buttons">
 					<select class="form-control" id="select" name="courseName">
-						@for(course <- student.courses) {
-							<option>@course.name</option>
+						@for(course <- courses) {
+                            @if(course.students.contains(student)) {
+                                <option>@course.name</option>
+                            }
 						}
 					</select>
 				</div>

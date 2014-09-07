@@ -70,15 +70,13 @@ public class StudentController extends Controller {
 		
 		//System.out.println("student count : " +course.students.size());
 		//System.out.println("Student name : "+student.name);
-		
-		student.courses.add(course);
+
 		course.students.add(student);
 		
 		student.save();
-		student.saveManyToManyAssociations("courses");
 		course.save();	
 		course.saveManyToManyAssociations("students");
-		course.saveManyToManyAssociations("teachers");		
+		course.saveManyToManyAssociations("teachers");
 		
 		//System.out.println("After add");
 		//for(Student s : course.students) {
@@ -95,8 +93,8 @@ public class StudentController extends Controller {
 	}
 
 	public static Result deleteStudent(String hashedUuid) {
-	  Student.delete(hashedUuid, "");
-	  return redirect(routes.StudentController.students());
+        Student.delete(hashedUuid, "");
+        return redirect(routes.StudentController.students());
 	}
 	
 		
@@ -105,13 +103,11 @@ public class StudentController extends Controller {
 		Student student = Student.find.byId(uuid);
 		
 		course.students.remove(student);
-		student.courses.remove(course);
 		
 		course.save();
 		course.saveManyToManyAssociations("students");
 		course.saveManyToManyAssociations("teachers");
 		student.save();
-		student.saveManyToManyAssociations("courses");
 		
 		return redirect(routes.StudentController.student(uuid));
 	}

@@ -17,9 +17,6 @@ public class Teacher extends Model {
 	@Id
 	public String name;
 	
-	@ManyToMany(cascade = CascadeType.REMOVE)
-	public List<Course> courses = new ArrayList<>();
-	
 	public String password;
 	
 	public static Finder<String, Teacher> find = new Finder<String, Teacher>(String.class, Teacher.class);
@@ -27,7 +24,6 @@ public class Teacher extends Model {
 	public Teacher(String name, String password) {
 		this.name = name;
 		this.password = password;
-		courses = new ArrayList<>();
 	}
 
 
@@ -43,7 +39,6 @@ public class Teacher extends Model {
 		System.out.println("teacher :\n"
 				+ "name : " + teacher.name);
 	  teacher.save();
-	  teacher.saveManyToManyAssociations("courses");
 	}
 	
 	public static void delete(String name, String s) {

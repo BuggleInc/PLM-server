@@ -1,5 +1,6 @@
 package controllers;
 
+import models.Course;
 import models.Teacher;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -25,7 +26,7 @@ public class TeacherController extends Controller {
 	
 	public static Result teachers() {
 		return ok(
-			views.html.teachers.render(Teacher.all())
+			views.html.teachers.render(Teacher.all(), Course.all())
 		);
 	}
 	

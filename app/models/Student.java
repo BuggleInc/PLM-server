@@ -20,9 +20,6 @@ public class Student extends Model {
 	public String name;
 	
 	public String mail;
-	
-	@ManyToMany(cascade = CascadeType.REMOVE)
-	public List<Course> courses= new ArrayList<>();
 
 	public static Finder<String, Student> find = new Finder<String, Student>(String.class, Student.class);
 

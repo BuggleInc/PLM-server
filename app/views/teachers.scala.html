@@ -1,4 +1,4 @@
-@(teachers: List[Teacher])
+@(teachers: List[Teacher], courses: List[Course])
 
 @import helper._
 @import java.math.BigInteger; var i=1
@@ -36,8 +36,10 @@
 					</td>
 					<td>
 						<ul>
-						@for(course <- teacher.courses) {
-							<li>@course.name</li>
+						@for(course <- courses) {
+                            @if(course.teachers.contains(teacher)) {
+							    <li>@course.name</li>
+                            }
 						}
 						<ul>
 					</td>

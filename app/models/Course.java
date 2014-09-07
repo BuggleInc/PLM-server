@@ -16,22 +16,18 @@ public class Course extends Model {
 	
 	@Id
 	public String name;
-	
+
 	public String displayName;
-	
+
 	public String programmingLanguage;
-	
+
 	@ManyToMany(cascade = CascadeType.REMOVE)
-	public List<Student> students = new ArrayList<>();
-	
+	public List<Student> students = new ArrayList<Student>();
+
 	@ManyToMany(cascade = CascadeType.REMOVE)
-	public List<Teacher> teachers = new ArrayList<>();
+	public List<Teacher> teachers = new ArrayList<Teacher>();
 	
 	public static Finder<String, Course> find = new Finder<String, Course>(String.class, Course.class);
-
-	public Course(String name) {
-		this.name = name;
-	}
 
     public static int count() {
         return find.findRowCount();
@@ -46,18 +42,13 @@ public class Course extends Model {
 				+ "name : " + course.name);
 		course.save();
 		course.saveManyToManyAssociations("students");
-		course.saveManyToManyAssociations("teachers");
 	}
 	
 	public static void addTeacher(Course course, Teacher teacher) {
 		course.teachers.add(teacher);
 		course.save();
 		course.saveManyToManyAssociations("students");
-		course.saveManyToManyAssociations("teachers");
-		
-		teacher.courses.add(course);		
 		teacher.save();
-		teacher.saveManyToManyAssociations("courses");
 	}
 	
 	public static void delete(String name, String s) {

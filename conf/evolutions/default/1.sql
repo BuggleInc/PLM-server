@@ -44,18 +44,6 @@ create table course_teacher (
   teacher_name                   varchar(255) not null,
   constraint pk_course_teacher primary key (course_name, teacher_name))
 ;
-
-create table student_course (
-  student_hashed_uuid            varchar(255) not null,
-  course_name                    varchar(255) not null,
-  constraint pk_student_course primary key (student_hashed_uuid, course_name))
-;
-
-create table teacher_course (
-  teacher_name                   varchar(255) not null,
-  course_name                    varchar(255) not null,
-  constraint pk_teacher_course primary key (teacher_name, course_name))
-;
 create sequence assistance_call_seq;
 
 create sequence course_seq;
@@ -77,14 +65,6 @@ alter table course_teacher add constraint fk_course_teacher_course_01 foreign ke
 
 alter table course_teacher add constraint fk_course_teacher_teacher_02 foreign key (teacher_name) references teacher (name) on delete restrict on update restrict;
 
-alter table student_course add constraint fk_student_course_student_01 foreign key (student_hashed_uuid) references student (hashed_uuid) on delete restrict on update restrict;
-
-alter table student_course add constraint fk_student_course_course_02 foreign key (course_name) references course (name) on delete restrict on update restrict;
-
-alter table teacher_course add constraint fk_teacher_course_teacher_01 foreign key (teacher_name) references teacher (name) on delete restrict on update restrict;
-
-alter table teacher_course add constraint fk_teacher_course_course_02 foreign key (course_name) references course (name) on delete restrict on update restrict;
-
 # --- !Downs
 
 SET REFERENTIAL_INTEGRITY FALSE;
@@ -99,11 +79,7 @@ drop table if exists course_teacher;
 
 drop table if exists student;
 
-drop table if exists student_course;
-
 drop table if exists teacher;
-
-drop table if exists teacher_course;
 
 SET REFERENTIAL_INTEGRITY TRUE;
 

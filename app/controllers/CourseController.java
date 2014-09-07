@@ -65,17 +65,16 @@ public class CourseController extends Controller {
 		Teacher teacher = Teacher.find.byId(teacherName);
 		// System.out.println("Teacher name :"+teacher.name);
 		
-		Course course = new Course(name);
+		Course course = new Course();
+        course.name = name;
 		course.displayName = displayName;
 		course.programmingLanguage = programmingLanguage;
 		
 		course.teachers.add(teacher);
-		teacher.courses.add(course);
 		course.save();
 		course.saveManyToManyAssociations("students");
 		course.saveManyToManyAssociations("teachers");
-		teacher.save();	
-		teacher.saveManyToManyAssociations("courses");
+		teacher.save();
 
 		return redirect(routes.CourseController.courses()); // redirect page
 
@@ -83,16 +82,6 @@ public class CourseController extends Controller {
 	
 	public static Result deleteCourse(String name) {
 		Course course = Course.find.byId(name);
-		for(Teacher t : course.teachers) {
-			Teacher teacher = Teacher.find.byId(t.name);
-			teacher.courses.remove(course);
-			teacher.saveManyToManyAssociations("courses");
-		}
-		for(Student s : course.students) {
-			Student student = Student.find.byId(s.hashedUuid);
-			student.courses.remove(course);
-			student.saveManyToManyAssociations("courses");
-		}
 		Course.delete(name, "");
 		return redirect(routes.CourseController.courses());
 	}

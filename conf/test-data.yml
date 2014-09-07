@@ -23,21 +23,22 @@
 
 
 # Course
+
 - &maze !!models.Course
     name:         maze
     displayName:  Labyrinthes
     programmingLanguage: Java
-    # students:
-        # - *ced
-    # teachers:
-       # -*teacher2
+    students:
+        - *ced
+    teachers:
+        - *teacher2
 
 - &PPP !!models.Course
     name:       PPP
     displayName:  Premiers pas programmation
     programmingLanguage: Scala
-    # students:
-        # - *ced
-        # - *user1
-    #teachers:
-     #  -*teacher1
+    students:
+        - *ced
+        - *user1
+    teachers:
+        - *teacher1
