@@ -27,7 +27,6 @@ public class Identity extends Controller {
 		Student stu = new Student(username, mail, hashUUID);
 		try {
 			stu.save();
-			stu.saveManyToManyAssociations("courses");
 		} catch(PersistenceException ex) {
 			System.out.println("ERROR executing DML bindLog[] error[Unique index or primary key violation: PRIMARY_KEY_B ON PUBLIC.STUDENT(UUID)");
 		}
