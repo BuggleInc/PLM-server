@@ -19,7 +19,7 @@ import com.google.gson.JsonSyntaxException;
  */
 public class Commit {
 
-	public String exolang, exoswitchto, evt_type, evt_class, totaltests,
+	public String exolang, exoswitchto, evt_type, evt_class, totaltests, outcome,
 		passedtests, exoname, commitTime, comment, os, plm_version, java_version, codeLink, errorLink;
 
 	public Commit(String json, int commitTime, String commitID) {
@@ -27,7 +27,7 @@ public class Commit {
                           .format(new Date(commitTime * 1000L));
 						  
 		evt_type = "";
-		evt_class = ""; // to color the row in table (bootstrap class)
+		evt_class = ""; // to color the row in table (view) (bootstrap class)
 		comment = "";
 		exolang = "";
 		
@@ -43,16 +43,20 @@ public class Commit {
 						break;
 					case "executed": // TODO: check if total = passed tests
 						try {
-							totaltests = jo.get("totaltests").getAsString();
-							passedtests = jo.get("passedtests").getAsString();
+                            outcome = jo.get("outcome").getAsString();
 							exolang = jo.get("lang").getAsString();
-							if(totaltests.equals(passedtests)) {
+							if (outcome.equals("pass")) {
 								evt_class = "success";
 								evt_type = "Success";
-							} else {
+							} else if (outcome.equals("fail")) {
 								evt_class = "danger";
 								evt_type = "Failed";
-							}
+							} else if (outcome.equals("compile")) {
+                                evt_class = "danger";
+                                evt_type = "Compile err";
+                            }
+                            totaltests = jo.get("totaltests").getAsString(); // not present if outcome is "compile"
+                            passedtests = jo.get("passedtests").getAsString(); // not present if outcome is "compile"
 						} catch(Exception ex) {
 						}
 						break;
@@ -113,7 +117,7 @@ public class Commit {
 		
 		if(evt_type.equals("Switched")) {
 			comment = "Switched to " + exoswitchto;
-		} else if(evt_type.equals("Failed") || evt_type.equals("Success")) {
+		} else if(evt_type.equals("Failed") || evt_type.equals("Success") || evt_type.equals("Compile err")) {
 			comment = "Language : " + exolang + ", total tests : " + totaltests + ", passed : " + passedtests;
 			codeLink = "https://github.com/mquinson/PLM-data/blob/"+commitID+"/"+exoname+"."+extURL+".code";
 			errorLink = "https://github.com/mquinson/PLM-data/blob/"+commitID+"/"+exoname+"."+extURL+".error";

@@ -271,6 +271,7 @@ public class JGit extends Controller {
 					}
 				break;
 				case "Failed":
+                case "Compile err":
 					eventSummary.set(2, eventSummary.get(2)+1);
 					if(addToChartEvent) {
 						failCount[cal.get(Calendar.DAY_OF_YEAR)-beginRange.get(Calendar.DAY_OF_YEAR)]++;
