@@ -20,7 +20,7 @@ public class ExerciseController extends Controller {
 		//System.out.println("Display exercise "+exerciseName+ " for " + hashedUuid);
 		Student student = Student.find.byId(hashedUuid);
 		if(student == null) {
-			student = new Student(hashedUuid.substring(0,10), "mail@mail.mail", hashedUuid);
+			student = new Student(hashedUuid.substring(0,10), "mail@mail.mail", hashedUuid, "");
 		}
 		//System.out.println("Student name : " + student.name);
 		ArrayList<Quintuplet> quintuplet = new ArrayList<>();

@@ -24,7 +24,7 @@ public class Identity extends Controller {
 				" -- hashed UUID : " + hashUUID + 
 				"\nMail : " + mail + "\n");
 		
-		Student stu = new Student(username, mail, hashUUID);
+		Student stu = new Student(username, mail, hashUUID, UUID);
 		try {
 			stu.save();
 		} catch(PersistenceException ex) {

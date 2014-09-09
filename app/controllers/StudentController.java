@@ -130,7 +130,7 @@ public class StudentController extends Controller {
 					branchName = refName.substring(23); // remove "refs/remotes/origin/PLM"
 					//System.out.println(branchName);
 					if(!branchName.equals("master")) {
-						students.add(new Student(branchName.substring(0,10), "unknown", branchName));
+						students.add(new Student(branchName.substring(0,10), "unknown", branchName, ""));
 					}
 				}
 			}

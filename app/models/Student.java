@@ -16,6 +16,8 @@ public class Student extends Model {
 
 	@Id
 	public String hashedUuid;
+
+    public String uuid;
 	
 	public String name;
 	
@@ -23,8 +25,9 @@ public class Student extends Model {
 
 	public static Finder<String, Student> find = new Finder<String, Student>(String.class, Student.class);
 
-	public Student(String name, String mail, String hashedUuid) {
+	public Student(String name, String mail, String hashedUuid, String uuid) {
 		this.hashedUuid = hashedUuid;
+        this.uuid = uuid;
 		this.name = name;
 		this.mail = mail;
 	}
@@ -46,7 +49,8 @@ public class Student extends Model {
 	public static void create(Student student) {
 		System.out.println("Student :\n"
 				+ "name : " + student.name +"\n"
-				+ "hashedUuid : "+ student.hashedUuid);
+				+ "hashedUuid : "+ student.hashedUuid
+                + "uuid : "+ student.uuid);
 		student.save();
 	}
 	

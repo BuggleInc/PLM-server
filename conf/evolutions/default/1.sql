@@ -1,6 +1,3 @@
-# --- Created by Ebean DDL
-# To stop Ebean DDL generation, remove this comment and start using Evolutions
-
 # --- !Ups
 
 create table assistance_call (
@@ -21,6 +18,7 @@ create table course (
 
 create table student (
   hashed_uuid               varchar(255) not null,
+  uuid                      varchar(255),
   name                      varchar(255),
   mail                      varchar(255),
   constraint pk_student primary key (hashed_uuid))
