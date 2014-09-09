@@ -3,6 +3,8 @@ package controllers;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -21,11 +23,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import models.Commit;
 import models.Course;
 import models.ProgressItem;
 
+import models.Student;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
@@ -33,6 +37,8 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.lib.ObjectLoader;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -119,58 +125,52 @@ public class JGit extends Controller {
 		}
 	}
 	
-	public static String getLastActivity(String hashedUuid) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
-		String result = "";
-		
-		hashedUuid = "PLM"+hashedUuid;
+	public static void getLastActivity(List<Student> students, List<String> lastActivity) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
 			localPath.mkdir();
-
-			// clone
-			//System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
 			Git.cloneRepository().setURI(REMOTE_URL).setDirectory(localPath).call();
 		}
 		
 		Repository repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
 		Git git = new Git(repository);
+        Ref head;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        ObjectLoader loader;
+        ByteArrayOutputStream byteArrayOutputStream;
+        PrintStream ps;
+        String content;
+        long ts;
 
-		git.checkout().setName("master").call();
-//		try {
-//			git.fetch().call();
-//		} catch (TransportException ex) {
-//			System.out.println("Not connected to Internet to fetch the repo.");
-//		}
-		try {
-			CreateBranchCommand create = git.branchCreate();
-			create.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM);
-			create.setName(hashedUuid);
-			create.setStartPoint("origin/" + hashedUuid);
-			create.call();
-		} catch (RefAlreadyExistsException ex) {
+        for(Student s : students) {
+            head = repository.getRef("refs/heads/PLM" + s.hashedUuid);
 
-		}
-
-		// checkout the branch of the current user
-		git.checkout().setName(hashedUuid).call();
-		
-//		try {
-//			git.pull().call();
-//		} catch (TransportException ex) {
-//			System.out.println("Not connected to Internet to fetch the repo.");
-//		}
-		RevWalk walk = new RevWalk(repository);
-		RevCommit commit = null;
-		
-		Iterable<RevCommit> logs = git.log().call();
-		Iterator<RevCommit> i = logs.iterator();
-			
-		if (i.hasNext()) {
-			commit = walk.parseCommit(i.next());
-			result = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(commit.getCommitTime() * 1000L));
-		}
+            if (head == null) { // create local branch
+                try {
+                    CreateBranchCommand create = git.branchCreate();
+                    create.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM);
+                    create.setName("PLM" + s.hashedUuid);
+                    create.setStartPoint("origin/PLM" + s.hashedUuid);
+                    create.call();
+                } catch (RefAlreadyExistsException ex) {
+                    lastActivity.add("0");
+                }
+            }
+            head = repository.getRef("refs/heads/PLM" + s.hashedUuid);
+            if (head == null) { // if it's still null
+                lastActivity.add("0");
+            } else {
+                loader = repository.open(head.getObjectId());
+                byteArrayOutputStream = new ByteArrayOutputStream();
+                ps = new PrintStream(byteArrayOutputStream);
+                loader.copyTo(ps);
+                content = new String(byteArrayOutputStream.toByteArray(), "UTF-8");
+                content = content.substring(129, 139);
+                ts = Long.parseLong(content + "000") + 7200;
+                lastActivity.add(sdf.format(ts));
+            }
+        }
 		repository.close();
-		return result;
 	}
 	
 	public static ArrayList<Commit> computeCommits(String hashedUuid) throws IOException, InvalidRemoteException, TransportException, GitAPIException {

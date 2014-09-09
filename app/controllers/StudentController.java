@@ -27,13 +27,11 @@ public class StudentController extends Controller {
 		JGit.fetchRepo();
 		ArrayList<String> lastActivity = new ArrayList<>();
 		List<Student> students = Student.all();
-		for(Student s : students) {
-			try {
-				lastActivity.add(JGit.getLastActivity(s.hashedUuid));
-			} catch (IOException|GitAPIException e) {
-				lastActivity.add("0");
-			}
-		}
+        try {
+            JGit.getLastActivity(students, lastActivity);
+        } catch (IOException|GitAPIException e) {
+            //lastActivity.add("0");
+        }
 		return ok(
 			views.html.students.render(students, lastActivity)
 		);
@@ -42,13 +40,11 @@ public class StudentController extends Controller {
 	public static Result allStudents() {
 		ArrayList<String> lastActivity = new ArrayList<>();
 		List<Student> students = StudentController.getAllStudents();
-		for(Student s : students) {
-			try {
-				lastActivity.add(JGit.getLastActivity(s.hashedUuid));
-			} catch (IOException|GitAPIException e) {
-				lastActivity.add("0");
-			}
-		}
+        try {
+            JGit.getLastActivity(students, lastActivity);
+        } catch (IOException|GitAPIException e) {
+            //lastActivity.add("0");
+        }
 		  return ok(
 			views.html.studentsAll.render(students, lastActivity)
 		  );
