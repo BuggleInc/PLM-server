@@ -30,6 +30,7 @@ public class Commit {
 		evt_class = ""; // to color the row in table (view) (bootstrap class)
 		comment = "";
 		exolang = "";
+        outcome = "";
 		
 		try {
 			JsonParser jsonParser = new JsonParser();
@@ -41,9 +42,12 @@ public class Commit {
 						evt_class = "warning";
 						evt_type = "Switched";
 						break;
-					case "executed": // TODO: check if total = passed tests
+					case "executed":
 						try {
-                            outcome = jo.get("outcome").getAsString();
+                            try { // old commit log format does not contain outcome entry
+                                outcome = jo.get("outcome").getAsString();
+                            } catch(Exception ex) {
+                            }
 							exolang = jo.get("lang").getAsString();
 							if (outcome.equals("pass")) {
 								evt_class = "success";
@@ -57,6 +61,16 @@ public class Commit {
                             }
                             totaltests = jo.get("totaltests").getAsString(); // not present if outcome is "compile"
                             passedtests = jo.get("passedtests").getAsString(); // not present if outcome is "compile"
+
+                            if(evt_type.length() == 0) { // old commit log format support
+                                if(totaltests.equals(passedtests)) {
+                                    evt_class = "success";
+                                    evt_type = "Success";
+                                } else {
+                                    evt_class = "danger";
+                                    evt_type = "Failed";
+                                }
+                            }
 						} catch(Exception ex) {
 						}
 						break;
