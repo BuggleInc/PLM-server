@@ -28,9 +28,9 @@ public class StudentController extends Controller {
 		ArrayList<String> lastActivity = new ArrayList<>();
 		List<Student> students = Student.all();
         try {
-            JGit.getLastActivity(students, lastActivity);
+            lastActivity = JGit.getLastActivity(students);
         } catch (IOException|GitAPIException e) {
-            //lastActivity.add("0");
+            //System.out.println(e);
         }
 		return ok(
 			views.html.students.render(students, lastActivity)
@@ -41,7 +41,7 @@ public class StudentController extends Controller {
 		ArrayList<String> lastActivity = new ArrayList<>();
 		List<Student> students = StudentController.getAllStudents();
         try {
-            JGit.getLastActivity(students, lastActivity);
+            lastActivity = JGit.getLastActivity(students);
         } catch (IOException|GitAPIException e) {
             //lastActivity.add("0");
         }

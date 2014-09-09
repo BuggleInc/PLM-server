@@ -125,7 +125,8 @@ public class JGit extends Controller {
 		}
 	}
 	
-	public static void getLastActivity(List<Student> students, List<String> lastActivity) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+	public static ArrayList<String> getLastActivity(List<Student> students) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+        ArrayList<String> lastActivity = new ArrayList<>();
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
 			localPath.mkdir();
@@ -141,7 +142,6 @@ public class JGit extends Controller {
         PrintStream ps;
         String content;
         long ts;
-
         for(Student s : students) {
             head = repository.getRef("refs/heads/PLM" + s.hashedUuid);
 
@@ -152,11 +152,12 @@ public class JGit extends Controller {
                     create.setName("PLM" + s.hashedUuid);
                     create.setStartPoint("origin/PLM" + s.hashedUuid);
                     create.call();
-                } catch (RefAlreadyExistsException ex) {
-                    lastActivity.add("0");
+                } catch (GitAPIException ex) {
+                    //System.out.println(ex);
                 }
+                head = repository.getRef("refs/heads/PLM" + s.hashedUuid);
             }
-            head = repository.getRef("refs/heads/PLM" + s.hashedUuid);
+
             if (head == null) { // if it's still null
                 lastActivity.add("0");
             } else {
@@ -171,9 +172,11 @@ public class JGit extends Controller {
             }
         }
 		repository.close();
+
+        return lastActivity;
 	}
 	
-	public static ArrayList<Commit> computeCommits(String hashedUuid) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+	public static ArrayList<Commit> computeCommits(String hashedUuid) throws IOException, GitAPIException {
 		hashedUuid = "PLM"+hashedUuid;
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
