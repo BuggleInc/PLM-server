@@ -43,9 +43,11 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.FetchResult;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -58,7 +60,14 @@ public class JGit extends Controller {
 	public static Result index() {
 		return ok("You called the index method of the Git controller.");
 	}
-	
+
+    @Security.Authenticated(Secured.class)
+    public static Result fetchRepoOnDemand() {
+        fetchRepo();
+        return ok(
+                views.html.home.render(request().username())
+        );
+    }
 	public static void fetchRepo() {
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
@@ -75,12 +84,16 @@ public class JGit extends Controller {
 		Repository repository;
 		try {
 			repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
-			Git git = new Git(repository);
 
-			git.checkout().setName("master").call();
-			
-			git.fetch().call();
-		} catch (IOException|GitAPIException e) {
+			//git.checkout().setName("master").call();
+
+           // System.out.println("Starting fetch");
+            FetchResult result = new Git(repository).fetch().setCheckFetchedObjects(true).call();
+            //System.out.println("Messages: " + result.getMessages());
+
+            repository.close();
+        } catch (IOException|GitAPIException e) {
+            System.out.println(e);
 		}
 		
 	}
@@ -143,7 +156,7 @@ public class JGit extends Controller {
         String content;
         long ts;
         for(Student s : students) {
-            head = repository.getRef("refs/heads/PLM" + s.hashedUuid);
+            head = repository.getRef("refs/remotes/origin/PLM" + s.hashedUuid);
 
             if (head == null) { // create local branch
                 try {

@@ -51,3 +51,6 @@ GET		/handleRequest				controllers.Identity.linkIdentity(username:String, UUID:S
 POST    /callHelp                   controllers.AssistanceCallController.handle()
 GET     /callHelp					controllers.AssistanceCallController.getCallHelp()
 POST	/callHelp/:id/delete		controllers.AssistanceCallController.delete(id)
+
+# Git
+GET /fetch                          controllers.JGit.fetchRepoOnDemand()
