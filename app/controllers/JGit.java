@@ -158,7 +158,7 @@ public class JGit extends Controller {
         for(Student s : students) {
             head = repository.getRef("refs/remotes/origin/PLM" + s.hashedUuid);
 
-            if (head == null) { // create local branch
+            if (head == null) { // create local branch if ref not found
                 try {
                     CreateBranchCommand create = git.branchCreate();
                     create.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM);
@@ -168,19 +168,19 @@ public class JGit extends Controller {
                 } catch (GitAPIException ex) {
                     //System.out.println(ex);
                 }
-                head = repository.getRef("refs/heads/PLM" + s.hashedUuid);
+                head = repository.getRef("refs/heads/PLM" + s.hashedUuid); // try again to retrieve branch info
             }
 
             if (head == null) { // if it's still null
-                lastActivity.add("0");
+                lastActivity.add("0"); // to have students and lastActivity with the same length
             } else {
-                loader = repository.open(head.getObjectId());
+                loader = repository.open(head.getObjectId()); // read info
                 byteArrayOutputStream = new ByteArrayOutputStream();
                 ps = new PrintStream(byteArrayOutputStream);
                 loader.copyTo(ps);
-                content = new String(byteArrayOutputStream.toByteArray(), "UTF-8");
+                content = new String(byteArrayOutputStream.toByteArray(), "UTF-8"); // export info as a String
                 content = content.substring(129, 139);
-                ts = Long.parseLong(content + "000") + 7200;
+                ts = Long.parseLong(content + "000"); // timestamps
                 lastActivity.add(sdf.format(ts));
             }
         }

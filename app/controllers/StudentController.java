@@ -24,7 +24,7 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 public class StudentController extends Controller {
 	
 	public static Result students() {
-		JGit.fetchRepo();
+		JGit.fetchRepo(); // fetch to retrieve last info from remote repo
 		ArrayList<String> lastActivity = new ArrayList<>();
 		List<Student> students = Student.all();
         try {
