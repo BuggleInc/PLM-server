@@ -282,11 +282,10 @@ public class JGit extends Controller {
 		for(int j =0; j<eventSummary.size(); j++) {
 			eventSummary.set(j, eventSummary.get(j)*100/cptEvt);
 		}
-		final File path = new File("repo");
 		
 		final ArrayList<ProgressItem> summary = new ArrayList<>();
 		
-		computeProgress(summary, path);
+		computeProgress(summary);
 		
 		return ok(
 			views.html.commits.render(commits, studentname, summary, eventSummary, startCount, switchCount, successCount, failCount, hashedUuid)
@@ -340,7 +339,7 @@ public class JGit extends Controller {
 	/**
 	 * Compute progression for the current repo state
 	 */
-	private static void computeProgress (final ArrayList<ProgressItem> summary, final File path) {
+	private static void computeProgress (final ArrayList<ProgressItem> summary) {
         String pattern = ".*summary", content;
         String[] languages = {"Java", "Python", "Scala", "C", "lightbot"};
         int possible, passed;
