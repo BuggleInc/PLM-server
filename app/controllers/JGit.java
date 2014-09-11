@@ -199,13 +199,13 @@ public class JGit extends Controller {
 		Repository repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
         Ref ref = repository.getRef("refs/remotes/origin/"+hashedUuid);
         RevWalk walk = new RevWalk(repository);
-        RevCommit commit = walk.parseCommit(ref.getObjectId());
-        walk.markStart(commit);
+        RevCommit startCommit = walk.parseCommit(ref.getObjectId());
+        walk.markStart(startCommit);
         ArrayList<Commit> commits = new ArrayList<>();
 
         for (RevCommit rev : walk) {
             String commitJson = rev.getFullMessage();
-            commits.add(new Commit(commitJson, commit.getCommitTime(),commit.getName()));
+            commits.add(new Commit(commitJson, rev.getCommitTime(),rev.getName()));
         }
         
         walk.dispose();
