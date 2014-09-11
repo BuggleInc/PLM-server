@@ -36,14 +36,18 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.FetchResult;
 
+import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.treewalk.filter.PathFilter;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -137,6 +141,7 @@ public class JGit extends Controller {
 	
 	public static ArrayList<String> getLastActivity(List<Student> students) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
         ArrayList<String> lastActivity = new ArrayList<>();
+        int idx;
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
 			localPath.mkdir();
@@ -176,7 +181,9 @@ public class JGit extends Controller {
                 ps = new PrintStream(byteArrayOutputStream);
                 loader.copyTo(ps);
                 content = new String(byteArrayOutputStream.toByteArray(), "UTF-8"); // export info as a String
-                content = content.substring(129, 139);
+                //System.out.println(content);
+                idx = content.indexOf(">"); // to find the timestamp
+                content = content.substring(idx+2, idx+12);
                 ts = Long.parseLong(content + "000"); // timestamps
                 lastActivity.add(sdf.format(ts));
             }
@@ -334,62 +341,75 @@ public class JGit extends Controller {
 	 * Compute progression for the current repo state
 	 */
 	private static void computeProgress (final ArrayList<ProgressItem> summary, final File path) {
-		String pattern = "*.summary";
-		FileSystem fs = FileSystems.getDefault();
-		final PathMatcher matcher = fs.getPathMatcher("glob:" + pattern); // to match file names ending with .summary
+        String pattern = ".*summary", content;
+        String[] languages = {"Java", "Python", "Scala", "C", "lightbot"};
+        int possible, passed;
+        ByteArrayOutputStream byteArrayOutputStream;
+        PrintStream ps;
+        JsonParser jsonParser = new JsonParser();
+        JsonObject jo;
 
-		FileVisitor<Path> matcherVisitor = new SimpleFileVisitor<Path>() {
-			@Override
-			public FileVisitResult visitFile(Path file, BasicFileAttributes attribs) {
-				Path name = file.getFileName();
-				String[] languages = {"Java", "Python", "Scala", "C", "lightbot"};
-				if (matcher.matches(name)) { // if file matches
-					String s = name + "";
-					String[] tab = s.split("\\.", 0);
-					String lessonNameTmp = "";
-					for (int i = 0; i <= tab.length - 2; i++) { // get the lesson id
-						lessonNameTmp += tab[i]+"."; // build the lesson name
-					}
-					final String lessonName = lessonNameTmp;
-					
-					// Read lessonID.summary
-					Path sourcePath = Paths.get("repo/"+lessonName+"summary"); // the last dot is added in the for loop
-					String summaryLine = "";
-					try (BufferedReader reader = Files.newBufferedReader(sourcePath, StandardCharsets.UTF_8)) {
-						summaryLine = reader.readLine();
-						//System.out.println("Summary : "+ summaryLine);
-					} catch (IOException ex) {
-						//System.out.println("Can't open "+sourcePath);
-					}
-					// Retrieve informations on per language progression
-					JsonParser jsonParser = new JsonParser();
-					//System.out.println(name + "  "+ sourcePath +"  :     "+ summaryLine);
-					JsonObject jo = (JsonObject)jsonParser.parse(summaryLine);
-					int possible = 0, passed = 0 ;
-					for (final String p : languages) { // for each programming language, how many exercises are done/possible 
-						possible = 0;
-						passed = 0;
-						try {
-							possible = jo.get("possible"+p).getAsInt();
-							try {
-								passed = jo.get("passed"+p).getAsInt();
-							} catch (Exception ex) { // passed information for the current language not available
-							}
-						} catch (Exception ex) { // in case a language is not in summary
-						}
-						//System.out.println(lessonName + "   " + p + "   " + possible + ", " + passed +" done");
-						if(passed > 0) {
-							summary.add(new ProgressItem(lessonName, p, possible, passed));
-						}
-					}
-				}
-				return FileVisitResult.CONTINUE;
-			}
-		};
-		try {
-			Files.walkFileTree(Paths.get(path.getPath()), matcherVisitor);
-		} catch (IOException ex) {
-		}
+        File localPath = new File("repo/");
+        try {
+            Repository repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
+
+            Ref ref = repository.getRef("refs/remotes/origin/PLM2085ff6e33c686a14ce5f1b978157b9fa0439577");
+            RevWalk walk = new RevWalk(repository);
+            RevCommit commit = walk.parseCommit(ref.getObjectId());
+            RevTree revtree = walk.parseTree(commit.getTree().getId());
+            TreeWalk treeWalk = new TreeWalk(repository);
+            treeWalk.addTree(revtree);
+            treeWalk.setRecursive(false); // summary files are at root
+            while (treeWalk.next()) {
+                if(treeWalk.getPathString().matches(pattern)) {
+                    String lessonName = treeWalk.getPathString().substring(0, treeWalk.getPathString().length()-8); // remove .summary to file name
+                    ObjectId lastCommitId = repository.resolve("refs/remotes/origin/PLM2085ff6e33c686a14ce5f1b978157b9fa0439577");
+
+                    RevWalk revWalk = new RevWalk(repository);
+                    RevCommit studentCommits = revWalk.parseCommit(lastCommitId);
+                    RevTree tree = studentCommits.getTree();
+
+                    TreeWalk studentTreeWalk = new TreeWalk(repository);
+                    studentTreeWalk.addTree(tree);
+                    studentTreeWalk.setRecursive(false);
+                    studentTreeWalk.setFilter(PathFilter.create(lessonName + ".summary"));
+                    if (!studentTreeWalk.next()) {
+                        //System.out.println("Did not find expected file 'welcome.summary'");
+                    }
+
+                    ObjectId objectId = studentTreeWalk.getObjectId(0);
+                    ObjectLoader loader = repository.open(objectId);
+
+                    byteArrayOutputStream = new ByteArrayOutputStream();
+                    ps = new PrintStream(byteArrayOutputStream);
+                    loader.copyTo(ps);
+                    content = new String(byteArrayOutputStream.toByteArray(), "UTF-8"); // export info as a String
+                    revWalk.dispose();
+
+                    jo = (JsonObject)jsonParser.parse(content);
+                    for (final String p : languages) { // for each programming language, how many exercises are done/possible
+                        possible = 0;
+                        passed = -1;
+                        try {
+                            possible = jo.get("possible"+p).getAsInt();
+                            try {
+                                passed = jo.get("passed"+p).getAsInt();
+                            } catch (Exception ex) { // passed information for the current language not available
+                            }
+                        } catch (Exception ex) { // in case a language is not in summary
+                        }
+                        //System.out.println(lessonName + "   " + p + "   " + possible + ", " + passed +" done");
+                        if(passed >= 0) {
+                            summary.add(new ProgressItem(lessonName, p, possible, passed));
+                        }
+                    }
+                }
+            }
+            walk.dispose();
+            repository.close();
+        } catch (IOException e) {//} catch (IOException| GitAPIException e) {
+            System.out.println(e);
+        }
 	}
 
 }
