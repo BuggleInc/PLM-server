@@ -54,8 +54,6 @@ import com.google.gson.JsonParser;
 
 public class JGit extends Controller {
 	public static final String REMOTE_URL = "https://github.com/mquinson/PLM-data.git";
-	
-	public static int passed;
 
 	public static Result index() {
 		return ok("You called the index method of the Git controller.");
@@ -311,8 +309,6 @@ public class JGit extends Controller {
 		final File path = new File("repo");
 		
 		final ArrayList<ProgressItem> summary = new ArrayList<>();
-		
-		passed = 0;
 		
 		computeProgress(summary, path);
 		
