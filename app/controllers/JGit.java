@@ -310,7 +310,6 @@ public class JGit extends Controller {
         Repository repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
 
 		for(String hashedUuid : hashedList) { // for each student
-            System.out.println("refs/remotes/origin/PLM"+hashedUuid);
             lastCommitId = repository.resolve("refs/remotes/origin/PLM"+hashedUuid);
 
             RevWalk revWalk = new RevWalk(repository);
