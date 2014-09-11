@@ -22,7 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import models.Commit;
@@ -190,54 +189,24 @@ public class JGit extends Controller {
 	public static ArrayList<Commit> computeCommits(String hashedUuid) throws IOException, GitAPIException {
 		hashedUuid = "PLM"+hashedUuid;
 		File localPath = new File("repo/");
-		if (!localPath.exists()) {
-			localPath.mkdir();
 
-			// clone
-			//System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
-			Git.cloneRepository().setURI(REMOTE_URL).setDirectory(localPath).call();
-		}
-		
+        JGit.fetchRepo();
+
 		Repository repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
-		Git git = new Git(repository);
+        Ref ref = repository.getRef("refs/remotes/origin/"+hashedUuid);
+        RevWalk walk = new RevWalk(repository);
+        RevCommit commit = walk.parseCommit(ref.getObjectId());
+        walk.markStart(commit);
+        ArrayList<Commit> commits = new ArrayList<>();
 
-		git.checkout().setName("master").call();
-		try {
-			git.fetch().call();
-		} catch (TransportException ex) {
-			System.out.println("Not connected to Internet to fetch the repo.");
-		}
-		try {
-			CreateBranchCommand create = git.branchCreate();
-			create.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM);
-			create.setName(hashedUuid);
-			create.setStartPoint("origin/" + hashedUuid);
-			create.call();
-		} catch (RefAlreadyExistsException ex) {
-
-		}
-
-		// checkout the branch of the current user
-		git.checkout().setName(hashedUuid).call();
-		
-		try {
-			git.pull().call();
-		} catch (TransportException ex) {
-			System.out.println("Not connected to Internet to fetch the repo.");
-		}
-		RevWalk walk = new RevWalk(repository);
-		RevCommit commit = null;
-		
-		Iterable<RevCommit> logs = git.log().call();
-		Iterator<RevCommit> i = logs.iterator();
-			
-		ArrayList<Commit> commits = new ArrayList<>();
-		while (i.hasNext()) {
-			commit = walk.parseCommit(i.next());
-			String commitJson = commit.getFullMessage();
-			commits.add(new Commit(commitJson, commit.getCommitTime(),commit.getName()));
-		}
+        for (RevCommit rev : walk) {
+            String commitJson = rev.getFullMessage();
+            commits.add(new Commit(commitJson, commit.getCommitTime(),commit.getName()));
+        }
+        
+        walk.dispose();
 		repository.close();
+
 		return commits;
 	}
 	
