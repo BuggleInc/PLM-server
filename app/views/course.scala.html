@@ -39,8 +39,12 @@
 							@if(summary.get(i).passed == -1) {
 								Not attempted yet
 							} else {
-								@summary.get(i).passed on @summary.get(i).total
-							}
+                                @if(summary.get(i).passed < 10) { @* to allow a simple sort of the progress column*@
+                                    0@summary.get(i).passed on @summary.get(i).total
+                                } else {
+                                    @summary.get(i).passed on @summary.get(i).total
+                                }
+                            }
 						}
 					</td>
 					<td>

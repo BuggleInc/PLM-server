@@ -292,44 +292,67 @@ public class JGit extends Controller {
 	/**
 	 * Compute the progression of students for a given course
 	 *
-	 * @param uuidList the list of students uuid
+	 * @param hashedList the list of students uuid
 	 * @param course the course
 	 */
-	public static ArrayList<ProgressItem> computeStudentForLesson(ArrayList<String> uuidList, Course course) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
-		final ArrayList<ProgressItem> summary = new ArrayList<>();
-		for(String uuid : uuidList) { // for each student
-			//System.out.println(uuid);
-			checkoutUserBranch(uuid);
-			int possible = 0, passed = 0 ;
-			String p = course.programmingLanguage; // for the programming language
-			
-			Path sourcePath = Paths.get("repo/"+course.name+".summary");
-			String summaryLine;
-			try (BufferedReader reader = Files.newBufferedReader(sourcePath, StandardCharsets.UTF_8)) {
-				summaryLine = reader.readLine();
-				//System.out.println("Summary : "+ summaryLine);
-				
-				// Retrieve informations on per language progression
-				
-				JsonParser jsonParser = new JsonParser();
-				JsonObject jo = (JsonObject)jsonParser.parse(summaryLine);
-				
-				possible = jo.get("possible"+p).getAsInt();
-				try {
-					passed = jo.get("passed"+p).getAsInt();
-				} catch (Exception ex) { // passed information for the current language not available
-				}
-				//System.out.println(course.name + "   " + p + "   " + possible + ", " + passed +" done");
-				if(passed > 0) {
-					summary.add(new ProgressItem(course.name, p, possible, passed));
-				} else { // not attemp
-					summary.add(new ProgressItem(course.name, p, 1, -1));
-				}
-			} catch (IOException ex) { // file does not exists maybe
-				summary.add(new ProgressItem(course.name, p, 1, -1));
-			}
-			
+	public static ArrayList<ProgressItem> computeStudentForLesson(ArrayList<String> hashedList, Course course) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+        JGit.fetchRepo();
+		ArrayList<ProgressItem> summary = new ArrayList<>();
+        File localPath = new File("repo/");
+        int possible, passed;
+        ByteArrayOutputStream byteArrayOutputStream;
+        PrintStream ps;
+        JsonParser jsonParser;
+        JsonObject jo;
+        String content;
+        String programmingLanguage = course.programmingLanguage, courseName = course.name; // for the course programming language
+        ObjectId lastCommitId;
+        Repository repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
+
+		for(String hashedUuid : hashedList) { // for each student
+            System.out.println("refs/remotes/origin/PLM"+hashedUuid);
+            lastCommitId = repository.resolve("refs/remotes/origin/PLM"+hashedUuid);
+
+            RevWalk revWalk = new RevWalk(repository);
+            RevCommit commit = revWalk.parseCommit(lastCommitId);
+            RevTree tree = commit.getTree();
+            TreeWalk treeWalk = new TreeWalk(repository);
+            treeWalk.addTree(tree);
+            treeWalk.setRecursive(false);
+            treeWalk.setFilter(PathFilter.create(courseName+".summary"));
+            if (!treeWalk.next()) {
+                summary.add(new ProgressItem(courseName, programmingLanguage, 1, -1)); // file does not exists in git
+                revWalk.dispose();
+            } else {
+                ObjectId objectId = treeWalk.getObjectId(0);
+                ObjectLoader loader = repository.open(objectId);
+
+                // and then one can the loader to read the file
+                byteArrayOutputStream = new ByteArrayOutputStream();
+                ps = new PrintStream(byteArrayOutputStream);
+                loader.copyTo(ps);
+                content = new String(byteArrayOutputStream.toByteArray(), "UTF-8"); // export info as a String
+
+                revWalk.dispose();
+                passed = -1 ;
+
+                jsonParser = new JsonParser();
+                jo = (JsonObject)jsonParser.parse(content);
+
+                possible = jo.get("possible"+programmingLanguage).getAsInt();
+                try {
+                    passed = jo.get("passed"+programmingLanguage).getAsInt();
+                } catch (Exception ex) { // passed information for the current language not available
+                }
+                //System.out.println(course.name + "   " + p + "   " + possible + ", " + passed +" done");
+                if(passed > -1) {
+                    summary.add(new ProgressItem(courseName, programmingLanguage, possible, passed));
+                } else { // not attemp
+                    summary.add(new ProgressItem(courseName, programmingLanguage, 1, -1));
+                }
+            }
 		}
+        repository.close();
 		return summary;
 	}
 	
