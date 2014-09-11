@@ -299,11 +299,9 @@ public class JGit extends Controller {
 			checkoutUserBranch(uuid);
 			int possible = 0, passed = 0 ;
 			String p = course.programmingLanguage; // for the programming language
-			possible = 0;
 			
-			passed = 0;
 			Path sourcePath = Paths.get("repo/"+course.name+".summary");
-			String summaryLine = "";
+			String summaryLine;
 			try (BufferedReader reader = Files.newBufferedReader(sourcePath, StandardCharsets.UTF_8)) {
 				summaryLine = reader.readLine();
 				//System.out.println("Summary : "+ summaryLine);
@@ -377,8 +375,8 @@ public class JGit extends Controller {
 								passed = jo.get("passed"+p).getAsInt();
 							} catch (Exception ex) { // passed information for the current language not available
 							}
-						} catch (Exception ex) { // in case possibleC is not in summary
-							}
+						} catch (Exception ex) { // in case a language is not in summary
+						}
 						//System.out.println(lessonName + "   " + p + "   " + possible + ", " + passed +" done");
 						if(passed > 0) {
 							summary.add(new ProgressItem(lessonName, p, possible, passed));
