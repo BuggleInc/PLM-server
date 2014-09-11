@@ -285,7 +285,7 @@ public class JGit extends Controller {
 		
 		final ArrayList<ProgressItem> summary = new ArrayList<>();
 		
-		computeProgress(summary);
+		computeProgress(summary, "PLM"+hashedUuid);
 		
 		return ok(
 			views.html.commits.render(commits, studentname, summary, eventSummary, startCount, switchCount, successCount, failCount, hashedUuid)
@@ -339,7 +339,7 @@ public class JGit extends Controller {
 	/**
 	 * Compute progression for the current repo state
 	 */
-	private static void computeProgress (final ArrayList<ProgressItem> summary) {
+	private static void computeProgress (final ArrayList<ProgressItem> summary, String branchName) {
         String pattern = ".*summary", content;
         String[] languages = {"Java", "Python", "Scala", "C", "lightbot"};
         int possible, passed;
@@ -352,7 +352,7 @@ public class JGit extends Controller {
         try {
             Repository repository = FileRepositoryBuilder.create(new File(localPath+"/.git"));
 
-            Ref ref = repository.getRef("refs/remotes/origin/PLM2085ff6e33c686a14ce5f1b978157b9fa0439577");
+            Ref ref = repository.getRef("refs/remotes/origin/"+branchName);
             RevWalk walk = new RevWalk(repository);
             RevCommit commit = walk.parseCommit(ref.getObjectId());
             RevTree revtree = walk.parseTree(commit.getTree().getId());
@@ -362,7 +362,7 @@ public class JGit extends Controller {
             while (treeWalk.next()) {
                 if(treeWalk.getPathString().matches(pattern)) {
                     String lessonName = treeWalk.getPathString().substring(0, treeWalk.getPathString().length()-8); // remove .summary to file name
-                    ObjectId lastCommitId = repository.resolve("refs/remotes/origin/PLM2085ff6e33c686a14ce5f1b978157b9fa0439577");
+                    ObjectId lastCommitId = repository.resolve("refs/remotes/origin/"+branchName);
 
                     RevWalk revWalk = new RevWalk(repository);
                     RevCommit studentCommits = revWalk.parseCommit(lastCommitId);
