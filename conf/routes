@@ -22,6 +22,7 @@ POST	/course/:name/delete		controllers.CourseController.deleteCourse(name:String
 POST	/course/:name/course		controllers.CourseController.course(name:String)
 GET		/courses					controllers.CourseController.courses()
 GET		/handleCourse				controllers.CourseController.createCourse(name:String,teacherName:String,displayName:String,programmingLanguage:String)
+POST    /addAllStudentToCourse/:courseID/ controllers.CourseController.addAllStudentToCourse(courseID:String)
 
 
 # Teachers

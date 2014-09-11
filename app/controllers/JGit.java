@@ -335,14 +335,18 @@ public class JGit extends Controller {
 
                 revWalk.dispose();
                 passed = -1 ;
+                possible = 0;
 
                 jsonParser = new JsonParser();
                 jo = (JsonObject)jsonParser.parse(content);
 
-                possible = jo.get("possible"+programmingLanguage).getAsInt();
                 try {
-                    passed = jo.get("passed"+programmingLanguage).getAsInt();
-                } catch (Exception ex) { // passed information for the current language not available
+                    possible = jo.get("possible"+programmingLanguage).getAsInt();
+                    try {
+                        passed = jo.get("passed"+programmingLanguage).getAsInt();
+                    } catch (Exception ex) { // passed information for the current language not available
+                    }
+                } catch (Exception ex) { // in case a language is not in summary
                 }
                 //System.out.println(course.name + "   " + p + "   " + possible + ", " + passed +" done");
                 if(passed > -1) {

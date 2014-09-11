@@ -7,6 +7,9 @@
 	@form(routes.CourseController.courses()) {
 		<input class="btn btn-primary" type="submit" value="Back to courses list">
 	}
+    @form(routes.CourseController.addAllStudentToCourse(course.name)) {
+        <input class="btn btn-warning" type="submit" value="Add all students">
+    }
 	<br />
 	<table class="table table-hover tablesorter" id="studentsTable">
 		<thead>
