@@ -40,7 +40,7 @@
 						@student.hashedUuid
 					</td>
 					<td>
-						<div class="col-md-5 column">
+						<div class="col-md-7 column">
 							@form(routes.JGit.displayBranch(student.hashedUuid, student.name)) {
 								<input class="btn btn-primary" type="submit" value="Show progress">
 							}
@@ -48,7 +48,9 @@
 						
 						<div class="col-md-3 column">
 							 @form(routes.StudentController.deleteStudent(student.hashedUuid)) {
-								<input class="btn btn-danger" type="submit" value="Delete">
+								<button type="submit" class="btn btn-danger" title="Delete">
+									<i class="glyphicon glyphicon-trash"></i>
+								</button>
 							}
 						</div>
 					</td>
