@@ -14,40 +14,39 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 /**
- *
  * @author Ced
  */
 public class Commit {
 
 	public String exolang, exoswitchto, evt_type, evt_class, totaltests, outcome,
-		passedtests, exoname, commitTime, comment, os, plm_version, java_version, codeLink, errorLink;
+			passedtests, exoname, commitTime, comment, os, plm_version, java_version, codeLink, errorLink;
 
 	public Commit(String json, int commitTime, String commitID) {
 		this.commitTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                          .format(new Date(commitTime * 1000L));
-						  
+				.format(new Date(commitTime * 1000L));
+
 		evt_type = "";
 		evt_class = ""; // to color the row in table (view) (bootstrap class)
 		comment = "";
 		exolang = "";
-        outcome = "";
-		
+		outcome = "";
+
 		try {
 			JsonParser jsonParser = new JsonParser();
-			JsonObject jo = (JsonObject)jsonParser.parse(json);
+			JsonObject jo = (JsonObject) jsonParser.parse(json);
 			//System.out.println(jo.get("evt_type").getAsString());
 			try {
-				switch(jo.get("kind").getAsString()) {
+				switch (jo.get("kind").getAsString()) {
 					case "switched":
 						evt_class = "warning";
 						evt_type = "Switched";
 						break;
 					case "executed":
 						try {
-                            try { // old commit log format does not contain outcome entry
-                                outcome = jo.get("outcome").getAsString();
-                            } catch(Exception ex) {
-                            }
+							try { // old commit log format does not contain outcome entry
+								outcome = jo.get("outcome").getAsString();
+							} catch (Exception ex) {
+							}
 							exolang = jo.get("lang").getAsString();
 							if (outcome.equals("pass")) {
 								evt_class = "success";
@@ -56,22 +55,22 @@ public class Commit {
 								evt_class = "danger";
 								evt_type = "Failed";
 							} else if (outcome.equals("compile")) {
-                                evt_class = "danger";
-                                evt_type = "Compile err";
-                            }
-                            totaltests = jo.get("totaltests").getAsString(); // not present if outcome is "compile"
-                            passedtests = jo.get("passedtests").getAsString(); // not present if outcome is "compile"
+								evt_class = "danger";
+								evt_type = "Compile err";
+							}
+							totaltests = jo.get("totaltests").getAsString(); // not present if outcome is "compile"
+							passedtests = jo.get("passedtests").getAsString(); // not present if outcome is "compile"
 
-                            if(evt_type.length() == 0) { // old commit log format support
-                                if(totaltests.equals(passedtests)) {
-                                    evt_class = "success";
-                                    evt_type = "Success";
-                                } else {
-                                    evt_class = "danger";
-                                    evt_type = "Failed";
-                                }
-                            }
-						} catch(Exception ex) {
+							if (evt_type.length() == 0) { // old commit log format support
+								if (totaltests.equals(passedtests)) {
+									evt_class = "success";
+									evt_type = "Success";
+								} else {
+									evt_class = "danger";
+									evt_type = "Failed";
+								}
+							}
+						} catch (Exception ex) {
 						}
 						break;
 					case "start":
@@ -89,57 +88,57 @@ public class Commit {
 						exolang = jo.get("lang").getAsString();
 						break;
 				}
-			} catch(Exception ex) {
+			} catch (Exception ex) {
 
 			}
 			try {
-				if(evt_type != null && evt_type.equals("Switched")) {
+				if (evt_type != null && evt_type.equals("Switched")) {
 					exoswitchto = jo.get("switchto").getAsString();
 				} else {
 					exoswitchto = "";
 				}
-			} catch(Exception ex) {
+			} catch (Exception ex) {
 
 			}
-			try{
+			try {
 				exoname = jo.get("exo").getAsString();
-			} catch(Exception ex) {
+			} catch (Exception ex) {
 				exoname = "";
 			}
-		} catch(JsonSyntaxException ex) {
-			
+		} catch (JsonSyntaxException ex) {
+
 		}
-		
+
 		String extURL = "";
-		switch(exolang) {
+		switch (exolang) {
 			case "Java":
 				extURL = "java";
-			break;
+				break;
 			case "C":
 				extURL = "c";
-			break;
+				break;
 			case "Scala":
 				extURL = "scala";
-			break;
+				break;
 			case "Python":
 				extURL = "py";
-			break;
+				break;
 			case "lightbot":
 				extURL = "ignored";
-			break;
+				break;
 		}
-		
-		if(evt_type.equals("Switched")) {
+
+		if (evt_type.equals("Switched")) {
 			comment = "Switched to " + exoswitchto;
-		} else if(evt_type.equals("Failed") || evt_type.equals("Success") || evt_type.equals("Compile err")) {
+		} else if (evt_type.equals("Failed") || evt_type.equals("Success") || evt_type.equals("Compile err")) {
 			comment = "Language : " + exolang + ", total tests : " + totaltests + ", passed : " + passedtests;
-			codeLink = "https://github.com/mquinson/PLM-data/blob/"+commitID+"/"+exoname+"."+extURL+".code";
-			errorLink = "https://github.com/mquinson/PLM-data/blob/"+commitID+"/"+exoname+"."+extURL+".error";
+			codeLink = "https://github.com/mquinson/PLM-data/blob/" + commitID + "/" + exoname + "." + extURL + ".code";
+			errorLink = "https://github.com/mquinson/PLM-data/blob/" + commitID + "/" + exoname + "." + extURL + ".error";
 		} else if (evt_type.equals("Start")) {
 			comment = "OS : " + os + ", PLM_VERSION : " + plm_version + ", JAVA_VERSION : " + java_version;
 		} else if (evt_type.equals("Help")) {
 			comment = comment + " ; Language : " + exolang;
-			codeLink = "https://github.com/mquinson/PLM-data/blob/"+commitID+"/"+exoname+"."+extURL+".code";
+			codeLink = "https://github.com/mquinson/PLM-data/blob/" + commitID + "/" + exoname + "." + extURL + ".code";
 		}
 	}
 }

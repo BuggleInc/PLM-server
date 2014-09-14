@@ -1,7 +1,7 @@
 package models;
 
 public class ProgressItem {
-	
+
 	public String lessonName, language;
 	public int total, passed, percent;
 
@@ -10,7 +10,7 @@ public class ProgressItem {
 		this.language = language;
 		this.total = total;
 		this.passed = passed;
-		this.percent =  passed*100/total;
+		this.percent = passed * 100 / total;
 	}
-	
+
 }

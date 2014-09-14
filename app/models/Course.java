@@ -13,7 +13,7 @@ import play.db.ebean.Model;
 @Entity
 public class Course extends Model {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	public String name;
 
@@ -26,15 +26,15 @@ public class Course extends Model {
 
 	@ManyToMany(cascade = CascadeType.REMOVE)
 	public List<Teacher> teachers = new ArrayList<Teacher>();
-	
+
 	public static Finder<String, Course> find = new Finder<String, Course>(String.class, Course.class);
 
-    public static int count() {
-        return find.findRowCount();
-    }
-	
+	public static int count() {
+		return find.findRowCount();
+	}
+
 	public static List<Course> all() {
-	  return find.all();
+		return find.all();
 	}
 
 	public static void create(Course course) {
@@ -43,16 +43,16 @@ public class Course extends Model {
 		course.save();
 		course.saveManyToManyAssociations("students");
 	}
-	
+
 	public static void addTeacher(Course course, Teacher teacher) {
 		course.teachers.add(teacher);
 		course.save();
 		course.saveManyToManyAssociations("students");
 		teacher.save();
 	}
-	
+
 	public static void delete(String name, String s) {
 		find.byId(name).delete();
 	}
-	
+
 }

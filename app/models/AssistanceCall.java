@@ -18,16 +18,16 @@ public class AssistanceCall extends Model {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public String id;
-	
+
 	public String hostname;
-	
+
 	public String date;
-	
+
 	public String details;
-	
+
 	@ManyToOne
 	public Student student;
-	
+
 
 	public static Finder<String, AssistanceCall> find = new Finder<String, AssistanceCall>(String.class, AssistanceCall.class);
 
@@ -40,12 +40,12 @@ public class AssistanceCall extends Model {
 		this.details = details;
 	}
 
-    public static int count() {
-        return find.findRowCount();
-    }
-	
+	public static int count() {
+		return find.findRowCount();
+	}
+
 	public static List<AssistanceCall> all() {
-	  return find.all();
+		return find.all();
 	}
 
 	public static void create(AssistanceCall assistanceCall) {
@@ -56,9 +56,9 @@ public class AssistanceCall extends Model {
 //				+ "hostname : "+ assistanceCall.hostname);
 		assistanceCall.save();
 	}
-	
+
 	public static void delete(String id, String s) {
 		find.byId(id).delete();
 	}
-	
+
 }

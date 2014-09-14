@@ -19,8 +19,8 @@ public class ExerciseController extends Controller {
 	public static Result display(String hashedUuid, String exerciseName, int limit) {
 		//System.out.println("Display exercise "+exerciseName+ " for " + hashedUuid);
 		Student student = Student.find.byId(hashedUuid);
-		if(student == null) {
-			student = new Student(hashedUuid.substring(0,10), "mail@mail.mail", hashedUuid, "");
+		if (student == null) {
+			student = new Student(hashedUuid.substring(0, 10), "mail@mail.mail", hashedUuid, "");
 		}
 		//System.out.println("Student name : " + student.name);
 		ArrayList<Quintuplet> quintuplet = new ArrayList<>();
@@ -29,20 +29,20 @@ public class ExerciseController extends Controller {
 			commits = JGit.computeCommits(hashedUuid);
 		} catch (IOException | GitAPIException e) { // TODO
 		}
-		for(Commit c : commits) {
-			if(quintuplet.size() < limit && (c.evt_type.equals("Success") || c.evt_type.equals("Failed")) && c.exoname.equals(exerciseName)) {
-				if(c.totaltests.equals("-1")) { // compilation error
-					
+		for (Commit c : commits) {
+			if (quintuplet.size() < limit && (c.evt_type.equals("Success") || c.evt_type.equals("Failed")) && c.exoname.equals(exerciseName)) {
+				if (c.totaltests.equals("-1")) { // compilation error
+
 				}
 				quintuplet.add(new Quintuplet(c.commitTime, c.passedtests, c.totaltests, c.codeLink, c.errorLink));
 			}
 		}
 		return ok(
-			views.html.exerciseGraph.render(
-					student,
-					quintuplet,
-					exerciseName
-			)
+				views.html.exerciseGraph.render(
+						student,
+						quintuplet,
+						exerciseName
+				)
 		);
 	}
 

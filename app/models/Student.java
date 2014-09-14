@@ -17,17 +17,17 @@ public class Student extends Model {
 	@Id
 	public String hashedUuid;
 
-    public String uuid;
-	
+	public String uuid;
+
 	public String name;
-	
+
 	public String mail;
 
 	public static Finder<String, Student> find = new Finder<String, Student>(String.class, Student.class);
 
 	public Student(String name, String mail, String hashedUuid, String uuid) {
 		this.hashedUuid = hashedUuid;
-        this.uuid = uuid;
+		this.uuid = uuid;
 		this.name = name;
 		this.mail = mail;
 	}
@@ -38,24 +38,24 @@ public class Student extends Model {
 	}
 
 
-    public static int count() {
-        return find.findRowCount();
-    }
-	
+	public static int count() {
+		return find.findRowCount();
+	}
+
 	public static List<Student> all() {
-	  return find.all();
+		return find.all();
 	}
 
 	public static void create(Student student) {
 		System.out.println("Student :\n"
-				+ "name : " + student.name +"\n"
-				+ "hashedUuid : "+ student.hashedUuid
-                + "uuid : "+ student.uuid);
+				+ "name : " + student.name + "\n"
+				+ "hashedUuid : " + student.hashedUuid
+				+ "uuid : " + student.uuid);
 		student.save();
 	}
-	
+
 	public static void delete(String hashedUuid, String s) {
 		find.byId(hashedUuid).delete();
 	}
-	
+
 }

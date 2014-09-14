@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class AssistanceCallController extends Controller {
-	
+
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result handle() {
 		JsonNode json = request().body().asJson();
@@ -59,21 +59,21 @@ public class AssistanceCallController extends Controller {
 				result.put("message", "Call canceled");
 				return ok(result);
 			}
-			
+
 		}
 		return TODO;
 	}
-	
+
 	@Security.Authenticated(Secured.class)
 	public static Result getCallHelp() {
-	  return ok(
-		views.html.assistanceCall.render(AssistanceCall.all())
-	  );
+		return ok(
+				views.html.assistanceCall.render(AssistanceCall.all())
+		);
 	}
-	
+
 	@Security.Authenticated(Secured.class)
 	public static Result delete(String id) {
-		  AssistanceCall.delete(id, "");
-		  return redirect(routes.AssistanceCallController.getCallHelp());
-		}
+		AssistanceCall.delete(id, "");
+		return redirect(routes.AssistanceCallController.getCallHelp());
+	}
 }

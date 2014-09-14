@@ -16,9 +16,9 @@ public class Teacher extends Model {
 
 	@Id
 	public String name;
-	
+
 	public String password;
-	
+
 	public static Finder<String, Teacher> find = new Finder<String, Teacher>(String.class, Teacher.class);
 
 	public Teacher(String name, String password) {
@@ -27,27 +27,27 @@ public class Teacher extends Model {
 	}
 
 
-    public static int count() {
-        return find.findRowCount();
-    }
-	
+	public static int count() {
+		return find.findRowCount();
+	}
+
 	public static List<Teacher> all() {
-	  return find.all();
+		return find.all();
 	}
 
 	public static void create(Teacher teacher) {
 		System.out.println("teacher :\n"
 				+ "name : " + teacher.name);
-	  teacher.save();
+		teacher.save();
 	}
-	
+
 	public static void delete(String name, String s) {
-	  find.byId(name).delete();
+		find.byId(name).delete();
 	}
 
 
 	public static Object authenticate(String login, String password) {
 		return find.where().eq("name", login).eq("password", password).findUnique();
 	}
-	
+
 }
