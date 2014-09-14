@@ -6,6 +6,15 @@ import java.util.List;
 import java.io.File;
 import java.io.IOException;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import models.Course;
 import models.Student;
 
@@ -14,8 +23,6 @@ import play.mvc.*;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -133,5 +140,25 @@ public class StudentController extends Controller {
 		} catch (IOException | GitAPIException ex) {
 		}
 		return students;
+	}
+
+	public static Result export() {
+		// build json file and then send it to client
+		JsonObject jsonObject, jsonRoot = new JsonObject();
+		JsonArray jsonArray = new JsonArray();
+		for(Student s : Student.all()) {
+			jsonObject = new JsonObject();
+			Student.toJSON(jsonObject, s);
+			jsonArray.add(jsonObject);
+		}
+		jsonRoot.add("Students", jsonArray);
+		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
+		System.out.println(gson.toJson(jsonRoot));
+		try {
+			Files.write(Paths.get("students.json"), gson.toJson(jsonRoot).getBytes());
+			return ok(new java.io.File("students.json"));
+		}catch(IOException ex) {
+			return Application.index();
+		}
 	}
 }

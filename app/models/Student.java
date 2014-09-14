@@ -1,12 +1,13 @@
 package models;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+
+import com.google.gson.JsonObject;
 
 import play.db.ebean.Model;
 
@@ -56,6 +57,13 @@ public class Student extends Model {
 
 	public static void delete(String hashedUuid, String s) {
 		find.byId(hashedUuid).delete();
+	}
+
+	public static void toJSON(JsonObject jsonObject, Student s) {
+		jsonObject.addProperty("hashedUuid", s.hashedUuid);
+		jsonObject.addProperty("uuid", s.uuid);
+		jsonObject.addProperty("name", s.name);
+		jsonObject.addProperty("mail", s.mail);
 	}
 
 }
