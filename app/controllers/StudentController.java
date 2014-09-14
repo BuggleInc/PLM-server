@@ -153,7 +153,6 @@ public class StudentController extends Controller {
 		}
 		jsonRoot.add("Students", jsonArray);
 		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
-		System.out.println(gson.toJson(jsonRoot));
 		try {
 			Files.write(Paths.get("students.json"), gson.toJson(jsonRoot).getBytes());
 			return ok(new java.io.File("students.json"));
