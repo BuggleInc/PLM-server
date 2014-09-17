@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
+import controllers.Identity;
 import play.db.ebean.Model;
 
 @Entity
@@ -47,7 +48,7 @@ public class Teacher extends Model {
 
 
 	public static Object authenticate(String login, String password) {
-		return find.where().eq("name", login).eq("password", password).findUnique();
+		return find.where().eq("name", login).eq("password", Identity.hashed(password)).findUnique();
 	}
 
 }

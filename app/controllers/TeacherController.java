@@ -10,12 +10,12 @@ import play.mvc.Security;
 public class TeacherController extends Controller {
 
 	public static Result createTeacher(String name, String password) {
-		Teacher teacher = new Teacher(name, password);
+		Teacher teacher = new Teacher(name, Identity.hashed(password));
 
 		Teacher.create(teacher);
-
+		flash("success", "Teacher created");
 		return ok(
-				views.html.createTeacherOk.render()
+				views.html.teachers.render(Teacher.all(), Course.all())
 		);
 	}
 
