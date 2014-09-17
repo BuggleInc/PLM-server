@@ -44,10 +44,11 @@ GET		/export				        controllers.StudentController.export()
 # Exercise
 POST /exercise/:hashedUuid/:exerciceName/:limit controllers.ExerciseController.display(hashedUuid:String, exerciceName:String, limit:Integer)
 
-# Link identity
+# Identity
 GET		/link						controllers.Identity.linkForm(UUID:String)
 GET		/linkUUID					controllers.Identity.linkFormUUID()
 GET		/handleRequest				controllers.Identity.linkIdentity(username:String, UUID:String, mail:String)
+POST    /linkedName                 controllers.Identity.getLinkedName()
 
 # Call for help
 POST    /callHelp                   controllers.AssistanceCallController.handle()

@@ -6,8 +6,15 @@ import java.security.NoSuchAlgorithmException;
 import javax.persistence.PersistenceException;
 
 import models.Student;
+
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.libs.Json;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+
 
 public class Identity extends Controller {
 
@@ -62,6 +69,20 @@ public class Identity extends Controller {
 			e.printStackTrace();
 		}
 		return sb.toString();
+	}
+
+	public static Result getLinkedName() {
+		JsonNode json = request().body().asJson();
+		String uuid = json.findPath("uuid").textValue();
+		ObjectNode result = Json.newObject();
+		try {
+			Student s = Student.find.byId(hashed(uuid));
+			result.put("name", s.name);
+		} catch (Exception e) {
+			result.put("name", "Not linked");
+		}
+
+		return ok(result);
 	}
 
 }
