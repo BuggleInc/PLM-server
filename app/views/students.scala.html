@@ -31,17 +31,17 @@
 						@lastActivity.get(i)
 					</td>
 					<td>
-						@student.name
+						@student.getName()
 					</td>
 					<td>
-						@student.mail
+						@student.getEmail()
 					</td>
 					<td>
 						@student.hashedUuid
 					</td>
 					<td>
 						<div class="col-md-7 column">
-							@form(routes.JGit.displayBranch(student.hashedUuid, student.name)) {
+							@form(routes.JGit.displayBranch(student.hashedUuid, student.getName())) {
 								<input class="btn btn-primary" type="submit" value="Show progress">
 							}
 						</div>

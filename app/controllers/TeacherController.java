@@ -6,9 +6,9 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-@Security.Authenticated(Secured.class)
 public class TeacherController extends Controller {
 
+    @Security.Authenticated(Secured.class)
 	public static Result createTeacher(String name, String password) {
 		Teacher teacher = new Teacher(name, Identity.hashed(password));
 
@@ -19,6 +19,7 @@ public class TeacherController extends Controller {
 		);
 	}
 
+    @Security.Authenticated(Secured.class)
 	public static Result deleteTeacher(String name) {
 		Teacher.delete(name, "");
 		return redirect(routes.TeacherController.teachers());
@@ -30,6 +31,7 @@ public class TeacherController extends Controller {
 		);
 	}
 
+    @Security.Authenticated(Secured.class)
 	public static Result createTeacherForm() {
 		return ok(
 				views.html.createTeacher.render()

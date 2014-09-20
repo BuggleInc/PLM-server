@@ -66,4 +66,22 @@ public class Student extends Model {
 		jsonObject.addProperty("mail", s.mail);
 	}
 
+    public String getName() {
+        if(play.mvc.Http.Context.current().session().get("login") == null) {
+            return "Anonymous ";
+        }
+        else {
+            return name;
+        }
+    }
+
+    public String getEmail() {
+        if(play.mvc.Http.Context.current().session().get("login") == null) {
+            return "email";
+        }
+        else {
+            return mail;
+        }
+    }
+
 }

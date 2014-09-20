@@ -27,7 +27,6 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
-@Security.Authenticated(Secured.class)
 public class StudentController extends Controller {
 
 	public static Result students() {
@@ -57,6 +56,7 @@ public class StudentController extends Controller {
 		);
 	}
 
+    @Security.Authenticated(Secured.class)
 	public static Result joinCourse(String courseName, String uuid) {
 		Course course = Course.find.byId(courseName);
 		Student student = Student.find.byId(uuid);
@@ -89,18 +89,21 @@ public class StudentController extends Controller {
 		return redirect(routes.StudentController.student(uuid));
 	}
 
+    @Security.Authenticated(Secured.class)
 	public static Result student(String uuid) {
 		return ok(
 				views.html.student.render(Student.find.byId(uuid), Course.all())
 		);
 	}
 
+    @Security.Authenticated(Secured.class)
 	public static Result deleteStudent(String hashedUuid) {
 		Student.delete(hashedUuid, "");
 		return redirect(routes.StudentController.students());
 	}
 
 
+    @Security.Authenticated(Secured.class)
 	public static Result leaveCourse(String name, String uuid) {
 		Course course = Course.find.byId(name);
 		Student student = Student.find.byId(uuid);
@@ -142,6 +145,7 @@ public class StudentController extends Controller {
 		return students;
 	}
 
+    @Security.Authenticated(Secured.class)
 	public static Result export() {
 		// build json file and then send it to client
 		JsonObject jsonObject, jsonRoot = new JsonObject();

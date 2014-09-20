@@ -64,7 +64,6 @@ public class AssistanceCallController extends Controller {
 		return TODO;
 	}
 
-	@Security.Authenticated(Secured.class)
 	public static Result getCallHelp() {
 		return ok(
 				views.html.assistanceCall.render(AssistanceCall.all())

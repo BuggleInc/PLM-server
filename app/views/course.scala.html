@@ -35,7 +35,7 @@
 						@{i+1}
 					</td>
 					<td>
-						@student.name
+						@student.getName()
 					</td>
 					<td>
 						@if(summary.size() > i){
@@ -52,7 +52,7 @@
 					</td>
 					<td>
 						<div class="col-md-4 column">
-							@form(routes.JGit.displayBranch(student.hashedUuid, student.name)) {
+							@form(routes.JGit.displayBranch(student.hashedUuid, student.getName())) {
 								<input class="btn btn-primary" type="submit" value="Show progress">
 							}
 						</div>

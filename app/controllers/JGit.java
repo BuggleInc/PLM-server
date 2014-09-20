@@ -53,7 +53,6 @@ public class JGit extends Controller {
 		return ok("You called the index method of the Git controller.");
 	}
 
-	@Security.Authenticated(Secured.class)
 	public static Result fetchRepoOnDemand() {
 		fetchRepo();
 		return ok(

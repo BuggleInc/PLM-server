@@ -15,7 +15,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-@Security.Authenticated(Secured.class)
 public class CourseController extends Controller {
 
 	public static Result course(String name) {
@@ -46,12 +45,14 @@ public class CourseController extends Controller {
 		);
 	}
 
+    @Security.Authenticated(Secured.class)
 	public static Result createCourseForm() {
 		return ok(
 				views.html.createCourse.render(Teacher.all())
 		);
 	}
 
+    @Security.Authenticated(Secured.class)
 	public static Result addTeacher(String courseName, String teacherName) {
 		Teacher teacher = Teacher.find.byId(teacherName);
 		Course course = Course.find.byId(courseName);
@@ -61,6 +62,7 @@ public class CourseController extends Controller {
 		);
 	}
 
+    @Security.Authenticated(Secured.class)
 	public static Result createCourse(String name, String teacherName, String displayName, String programmingLanguage) {
 		Teacher teacher = Teacher.find.byId(teacherName);
 		// System.out.println("Teacher name :"+teacher.name);
@@ -80,12 +82,14 @@ public class CourseController extends Controller {
 
 	}
 
+    @Security.Authenticated(Secured.class)
 	public static Result deleteCourse(String name) {
 		Course course = Course.find.byId(name);
 		Course.delete(name, "");
 		return redirect(routes.CourseController.courses());
 	}
 
+    @Security.Authenticated(Secured.class)
 	public static Result addAllStudentToCourse(String courseID) {
 		//Course course = Course.find.byId(courseID);
 		//for(Student s : Student.all()) {
