@@ -37,7 +37,7 @@
 						@call.date
 					</td>
 					<td>
-						@call.student.name
+						@call.student.getName()
 					</td>
 					<td>
 						@call.details
@@ -47,7 +47,7 @@
 					</td>
 					<td>
 						<div class="col-md-6 column">
-							@form(routes.JGit.displayBranch(call.student.hashedUuid, call.student.name)) {
+							@form(routes.JGit.displayBranch(call.student.hashedUuid, call.student.getName())) {
 								<input class="btn btn-primary" type="submit" value="View student">
 							}
 						</div>
