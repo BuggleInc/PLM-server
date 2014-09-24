@@ -14,18 +14,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import models.Commit;
-import models.Course;
-import models.ProgressItem;
-
-import models.Student;
+import models.*;
 
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
@@ -45,6 +40,7 @@ import play.mvc.Security;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 
 public class JGit extends Controller {
 	public static final String REMOTE_URL = "https://github.com/mquinson/PLM-data.git";
@@ -88,46 +84,6 @@ public class JGit extends Controller {
 			System.out.println(e);
 		}
 
-	}
-
-	private static void checkoutUserBranch(String hashedUuid) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
-		hashedUuid = "PLM" + hashedUuid;
-		File localPath = new File("repo/");
-		if (!localPath.exists()) {
-			localPath.mkdir();
-
-			// clone
-			//System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
-			Git.cloneRepository().setURI(REMOTE_URL).setDirectory(localPath).call();
-		}
-
-		Repository repository = FileRepositoryBuilder.create(new File(localPath + "/.git"));
-		Git git = new Git(repository);
-
-		git.checkout().setName("master").call();
-		try {
-			git.fetch().call();
-		} catch (TransportException ex) {
-			System.out.println("Not connected to Internet to fetch the repo.");
-		}
-		try {
-			CreateBranchCommand create = git.branchCreate();
-			create.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM);
-			create.setName(hashedUuid);
-			create.setStartPoint("origin/" + hashedUuid);
-			create.call();
-		} catch (RefAlreadyExistsException ex) {
-
-		}
-
-		// checkout the branch of the current user
-		git.checkout().setName(hashedUuid).call();
-
-		try {
-			git.pull().call();
-		} catch (TransportException ex) {
-			System.out.println("Not connected to Internet to fetch the repo.");
-		}
 	}
 
 	public static ArrayList<String> getLastActivity(List<Student> students) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
@@ -426,6 +382,65 @@ public class JGit extends Controller {
 		} catch (IOException e) {//} catch (IOException| GitAPIException e) {
 			System.out.println(e);
 		}
+	}
+
+	public static ArrayList<Feedback> getFeedBack(List<Student> students) throws IOException, GitAPIException {
+		ArrayList<Feedback> feedbacks = new ArrayList<>();
+		File localPath = new File("repo/");
+		if (!localPath.exists()) {
+			localPath.mkdir();
+			Git.cloneRepository().setURI(REMOTE_URL).setDirectory(localPath).call();
+		}
+
+		Repository repository = FileRepositoryBuilder.create(new File(localPath + "/.git"));
+		Git git = new Git(repository);
+		Ref head;
+		JsonParser jsonParser = new JsonParser();
+		JsonObject jo;
+		for (Student s : students) {
+			head = repository.getRef("refs/remotes/origin/PLM" + s.hashedUuid);
+
+			if (head == null) { // create local branch if ref not found
+				try {
+					CreateBranchCommand create = git.branchCreate();
+					create.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM);
+					create.setName("PLM" + s.hashedUuid);
+					create.setStartPoint("origin/PLM" + s.hashedUuid);
+					create.call();
+				} catch (GitAPIException ex) {
+					//System.out.println(ex);
+				}
+				head = repository.getRef("refs/heads/PLM" + s.hashedUuid); // try again to retrieve branch info
+			}
+
+			if (head != null) {
+				RevWalk walk = new RevWalk(repository);
+
+				RevCommit commit = walk.parseCommit(head.getObjectId());
+				walk.markStart(commit);
+				for (RevCommit rev : walk)
+					if (rev.getFullMessage().contains("exoDifficulty")) {
+						jo = (JsonObject) jsonParser.parse(rev.getFullMessage());
+						Feedback feedback = new Feedback();
+						try {
+							feedback.exercise = jo.get("exo").getAsString();
+							feedback.exoInterest = jo.get("exoInterest").getAsString();
+							feedback.exoDifficulty = jo.get("exoDifficulty").getAsString();
+							feedback.exoComment = jo.get("exo").getAsString();
+						} catch (Exception ex) {
+							feedback.exercise = "";
+							feedback.exoInterest = "";
+							feedback.exoDifficulty = "";
+							feedback.exoComment = "";
+						}
+						feedbacks.add(feedback);
+					}
+				walk.dispose();
+			}
+		}
+		repository.close();
+
+		return feedbacks;
 	}
 
 }

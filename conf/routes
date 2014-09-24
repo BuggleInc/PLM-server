@@ -55,5 +55,8 @@ POST    /callHelp                   controllers.AssistanceCallController.handle(
 GET     /callHelp					controllers.AssistanceCallController.getCallHelp()
 POST	/callHelp/:id/delete		controllers.AssistanceCallController.delete(id)
 
+# Feedback
+GET /feedbacks                      controllers.FeedbackController.feedbacks()
+
 # Git
 GET /fetch                          controllers.JGit.fetchRepoOnDemand()
