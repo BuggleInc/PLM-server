@@ -261,7 +261,10 @@ public class JGit extends Controller {
 
 		for (String hashedUuid : hashedList) { // for each student
 			lastCommitId = repository.resolve("refs/remotes/origin/PLM" + hashedUuid);
-
+            if(lastCommitId == null) {
+                summary.add(new ProgressItem(courseName, programmingLanguage, 1, -1));
+                continue;
+            }
 			RevWalk revWalk = new RevWalk(repository);
 			RevCommit commit = revWalk.parseCommit(lastCommitId);
 			RevTree tree = commit.getTree();

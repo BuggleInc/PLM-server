@@ -91,11 +91,11 @@ public class CourseController extends Controller {
 
     @Security.Authenticated(Secured.class)
 	public static Result addAllStudentToCourse(String courseID) {
-		//Course course = Course.find.byId(courseID);
-		//for(Student s : Student.all()) {
-		//    course.students.add(s);
-		//}
-		//course.saveManyToManyAssociations("students");
+		Course course = Course.find.byId(courseID);
+		for(Student s : Student.all()) {
+		    course.students.add(s);
+		}
+		course.saveManyToManyAssociations("students");
 		flash("success", "Students added to " + courseID + " course");
 		return controllers.CourseController.course(courseID);
 	}
