@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package models;
+package git.browse;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,8 +18,8 @@ import com.google.gson.JsonSyntaxException;
  */
 public class Commit {
 
-	public String exolang, exoswitchto, evt_type, evt_class, totaltests, outcome,
-			passedtests, exoname, commitTime, comment, os, plm_version, java_version, codeLink, errorLink;
+	public String exolang, exoswitchto, evt_type, evt_class, totaltests="", outcome,
+			passedtests="", exoname, commitTime, comment, os, plm_version, java_version, codeLink, errorLink;
 
 	public Commit(String json, int commitTime, String commitID) {
 		this.commitTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -41,6 +41,10 @@ public class Commit {
 						evt_class = "warning";
 						evt_type = "Switched";
 						break;
+					case "reverted":
+						evt_class = "warning";
+						evt_type = "Reverted";
+						break;
 					case "executed":
 						try {
 							try { // old commit log format does not contain outcome entry
@@ -56,12 +60,14 @@ public class Commit {
 								evt_type = "Failed";
 							} else if (outcome.equals("compile")) {
 								evt_class = "danger";
-								evt_type = "Compile err";
+								evt_type = "Compilation error";
 							}
-							totaltests = jo.get("totaltests").getAsString(); // not present if outcome is "compile"
-							passedtests = jo.get("passedtests").getAsString(); // not present if outcome is "compile"
+							if (jo.get("totaltests") != null)
+								totaltests = jo.get("totaltests").getAsString(); // not present if outcome is "compile"
+							if (jo.get("passedtests") != null)
+								passedtests = jo.get("passedtests").getAsString(); // not present if outcome is "compile"
 
-							if (evt_type.length() == 0) { // old commit log format support
+							if (evt_type.isEmpty()) { // old commit log format support
 								if (totaltests.equals(passedtests)) {
 									evt_class = "success";
 									evt_type = "Success";
@@ -71,15 +77,32 @@ public class Commit {
 								}
 							}
 						} catch (Exception ex) {
+							ex.printStackTrace();
 						}
 						break;
 					case "start":
+					case "started":
 						evt_class = "active";
 						evt_type = "Start";
 						os = jo.get("os").getAsString();
 						plm_version = jo.get("plm").getAsString();
 						java_version = jo.get("java").getAsString();
 						break;
+					case "leaved":
+						evt_class = "active";
+						evt_type = "Stop";
+						os = jo.get("os").getAsString();
+						plm_version = jo.get("plm").getAsString();
+						java_version = jo.get("java").getAsString();
+						break;
+						
+					case "readTip":
+						evt_class = "tip";
+						evt_type = "Read";
+						// ({"kind":"readTip","exo":"sort.basic.lessons.sort.basic.bubble.AlgBubbleSort1","course":"","id":"#tip-1","outcome":"pass","lang":"Scala"})
+
+						break;
+						
 					case "callForHelp":
 					case "cancelCallForHelp": // no break : same operations
 						comment = jo.get("kind").getAsString();
@@ -89,7 +112,7 @@ public class Commit {
 						break;
 				}
 			} catch (Exception ex) {
-
+				ex.printStackTrace();
 			}
 			try {
 				if (evt_type != null && evt_type.equals("Switched")) {
