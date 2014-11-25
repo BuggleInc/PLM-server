@@ -1,18 +1,21 @@
 package git.browse;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import models.Commit;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+
+import controllers.JGit;
 
 /* This code is terribly inefficient as we are looping over all the commits and for each of them, we seach for all branches the commit in which it is... */
 // http://stackoverflow.com/questions/15822544/jgit-how-to-get-all-commits-of-a-branch-without-changes-to-the-working-direct
@@ -48,13 +51,6 @@ public class ReadCommit {
 		List<Ref> branches = git.branchList().setListMode(ListMode.REMOTE).call();
 		System.out.println("There is "+ branches.size() + " branches!");
 		
-		// Retrieve all commits
-		Iterable<RevCommit> commits = git.log().all().call();
-
-	    RevWalk walk = new RevWalk(repo);
-		// Traverse all commits, accumulating some statistics about it
-		int totalCount=0;
-		
 		Map<String,Integer> passed = new HashMap<String,Integer>();
 		Map<String,Integer> failed = new HashMap<String,Integer>();
 		Map<String,Integer> compile = new HashMap<String,Integer>();
@@ -64,36 +60,15 @@ public class ReadCommit {
 		Map<String,Integer> tip = new HashMap<String,Integer>();
 		Map<String,Integer> revert = new HashMap<String,Integer>();
 		
-		for(RevCommit rev: commits) {
-			totalCount++;
-		} 
-		System.out.print("Reading all "+totalCount+" commits...");
-
-		totalCount = 0;
-		commits = git.log().all().call();
-		for(RevCommit rev: commits) {
-			totalCount++;
-			Commit commit = new Commit(rev.getFullMessage(), rev.getCommitTime(), rev.getName());
-
-			if(totalCount%100 == 0) {
-				if (totalCount % 1000 == 0) {
-					System.out.print("("+totalCount+" done)");
-					if (totalCount % 5000 == 0)
-						System.out.println();
-				} else {
-					System.out.print(".");
-				}
-//				System.out.println("outcome:" + commit.outcome);
-//				System.out.println("commitTime: "+rev.getCommitTime());
-//				System.out.println("commitMessage: "+rev.getFullMessage());
-//				System.out.println("commitTree: "+rev.getTree());
-			}
-			
-			RevCommit targetCommit = walk.parseCommit(repo.resolve(rev.getName()));
-			for (Ref branch : branches) {
-				if (walk.isMergedInto(targetCommit, walk.parseCommit(branch.getObjectId()))) {
-					String branchName = branch.getName().substring(20);
-
+		int totalCommits = 0;
+		int branchesComputed = 0;
+		
+		for(Ref branch:branches) {
+			if(branch.getName().contains("PLM")) {
+				String branchName = branch.getName().substring(20);
+				ArrayList<Commit> commits = JGit.computeCommits(branchName.substring(3));
+				totalCommits += commits.size();
+				for(Commit commit: commits) {
 					Map<String,Integer> whereTo = null;
 					switch (commit.evt_type) {
 					case "Success":
@@ -123,12 +98,7 @@ public class ReadCommit {
 						whereTo = tip;
 						break;
 					default: 
-						if (!rev.getFullMessage().equals("Empty initial commit") &&
-							!rev.getFullMessage().equals("Initial commit") &&
-							!rev.getFullMessage().startsWith("Merge remote-tracking branch 'origin/PLM") &&
-							!rev.getFullMessage().equals("Manual merging")) {
-							System.err.println("Unhandled evt_type: '"+commit.evt_type+"' ("+rev.getFullMessage()+")");
-						}
+						//System.err.println("Unhandled evt_type: '"+commit.evt_type+"' ("+commit.codeLink+")");
 					}
 
 					if (whereTo == null)
@@ -140,9 +110,12 @@ public class ReadCommit {
 						whereTo.put(branchName, whereTo.get(branchName) + 1);
 					}
 				}
+				branchesComputed++;
+				if(branchesComputed%50 ==0) {
+					System.out.println(branchesComputed + " branches done!");
+				}
 			}
 		}
-		System.out.println(" done.");
 		
 		System.out.println("# branch, passed, failed, compile, help, tip, start, switch, revert");
 		// Display the stats about the branches
@@ -161,6 +134,8 @@ public class ReadCommit {
 
 					" ");
 		}
+		
+		System.out.println("There is "+ totalCommits + " commits!");
 	}
 	static private String display(Integer val) {
 		if (val == null) 
