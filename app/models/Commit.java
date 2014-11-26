@@ -13,15 +13,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-/**
- * @author Ced
- */
 public class Commit {
 
-	public String exolang, exoswitchto, evt_type, evt_class, totaltests, outcome,
-			passedtests, exoname, commitTime, comment, os, plm_version, java_version, codeLink, errorLink;
+	public String exolang, exoswitchto, evt_type, evt_class, totaltests="", outcome,
+			passedtests="", exoname, commitTime, comment, os, plm_version, java_version, codeLink, errorLink;
+	public String commitLog;
 
-	public Commit(String json, int commitTime, String commitID) {
+	private Boolean valid = true;
+	
+	public Commit(String _commitLog, int commitTime, String commitID) {
 		this.commitTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 				.format(new Date(commitTime * 1000L));
 
@@ -30,16 +30,31 @@ public class Commit {
 		comment = "";
 		exolang = "";
 		outcome = "";
+		commitLog = _commitLog;
+		
+		if (commitLog.equals("Create README.md") ||
+			commitLog.equals("Empty initial commit")||
+			commitLog.equals("Initial commit")||
+			commitLog.equals("manual merge\n")||
+			commitLog.equals("Manual merging")||
+			commitLog.startsWith("Merge remote-tracking branch 'origin/PLM")||
+			(commitLog.startsWith("Merge branch 'PLM") && commitLog.contains("https://github.com/mquinson/PLM-data.git into")) ) {
+			valid = false;
+			return;
+		}
 
 		try {
 			JsonParser jsonParser = new JsonParser();
-			JsonObject jo = (JsonObject) jsonParser.parse(json);
-			//System.out.println(jo.get("evt_type").getAsString());
+			JsonObject jo = (JsonObject) jsonParser.parse(_commitLog);
 			try {
 				switch (jo.get("kind").getAsString()) {
 					case "switched":
 						evt_class = "warning";
 						evt_type = "Switched";
+						break;
+					case "reverted":
+						evt_class = "warning";
+						evt_type = "Reverted";
 						break;
 					case "executed":
 						try {
@@ -56,12 +71,14 @@ public class Commit {
 								evt_type = "Failed";
 							} else if (outcome.equals("compile")) {
 								evt_class = "danger";
-								evt_type = "Compile err";
+								evt_type = "Compilation error";
 							}
-							totaltests = jo.get("totaltests").getAsString(); // not present if outcome is "compile"
-							passedtests = jo.get("passedtests").getAsString(); // not present if outcome is "compile"
+							if (jo.get("totaltests") != null)
+								totaltests = jo.get("totaltests").getAsString(); // not present if outcome is "compile"
+							if (jo.get("passedtests") != null)
+								passedtests = jo.get("passedtests").getAsString(); // not present if outcome is "compile"
 
-							if (evt_type.length() == 0) { // old commit log format support
+							if (evt_type.isEmpty()) { // old commit log format support
 								if (totaltests.equals(passedtests)) {
 									evt_class = "success";
 									evt_type = "Success";
@@ -71,15 +88,32 @@ public class Commit {
 								}
 							}
 						} catch (Exception ex) {
+							ex.printStackTrace();
 						}
 						break;
 					case "start":
+					case "started":
 						evt_class = "active";
 						evt_type = "Start";
 						os = jo.get("os").getAsString();
 						plm_version = jo.get("plm").getAsString();
 						java_version = jo.get("java").getAsString();
 						break;
+					case "leaved":
+						evt_class = "active";
+						evt_type = "Stop";
+						os = jo.get("os").getAsString();
+						plm_version = jo.get("plm").getAsString();
+						java_version = jo.get("java").getAsString();
+						break;
+						
+					case "readTip":
+						evt_class = "tip";
+						evt_type = "Read";
+						// ({"kind":"readTip","exo":"sort.basic.lessons.sort.basic.bubble.AlgBubbleSort1","course":"","id":"#tip-1","outcome":"pass","lang":"Scala"})
+
+						break;
+						
 					case "callForHelp":
 					case "cancelCallForHelp": // no break : same operations
 						comment = jo.get("kind").getAsString();
@@ -89,7 +123,7 @@ public class Commit {
 						break;
 				}
 			} catch (Exception ex) {
-
+				ex.printStackTrace();
 			}
 			try {
 				if (evt_type != null && evt_type.equals("Switched")) {
@@ -106,7 +140,9 @@ public class Commit {
 				exoname = "";
 			}
 		} catch (JsonSyntaxException ex) {
-
+			System.err.println(commitLog);
+			ex.printStackTrace();
+			System.exit(1);
 		}
 
 		String extURL = "";
@@ -140,5 +176,9 @@ public class Commit {
 			comment = comment + " ; Language : " + exolang;
 			codeLink = "https://github.com/mquinson/PLM-data/blob/" + commitID + "/" + exoname + "." + extURL + ".code";
 		}
+	}
+	
+	public Boolean isValid() {
+		return valid;
 	}
 }
