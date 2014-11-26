@@ -144,8 +144,6 @@ public class JGit extends Controller {
 		hashedUuid = "PLM" + hashedUuid;
 		File localPath = new File("repo/");
 
-		JGit.fetchRepo();
-
 		Repository repository = FileRepositoryBuilder.create(new File(localPath + "/.git"));
 		Ref ref = repository.getRef("refs/remotes/origin/" + hashedUuid);
 		RevWalk walk = new RevWalk(repository);
