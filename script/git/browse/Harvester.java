@@ -112,13 +112,15 @@ public class Harvester {
 			}
 		}
 	
-		System.out.println("# Week, Active users per week, monday users, tuesday, wednesday, thursday, friday, saturday, sunday");
+		System.out.println("# Week,Weekly actives,  Mo,  Tu,  We,  Th,  Fi,  Sa,  Su");
+
+		String[] months = new String[] {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 		Calendar cal = Calendar.getInstance();
 		for (int year=2014; year<2016; year++) {
 			for (int week=0; week<52; week ++) {
 				Integer w = weekly.get(""+year+"."+week);
 				if (w != null) {
-					System.out.format("%d.%2d  , %3d     ",year,week+1,w);
+					System.out.format("%d.%2d  ,   %3d     ",year,week+1,w);
 					cal.clear();
 					cal.set(Calendar.YEAR, year);
 					cal.set(Calendar.WEEK_OF_YEAR,week);
@@ -157,8 +159,9 @@ public class Harvester {
 					val = daily.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
 					if (val == null) val = 0;
 					System.out.format(", %3s",val);
-					
-					System.out.println();
+
+					cal.set(Calendar.DAY_OF_WEEK,Calendar.MONDAY);
+					System.out.println("  # Week of monday "+ cal.get(Calendar.DAY_OF_MONTH)+ "th of "+months[cal.get(Calendar.MONTH)]);
 				}
 			}
 		}
