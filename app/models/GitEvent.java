@@ -9,28 +9,32 @@ package models;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.eclipse.jgit.revwalk.RevCommit;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-public class Commit {
+public class GitEvent {
 
 	public String exolang, exoswitchto, evt_type, evt_class, totaltests="", outcome,
 			passedtests="", exoname, commitTime, comment, os, plm_version, java_version, codeLink, errorLink;
 	public String commitLog;
 
 	private Boolean valid = true;
+	public RevCommit rev;
 	
-	public Commit(String _commitLog, int commitTime, String commitID) {
+	public GitEvent(RevCommit rev_) {
 		this.commitTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-				.format(new Date(commitTime * 1000L));
+				.format(new Date(rev_.getCommitTime() * 1000L));
+		rev = rev_;
 
 		evt_type = "";
 		evt_class = ""; // to color the row in table (view) (bootstrap class)
 		comment = "";
 		exolang = "";
 		outcome = "";
-		commitLog = _commitLog;
+		commitLog = rev.getFullMessage();
 		
 		if (commitLog.equals("Create README.md") ||
 			commitLog.equals("Empty initial commit")||
@@ -45,7 +49,7 @@ public class Commit {
 
 		try {
 			JsonParser jsonParser = new JsonParser();
-			JsonObject jo = (JsonObject) jsonParser.parse(_commitLog);
+			JsonObject jo = (JsonObject) jsonParser.parse(commitLog);
 			try {
 				switch (jo.get("kind").getAsString()) {
 					case "switched":
@@ -168,13 +172,13 @@ public class Commit {
 			comment = "Switched to " + exoswitchto;
 		} else if (evt_type.equals("Failed") || evt_type.equals("Success") || evt_type.equals("Compile err")) {
 			comment = "Language : " + exolang + ", total tests : " + totaltests + ", passed : " + passedtests;
-			codeLink = "https://github.com/mquinson/PLM-data/blob/" + commitID + "/" + exoname + "." + extURL + ".code";
-			errorLink = "https://github.com/mquinson/PLM-data/blob/" + commitID + "/" + exoname + "." + extURL + ".error";
+			codeLink = "https://github.com/mquinson/PLM-data/blob/" + rev.getName() + "/" + exoname + "." + extURL + ".code";
+			errorLink = "https://github.com/mquinson/PLM-data/blob/" + rev.getName() + "/" + exoname + "." + extURL + ".error";
 		} else if (evt_type.equals("Start")) {
 			comment = "OS : " + os + ", PLM_VERSION : " + plm_version + ", JAVA_VERSION : " + java_version;
 		} else if (evt_type.equals("Help")) {
 			comment = comment + " ; Language : " + exolang;
-			codeLink = "https://github.com/mquinson/PLM-data/blob/" + commitID + "/" + exoname + "." + extURL + ".code";
+			codeLink = "https://github.com/mquinson/PLM-data/blob/" + rev.getName() + "/" + exoname + "." + extURL + ".code";
 		}
 	}
 	

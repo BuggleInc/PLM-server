@@ -1,20 +1,22 @@
 package controllers;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import models.*;
+import models.GitEvent;
+import models.Course;
+import models.Feedback;
+import models.ProgressItem;
+import models.Student;
 
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
@@ -36,54 +38,22 @@ import org.eclipse.jgit.treewalk.filter.PathFilter;
 
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.Security;
+import utils.GitUtils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 
 public class JGit extends Controller {
-	public static final String REMOTE_URL = "https://github.com/mquinson/PLM-data.git";
-
 	public static Result index() {
 		return ok("You called the index method of the Git controller.");
 	}
 
 	public static Result fetchRepoOnDemand() {
-		fetchRepo();
+		GitUtils.fetchRepo();
 		return ok(
 				views.html.home.render(request().username())
 		);
-	}
-
-	public static void fetchRepo() {
-		File localPath = new File("repo/");
-		if (!localPath.exists()) {
-			localPath.mkdir();
-
-			// clone
-			//System.out.println("Cloning from " + REMOTE_URL + " to " + localPath);
-			try {
-				Git.cloneRepository().setURI(REMOTE_URL).setDirectory(localPath).call();
-			} catch (GitAPIException e) {
-			}
-		}
-
-		Repository repository;
-		try {
-			repository = FileRepositoryBuilder.create(new File(localPath + "/.git"));
-
-			//git.checkout().setName("master").call();
-
-			// System.out.println("Starting fetch");
-			FetchResult result = new Git(repository).fetch().setCheckFetchedObjects(true).call();
-			//System.out.println("Messages: " + result.getMessages());
-
-			repository.close();
-		} catch (IOException | GitAPIException e) {
-			System.out.println(e);
-		}
-
 	}
 
 	public static ArrayList<String> getLastActivity(List<Student> students) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
@@ -92,7 +62,7 @@ public class JGit extends Controller {
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
 			localPath.mkdir();
-			Git.cloneRepository().setURI(REMOTE_URL).setDirectory(localPath).call();
+			Git.cloneRepository().setURI(GitUtils.REMOTE_URL).setDirectory(localPath).call();
 		}
 
 		Repository repository = FileRepositoryBuilder.create(new File(localPath + "/.git"));
@@ -140,30 +110,8 @@ public class JGit extends Controller {
 		return lastActivity;
 	}
 
-	public static ArrayList<Commit> computeCommits(String hashedUuid) throws IOException, GitAPIException {
-		hashedUuid = "PLM" + hashedUuid;
-		File localPath = new File("repo/");
-
-		Repository repository = FileRepositoryBuilder.create(new File(localPath + "/.git"));
-		Ref ref = repository.getRef("refs/remotes/origin/" + hashedUuid);
-		RevWalk walk = new RevWalk(repository);
-		RevCommit startCommit = walk.parseCommit(ref.getObjectId());
-		walk.markStart(startCommit);
-		ArrayList<Commit> commits = new ArrayList<>();
-
-		for (RevCommit rev : walk) {
-			String commitJson = rev.getFullMessage();
-			commits.add(new Commit(commitJson, rev.getCommitTime(), rev.getName()));
-		}
-
-		walk.dispose();
-		repository.close();
-
-		return commits;
-	}
-
 	public static Result displayBranch(String hashedUuid, String studentname) throws IOException, InvalidRemoteException, TransportException, GitAPIException, ParseException {
-		ArrayList<Commit> commits = computeCommits(hashedUuid);
+		ArrayList<GitEvent> commits = GitUtils.computeCommits(hashedUuid);
 		ArrayList<Double> eventSummary = new ArrayList<>();
 		int chartDay = 15;
 		Integer[] startCount = new Integer[chartDay], switchCount = new Integer[chartDay], successCount = new Integer[chartDay], failCount = new Integer[chartDay];
@@ -183,7 +131,7 @@ public class JGit extends Controller {
 		beginRange.add(Calendar.DAY_OF_YEAR, -(chartDay - 1));
 		Date dateParsed;
 		boolean addToChartEvent = true;
-		for (Commit c : commits) {
+		for (GitEvent c : commits) {
 			cptEvt++;
 
 			dateParsed = df.parse(c.commitTime); // get a Date object with the String

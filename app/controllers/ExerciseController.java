@@ -3,7 +3,7 @@ package controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import models.Commit;
+import models.GitEvent;
 import models.Student;
 import models.Quintuplet;
 
@@ -23,12 +23,12 @@ public class ExerciseController extends Controller {
 		}
 		//System.out.println("Student name : " + student.name);
 		ArrayList<Quintuplet> quintuplet = new ArrayList<>();
-		ArrayList<Commit> commits = new ArrayList<>();
+		ArrayList<GitEvent> commits = new ArrayList<>();
 		try {
 			commits = JGit.computeCommits(hashedUuid);
 		} catch (IOException | GitAPIException e) { // TODO
 		}
-		for (Commit c : commits) {
+		for (GitEvent c : commits) {
 			if (quintuplet.size() < limit && (c.evt_type.equals("Success") || c.evt_type.equals("Failed")) && c.exoname.equals(exerciseName)) {
 				if (c.totaltests.equals("-1")) { // compilation error
 
