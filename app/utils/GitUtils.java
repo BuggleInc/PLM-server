@@ -120,27 +120,37 @@ public class GitUtils {
 		return out.toString();
 	}
 	static Map<String,String> langExt=null;
+	static private void initLangExt() {
+		langExt = new HashMap<String, String>();
+		langExt.put("Python","py");
+		langExt.put("Java","java");
+		langExt.put("C","c");
+		langExt.put("Scala","scala");
+		langExt.put("lightbot","ignored");
+	}
 
-	static public String getSource(GitEvent commit) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
-		if (langExt == null) {
-			langExt = new HashMap<String, String>();
-			langExt.put("Python","py");
-			langExt.put("Java","java");
-			langExt.put("C","c");
-			langExt.put("Scala","scala");
-			langExt.put("lightbot","ignored");
-		}
+	static public final String getLangFile(GitEvent commit, String fmtName) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+		if (langExt == null) 
+			initLangExt();
 
-		String file = commit.exoname+"."+langExt.get(commit.exolang)+".code";
+		String file = String.format(fmtName, langExt.get(commit.exolang));
+		
 		String source = GitUtils.getFileContent(commit.rev, file);
 		if (source == null) {
 			for (String ext: langExt.values()) {
-				file = commit.exoname+"."+ext+".code";
+				file = String.format(fmtName, ext);
 				source = GitUtils.getFileContent(commit.rev, file);
 				if (source != null)
 					break;
 			}
 		}
 		return source;
+	}
+	
+	static public final String getSource(GitEvent commit) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+		return getLangFile(commit, commit.exoname+".%s.code");
+	}
+	static public final String getError(GitEvent commit) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+		return getLangFile(commit, commit.exoname+".%s.error");
 	}
 }

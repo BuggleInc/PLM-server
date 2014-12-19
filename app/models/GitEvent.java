@@ -15,11 +15,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-public class GitEvent {
+public class GitEvent implements Comparable<GitEvent> {
 
 	public String exolang, exoswitchto, evt_type, evt_class, totaltests="", outcome,
 			passedtests="", exoname, commitTime, comment, os, plm_version, java_version, codeLink, errorLink;
 	public String commitLog;
+	public JsonObject jo;
 
 	private Boolean valid = true;
 	public RevCommit rev;
@@ -49,7 +50,7 @@ public class GitEvent {
 
 		try {
 			JsonParser jsonParser = new JsonParser();
-			JsonObject jo = (JsonObject) jsonParser.parse(commitLog);
+			jo = (JsonObject) jsonParser.parse(commitLog);
 			try {
 				switch (jo.get("kind").getAsString()) {
 					case "switched":
@@ -184,5 +185,10 @@ public class GitEvent {
 	
 	public Boolean isValid() {
 		return valid;
+	}
+
+	@Override
+	public int compareTo(GitEvent other) {
+		return rev.getAuthorIdent().getWhen().compareTo(other.rev.getAuthorIdent().getWhen());
 	}
 }
