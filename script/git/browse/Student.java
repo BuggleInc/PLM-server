@@ -28,6 +28,7 @@ public class Student implements Comparable<Student>{
 	Map<String,Integer> weeklyEvt = new HashMap<String,Integer>();
 	Map<String,Map<String,Integer>> monthlyEvt= new HashMap<String,Map<String,Integer>>(); 
 	
+	Map<String,Map<String,Integer>> dailyPassedLang  = new HashMap<String,Map<String,Integer>>();
 	Map<String,Integer> dailyPassed  = new HashMap<String,Integer>();
 	Map<String,Integer> weeklyPassed = new HashMap<String,Integer>();
 	Map<String,Map<String,Integer>> monthlyPassed= new HashMap<String,Map<String,Integer>>(); 
@@ -72,6 +73,7 @@ public class Student implements Comparable<Student>{
 				
 				cal.setTime(commit.rev.getAuthorIdent().getWhen());
 				incOrInitialize(dailyPassed,   ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
+				incOrInitialize2(dailyPassedLang,   ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH), commit.exolang);
 				incOrInitialize(weeklyPassed,  ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.WEEK_OF_YEAR));
 				incOrInitialize2(monthlyPassed, ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.MONTH) , commit.exolang);
 				
