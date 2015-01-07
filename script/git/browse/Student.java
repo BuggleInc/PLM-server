@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import models.GitEvent;
@@ -15,6 +17,36 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import utils.GitUtils;
 
 public class Student implements Comparable<Student>{
+	static Set<String> validVersions = new HashSet<String>();
+	static Set<String> betaVersions = new HashSet<String>();
+	static {
+		validVersions.add("2.4 (20140901)");
+		validVersions.add("2.4.1 (20140905)");
+		validVersions.add("2.4.2 (20140909)");
+		validVersions.add("2.4.3 (20140911)");
+		validVersions.add("2.4.4 (20140912)");
+		validVersions.add("2.4.5 (20140916)");
+		validVersions.add("2.4.6 (20140917)");
+		validVersions.add("2.4.7 (20130920)");
+		validVersions.add("2.4.8 (20140928)");
+		validVersions.add("2.4.9 (20140929)");
+		validVersions.add("2.4.10 (20140930)");
+		validVersions.add("2.4.11 (20141009)");
+		validVersions.add("2.5 (20141031)");
+		betaVersions.add("2.3beta (20140515)");
+		betaVersions.add("2.4alpha (20140821)");
+		betaVersions.add("2.4beta1 (20140821)");
+		betaVersions.add("2.4beta1 (20140901)");
+		betaVersions.add("2.4beta2 (20140901)");
+		betaVersions.add("2.4alpha (20140724)");
+		betaVersions.add("2.4.8-git (20131001)");
+		betaVersions.add("2.5-pre (20141015)");
+		betaVersions.add("2.6-pre (20141130)");
+		betaVersions.add("internal (internal)");
+	}
+	Boolean usesBeta = false;
+	static int betaUsers = 0;
+	
 
 	Map<String,Integer> exoPassed = new HashMap<String,Integer>();
 	Map<String,Integer> exoAttempted = new HashMap<String,Integer>();
@@ -61,9 +93,9 @@ public class Student implements Comparable<Student>{
 
 					
 			cal.setTime(commit.rev.getAuthorIdent().getWhen());
-			incOrInitialize(dailyEvt,   ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
+			incOrInitialize(dailyEvt,   ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.MONTH+1)+"."+cal.get(Calendar.DAY_OF_MONTH));
 			incOrInitialize(weeklyEvt,  ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.WEEK_OF_YEAR));
-			incOrInitialize2(monthlyEvt, ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.MONTH) , commit.exolang);
+			incOrInitialize2(monthlyEvt, ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.MONTH+1) , commit.exolang);
 			
 			evtValidCount++;
 			switch (commit.evt_type) {
@@ -72,10 +104,11 @@ public class Student implements Comparable<Student>{
 				String source = GitUtils.getSource(commit);
 				
 				cal.setTime(commit.rev.getAuthorIdent().getWhen());
-				incOrInitialize(dailyPassed,   ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
-				incOrInitialize2(dailyPassedLang,   ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH), commit.exolang);
+				String dayDate = ""+cal.get(Calendar.YEAR)+"."+(cal.get(Calendar.MONTH)+1)+"."+cal.get(Calendar.DAY_OF_MONTH);
+				incOrInitialize(dailyPassed,   dayDate);
+				incOrInitialize2(dailyPassedLang,   dayDate, commit.exolang);
 				incOrInitialize(weeklyPassed,  ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.WEEK_OF_YEAR));
-				incOrInitialize2(monthlyPassed, ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.MONTH) , commit.exolang);
+				incOrInitialize2(monthlyPassed, ""+cal.get(Calendar.YEAR)+"."+(cal.get(Calendar.MONTH)+1) , commit.exolang);
 				
 				if (source != null)
 					setMin(exoPassed, commit.exoname, source.split("\n").length);
@@ -145,6 +178,13 @@ public class Student implements Comparable<Student>{
 				helpEvt++;
 				break;
 			case "Start":
+				if (! validVersions.contains( commit.jo.get("plm").getAsString() )) {
+					usesBeta = true;
+					betaUsers++;
+					if (! betaVersions.contains(commit.jo.get("plm").getAsString())) 
+						System.out.println("\nUnhandled version name: "+ commit.jo.get("plm").getAsString()) ;
+					return; // Don't parse this student any further!
+				}
 				startEvt++;
 				break;
 			case "Stop":

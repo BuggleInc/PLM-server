@@ -69,7 +69,8 @@ public class Harvester {
 
 		Collections.sort(students);
 		for (Student s:students)
-			System.out.println(s);		
+			if (!s.usesBeta)
+				System.out.println(s);		
 	}
 	static void printErrors() {
 		for (String key:scalaError.keySet()) 
@@ -92,18 +93,20 @@ public class Harvester {
 		int[] attempting = new int[201];
 		int[] lines      = new int[4001];
 		for (Student student: students) {
-			for (int i=0;i<passing.length;i++) {
-				if (student.exoPassed.size()>=i)
-					passing[i] ++;
-				if (student.exoAttempted.size()>=i)
-					attempting[i] ++;
-			}
-			int passedLines = 0;
-			for (String exoName : student.exoPassed.keySet())
-				passedLines += student.exoPassed.get(exoName);
-			for (int i=0;i<lines.length;i++) {
-				if (passedLines >= i)
-					lines[i]++;
+			if (! student.usesBeta) {
+				for (int i=0;i<passing.length;i++) {
+					if (student.exoPassed.size()>=i)
+						passing[i] ++;
+					if (student.exoAttempted.size()>=i)
+						attempting[i] ++;
+				}
+				int passedLines = 0;
+				for (String exoName : student.exoPassed.keySet())
+					passedLines += student.exoPassed.get(exoName);
+				for (int i=0;i<lines.length;i++) {
+					if (passedLines >= i)
+						lines[i]++;
+				}
 			}
 		}
 
@@ -131,6 +134,8 @@ public class Harvester {
 		Map<String,Integer> monthlyPythonPassedExo= new HashMap<String,Integer>(); 
 
 		for (Student student: students) {
+			if (student.usesBeta)
+				continue;
 			for (String date:student.monthlyPassed.keySet()) {
 				Student.incOrInitialize(monthlyPassingUsers, date);
 				
@@ -189,6 +194,8 @@ public class Harvester {
 		Map<String,Integer> dailyPythonPassedExo= new HashMap<String,Integer>(); 
 
 		for (Student student: students) {
+			if (student.usesBeta)
+				continue;
 			for (String date:student.dailyPassedLang.keySet()) {
 
 				if (student.dailyPassedLang.get(date).get("Java") != null) {
@@ -233,7 +240,9 @@ public class Harvester {
 		Map<String,Integer> weeklyPassedExo = new HashMap<String,Integer>();
 
 		for (Student student: students) {
-
+			if (student.usesBeta)
+				continue;
+			
 			for (String date:student.dailyPassed.keySet())
 				Student.incOrInitialize(dailyPassingUsers, date);
 			for (String date:student.weeklyPassed.keySet())
@@ -248,8 +257,8 @@ public class Harvester {
 
 		String[] months = new String[] {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 		Calendar cal = Calendar.getInstance();
-		for (int year=2014; year<2016; year++) {
-			for (int week=0; week<54; week ++) {
+		for (int year=2014; year<2017; year++) {
+			for (int week=0; week<55; week ++) {
 				Integer users = weeklyPassingUsers.get(""+year+"."+week);
 				Integer exos = weeklyPassedExo.get(""+year+"."+week);
 				if (users != null) {
@@ -259,50 +268,57 @@ public class Harvester {
 					cal.set(Calendar.WEEK_OF_YEAR,week);
 
 					cal.set(Calendar.DAY_OF_WEEK,Calendar.MONDAY);
-					users = dailyPassingUsers.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
-					exos  = dailyPassedExo.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
+					String dayDate = ""+year+"."+(1+cal.get(Calendar.MONTH))+"."+cal.get(Calendar.DAY_OF_MONTH);
+					users = dailyPassingUsers.get(dayDate);
+					exos  = dailyPassedExo.get(dayDate);
 					if (users == null) users = 0;
 					if (exos == null) exos = 0;
 					System.out.format(", %4s/%3d",exos,users);
 
 					cal.set(Calendar.DAY_OF_WEEK,Calendar.TUESDAY);
-					users = dailyPassingUsers.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
-					exos = dailyPassedExo.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
+					dayDate = ""+year+"."+(1+cal.get(Calendar.MONTH))+"."+cal.get(Calendar.DAY_OF_MONTH);
+					users = dailyPassingUsers.get(dayDate);
+					exos = dailyPassedExo.get(dayDate);
 					if (users == null) users = 0;
 					if (exos == null) exos = 0;
 					System.out.format(", %4s/%3d",exos,users);
 
 					cal.set(Calendar.DAY_OF_WEEK,Calendar.WEDNESDAY);
-					users = dailyPassingUsers.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
-					exos = dailyPassedExo.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
+					dayDate = ""+year+"."+(1+cal.get(Calendar.MONTH))+"."+cal.get(Calendar.DAY_OF_MONTH);
+					users = dailyPassingUsers.get(dayDate);
+					exos = dailyPassedExo.get(dayDate);
 					if (users == null) users = 0;
 					if (exos == null) exos = 0;
 					System.out.format(", %4s/%3d",exos,users);
 
 					cal.set(Calendar.DAY_OF_WEEK,Calendar.THURSDAY);
-					users = dailyPassingUsers.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
-					exos = dailyPassedExo.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
+					dayDate = ""+year+"."+(1+cal.get(Calendar.MONTH))+"."+cal.get(Calendar.DAY_OF_MONTH);
+					users = dailyPassingUsers.get(dayDate);
+					exos = dailyPassedExo.get(dayDate);
 					if (users == null) users = 0;
 					if (exos == null) exos = 0;
 					System.out.format(", %4s/%3d",exos,users);
 
 					cal.set(Calendar.DAY_OF_WEEK,Calendar.FRIDAY);
-					users = dailyPassingUsers.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
-					exos = dailyPassedExo.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
+					dayDate = ""+year+"."+(1+cal.get(Calendar.MONTH))+"."+cal.get(Calendar.DAY_OF_MONTH);
+					users = dailyPassingUsers.get(dayDate);
+					exos = dailyPassedExo.get(dayDate);
 					if (users == null) users = 0;
 					if (exos == null) exos = 0;
 					System.out.format(", %4s/%3d",exos,users);
 
 					cal.set(Calendar.DAY_OF_WEEK,Calendar.SATURDAY);
-					users = dailyPassingUsers.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
-					exos = dailyPassedExo.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
+					dayDate = ""+year+"."+(1+cal.get(Calendar.MONTH))+"."+cal.get(Calendar.DAY_OF_MONTH);
+					users = dailyPassingUsers.get(dayDate);
+					exos = dailyPassedExo.get(dayDate);
 					if (users == null) users = 0;
 					if (exos == null) exos = 0;
 					System.out.format(", %4s/%3d",exos,users);
 
 					cal.set(Calendar.DAY_OF_WEEK,Calendar.SUNDAY);
-					users = dailyPassingUsers.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
-					exos = dailyPassedExo.get(""+year+"."+cal.get(Calendar.MONTH)+"."+cal.get(Calendar.DAY_OF_MONTH));
+					dayDate = ""+year+"."+(1+cal.get(Calendar.MONTH))+"."+cal.get(Calendar.DAY_OF_MONTH);
+					users = dailyPassingUsers.get(dayDate);
+					exos = dailyPassedExo.get(dayDate);
 					if (users == null) users = 0;
 					if (exos == null) exos = 0;
 					System.out.format(", %4s/%3d",exos,users);
@@ -324,7 +340,7 @@ public class Harvester {
 		//printMonthly();
 		//printWeekly();
 		printDaily();
-		System.out.println("\nThere is "+ students.size() + " non-empty students, "+Student.passedExo+" passed exos (of which "+Student.feedback+" have a feedback) and "+ totalCommits + " valid commits!");
+		System.out.println("\nThere is "+ students.size() + " non-empty students (+ "+Student.betaUsers+" beta users), "+Student.passedExo+" passed exos (of which "+Student.feedback+" have a feedback) and "+ totalCommits + " valid commits!");
 		System.out.println("Failed exos: "+Student.failed+"; compil error:"+Student.compil);
 
 	}
