@@ -41,19 +41,23 @@ public class Harvester {
 
 		List<Ref> branches = git.branchList().setListMode(ListMode.REMOTE).call();
 
+		int nbStudents=0;
+		
+		System.out.println("Parse "+branches.size()+" branches. This may take a few seconds.");
 		for(Ref branch:branches) {
 			if(branch.getName().contains("PLM")) {				
 				String branchName = branch.getName().substring(20);
 				Student student = new Student(branchName);
 				if (student.exoAttempted.size()>=1) {
 					students.add(student);
-					if (students.size() % 150 == 0)
-						System.out.println(".");
-					else
-						System.out.print(".");
-
 					totalCommits += student.evtValidCount;
 				}
+				nbStudents++;
+				if (nbStudents % 150 == 0)
+					System.out.println(". "+nbStudents+"/"+branches.size());
+				else
+					System.out.print(".");
+
 				for (String key:student.scalaError.keySet()) {
 					if (!scalaError.containsKey(key))
 						scalaError.put(key, student.scalaError.get(key));
@@ -177,7 +181,7 @@ public class Harvester {
 					int pe = monthlyPythonPassedExo.get(date);
 					int se = monthlyScalaPassedExo.get(date);
 					System.out.format("15/%d/%d|  %5d|%4d  | %4d|%3d | %4d|%3d | %4d|%3d|\n",
-							month+1,year, me,mu, je,ju, pe,pu, se,su);
+							month,year, me,mu, je,ju, pe,pu, se,su);
 				}
 			}
 		}
@@ -333,13 +337,13 @@ public class Harvester {
 		parse();
 
 		//printBranches();
-		//printErrors();
-		//printFeedback();
+		printErrors();
+		printFeedback();
 
-		//printCumulative();
+		printCumulative();
 		//printMonthly();
-		//printWeekly();
-		printDaily();
+		printWeekly();
+		//printDaily();
 		System.out.println("\nThere is "+ students.size() + " non-empty students (+ "+Student.betaUsers+" beta users), "+Student.passedExo+" passed exos (of which "+Student.feedback+" have a feedback) and "+ totalCommits + " valid commits!");
 		System.out.println("Failed exos: "+Student.failed+"; compil error:"+Student.compil);
 
