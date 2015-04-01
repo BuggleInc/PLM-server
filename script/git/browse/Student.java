@@ -42,6 +42,7 @@ public class Student implements Comparable<Student>{
 		betaVersions.add("2.4.8-git (20131001)");
 		betaVersions.add("2.5-pre (20141015)");
 		betaVersions.add("2.6-pre (20141130)");
+		betaVersions.add("2.6-pre (20150202)");		
 		betaVersions.add("internal (internal)");
 	}
 	Boolean usesBeta = false;
