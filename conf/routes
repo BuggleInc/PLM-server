@@ -41,8 +41,8 @@ GET		/joinCourse					controllers.StudentController.joinCourse(courseName:String,
 GET		/leaveCourse				controllers.StudentController.leaveCourse(courseName:String, uuid:String)
 GET		/export				        controllers.StudentController.export()
 
-# Exercise
-POST /exercise/:hashedUuid/:exerciceName/:limit controllers.ExerciseController.display(hashedUuid:String, exerciceName:String, limit:Integer)
+# Exercise (disabled for now)
+# POST /exercise/:hashedUuid/:exerciceName/:limit controllers.ExerciseController.display(hashedUuid:String, exerciceName:String, limit:Integer)
 
 # Identity
 GET		/link						controllers.Identity.linkForm(UUID:String)

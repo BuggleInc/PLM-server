@@ -12,9 +12,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import models.GitEvent;
 import models.Course;
 import models.Feedback;
+import models.GitEvent;
 import models.ProgressItem;
 import models.Student;
 
@@ -32,7 +32,6 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 
@@ -50,7 +49,7 @@ public class JGit extends Controller {
 	}
 
 	public static Result fetchRepoOnDemand() {
-		GitUtils.fetchRepo();
+		GitUtils.fetchRepo(false);
 		return ok(
 				views.html.home.render(request().username())
 		);
@@ -181,7 +180,7 @@ public class JGit extends Controller {
 		computeProgress(summary, "PLM" + hashedUuid);
 
 		return ok(
-				views.html.commits.render(commits, studentname, summary, eventSummary, startCount, switchCount, successCount, failCount, hashedUuid)
+				views.html.gitevent.render(commits, studentname, summary, eventSummary, startCount, switchCount, successCount, failCount, hashedUuid)
 		);
 	}
 
@@ -192,7 +191,7 @@ public class JGit extends Controller {
 	 * @param course     the course
 	 */
 	public static ArrayList<ProgressItem> computeStudentForLesson(ArrayList<String> hashedList, Course course) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
-		JGit.fetchRepo();
+		JGit.fetchRepoOnDemand();
 		ArrayList<ProgressItem> summary = new ArrayList<>();
 		File localPath = new File("repo/");
 		int possible, passed;
@@ -338,7 +337,7 @@ public class JGit extends Controller {
 		File localPath = new File("repo/");
 		if (!localPath.exists()) {
 			localPath.mkdir();
-			Git.cloneRepository().setURI(REMOTE_URL).setDirectory(localPath).call();
+			Git.cloneRepository().setURI(GitUtils.REMOTE_URL).setDirectory(localPath).call();
 		}
 
 		Repository repository = FileRepositoryBuilder.create(new File(localPath + "/.git"));
@@ -390,6 +389,11 @@ public class JGit extends Controller {
 		repository.close();
 
 		return feedbacks;
+	}
+
+	public static ArrayList<GitEvent> computeCommits(String hashedUuid) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

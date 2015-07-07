@@ -30,7 +30,7 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 public class StudentController extends Controller {
 
 	public static Result students() {
-		JGit.fetchRepo(); // fetch to retrieve last info from remote repo
+		JGit.fetchRepoOnDemand(); // fetch to retrieve last info from remote repo
 		ArrayList<String> lastActivity = new ArrayList<>();
 		List<Student> students = Student.all();
 		try {
@@ -120,7 +120,7 @@ public class StudentController extends Controller {
 
 	public static List<Student> getAllStudents() {
 		ArrayList<Student> students = new ArrayList<>();
-		JGit.fetchRepo();
+		JGit.fetchRepoOnDemand();
 		try {
 			File localPath = new File("repo/");
 

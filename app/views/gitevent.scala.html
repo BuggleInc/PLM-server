@@ -1,9 +1,9 @@
-@(commits: List[Commit], studentName: String, summary: List[ProgressItem], eventSummary:List[Double], startCount:Array[Integer], switchCount:Array[Integer], successCount:Array[Integer], failCount:Array[Integer], hashedUuid:String)
+@(commits: List[GitEvent], studentName: String, summary: List[ProgressItem], eventSummary:List[Double], startCount:Array[Integer], switchCount:Array[Integer], successCount:Array[Integer], failCount:Array[Integer], hashedUuid:String)
 
 @import helper._
 @import java.math.BigInteger; var i=1; var j=startCount.length;
 
-@displayClass(c: Commit) = {
+@displayClass(c: GitEvent) = {
 	@if(!c.evt_class.equals("")) {
 		class="@{c.evt_class}"
 	}
@@ -114,12 +114,14 @@
 									@if(commit.codeLink != null) {
 										<a href="@commit.codeLink" class="btn btn-primary btn-mini">Code</a>
 									}
-									@if(commit.errorLink != null) {
+									<!-- disabled for now
+									if(commit.errorLink != null) {
 										<a href="@commit.errorLink" class="btn btn-danger btn-mini">Error</a>
-											@form(routes.ExerciseController.display(hashedUuid, commit.exoname, 10)) {
+  										form(routes.ExerciseController.display(hashedUuid, commit.exoname, 10)) {
 												<input class="btn btn-warning btn-mini" type="submit" value="Exercise graph">
 											}
 									}
+									-->
 								</td>
 							</tr>
 							@{i=i+1}
