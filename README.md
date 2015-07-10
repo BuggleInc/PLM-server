@@ -27,8 +27,11 @@ The first time you click on the "See all students" button, the server
 will fetch all the data from the https://github.com/BuggleInc/PLM-data
 repository (this may take a few minutes).
 
-Then, if you want to update the data, you need to manually go to the
-repo/ directory on the server and run that command: ```git fetch --all```
+Then, the only way to to update the data is to do so manually:
+```
+cd repo/
+git fetch --all
+```
 
 License
 -------
