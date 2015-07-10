@@ -49,7 +49,10 @@ public class JGit extends Controller {
 	}
 
 	public static Result fetchRepoOnDemand() {
-		GitUtils.fetchRepo(false);
+		try{
+			GitUtils.fetchRepo(false);
+		}catch(Exception e){}
+
 		return ok(
 				views.html.home.render(request().username())
 		);
