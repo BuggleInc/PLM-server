@@ -51,7 +51,10 @@ public class JGit extends Controller {
 	public static Result fetchRepoOnDemand() {
 		try{
 			GitUtils.fetchRepo(false);
-		}catch(Exception e){}
+		}catch(Exception e){
+			System.err.println("Error while fetching the repo:");
+			e.printStackTrace();
+		}
 
 		return ok(
 				views.html.home.render(request().username())
