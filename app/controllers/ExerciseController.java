@@ -24,10 +24,10 @@ public class ExerciseController extends Controller {
 		//System.out.println("Student name : " + student.name);
 		ArrayList<Quintuplet> quintuplet = new ArrayList<>();
 		ArrayList<GitEvent> commits = new ArrayList<>();
-		try {
+	//	try {
 			commits = JGit.computeCommits(hashedUuid);
-		} catch (IOException | GitAPIException e) { // TODO
-		}
+	//	} catch (IOException | GitAPIException e) { // TODO
+	//	}
 		for (GitEvent c : commits) {
 			if (quintuplet.size() < limit && (c.evt_type.equals("Success") || c.evt_type.equals("Failed")) && c.exoname.equals(exerciseName)) {
 				if (c.totaltests.equals("-1")) { // compilation error
