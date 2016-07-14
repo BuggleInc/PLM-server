@@ -10,11 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import models.GitEvent;
-
 import org.eclipse.jgit.api.errors.GitAPIException;
-
-import utils.GitUtils;
 
 public class Student implements Comparable<Student>{
 	static Set<String> validVersions = new HashSet<String>();
@@ -33,6 +29,9 @@ public class Student implements Comparable<Student>{
 		validVersions.add("2.4.10 (20140930)");
 		validVersions.add("2.4.11 (20141009)");
 		validVersions.add("2.5 (20141031)");
+		validVersions.add("2.6-pre (20150202)");		
+		validVersions.add("2.6 (20151010)");	
+		
 		betaVersions.add("2.3beta (20140515)");
 		betaVersions.add("2.4alpha (20140821)");
 		betaVersions.add("2.4beta1 (20140821)");
@@ -42,7 +41,6 @@ public class Student implements Comparable<Student>{
 		betaVersions.add("2.4.8-git (20131001)");
 		betaVersions.add("2.5-pre (20141015)");
 		betaVersions.add("2.6-pre (20141130)");
-		betaVersions.add("2.6-pre (20150202)");		
 		betaVersions.add("internal (internal)");
 	}
 	Boolean usesBeta = false;
@@ -52,7 +50,7 @@ public class Student implements Comparable<Student>{
 	Map<String,Integer> exoPassed = new HashMap<String,Integer>();
 	Map<String,Integer> exoAttempted = new HashMap<String,Integer>();
 
-	int passEvt, failEvt, compilEvt, helpEvt, startEvt,stopEvt, switchEvt, revertEvt, tipEvt;
+	int passEvt, failEvt, compilEvt, helpEvt, startEvt,stopEvt,idleEvt, switchEvt, revertEvt, tipEvt;
 	int evtCount,evtValidCount;
 
 	String name;
@@ -68,6 +66,13 @@ public class Student implements Comparable<Student>{
 	
 	Map<String,Integer> scalaError = new HashMap<String,Integer>();
 	
+	int scala= 0;
+	int python = 0;
+	int C = 0;
+	int java = 0;
+	int lightbot = 0;
+	int blockly = 0;
+	
 	static int unhandled = 0;
 	static int handled = 0;
 
@@ -78,6 +83,7 @@ public class Student implements Comparable<Student>{
 	
 	static Map<String,Map<String,Integer>>allClosedFeedback = new HashMap<String,Map<String,Integer>>();
 	static Map<String,Vector<String>>allOpenFeedback = new HashMap<String,Vector<String>>();
+	Vector<String> languages = new Vector<>();
 	
 	Student(String branchName) throws IOException, GitAPIException {
 		Calendar cal = Calendar.getInstance();
@@ -97,7 +103,30 @@ public class Student implements Comparable<Student>{
 			incOrInitialize(dailyEvt,   ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.MONTH+1)+"."+cal.get(Calendar.DAY_OF_MONTH));
 			incOrInitialize(weeklyEvt,  ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.WEEK_OF_YEAR));
 			incOrInitialize2(monthlyEvt, ""+cal.get(Calendar.YEAR)+"."+cal.get(Calendar.MONTH+1) , commit.exolang);
-			
+
+			if (commit.exolang != null) {
+				if (commit.evt_type.equals("Help") ||
+						commit.evt_type.equals("Start") ||
+						commit.evt_type.equals("Stop") ||
+						commit.evt_type.equals("idle") ||
+						commit.evt_type.equals("Switched") ||
+						commit.evt_type.equals("Reverted") ||
+						commit.evt_type.equals("commonErrorFeedback") ||						
+						commit.evt_type.equals("Read")) {
+					/* Ignore other events than code submission */
+				} else {
+					switch(commit.exolang) {
+					case "Scala":  scala++;  break;  
+					case "Python": python++; break;
+					case "C":      C++;      break;
+					case "Java":   java++;   break;
+					case "lightbot": lightbot++; break;
+					case "Blockly": blockly++; break;
+					default: System.err.println("Unhandled language: '"+commit.exolang+"' for event type '"+commit.evt_type+"' ("+commit.commitLog+")");
+					}
+				}
+			}
+
 			evtValidCount++;
 			switch (commit.evt_type) {
 			case "Success":
@@ -178,18 +207,24 @@ public class Student implements Comparable<Student>{
 			case "Help":
 				helpEvt++;
 				break;
+			case "commonErrorFeedback":
+				/* TODO */
+				break;
 			case "Start":
 				if (! validVersions.contains( commit.jo.get("plm").getAsString() )) {
+					if (! betaVersions.contains(commit.jo.get("plm").getAsString())) 
+						System.err.println("\nUnhandled version name: '"+ commit.jo.get("plm").getAsString()+"'") ;
 					usesBeta = true;
 					betaUsers++;
-					if (! betaVersions.contains(commit.jo.get("plm").getAsString())) 
-						System.out.println("\nUnhandled version name: "+ commit.jo.get("plm").getAsString()) ;
 					return; // Don't parse this student any further!
 				}
 				startEvt++;
 				break;
 			case "Stop":
 				stopEvt++;
+				break;
+			case "idle":
+				idleEvt++;
 				break;
 			case "Switched":
 				switchEvt++;

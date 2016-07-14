@@ -15,8 +15,6 @@ import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Ref;
 
-import utils.GitUtils;
-
 /* TODO:
  * 
  * - meilleur feedback
@@ -92,6 +90,32 @@ public class Harvester {
 			}
 		}		
 	}
+	static void countLanguages() {
+		double scala= 0;
+		double python = 0;
+		double C = 0;
+		double java = 0;
+		double lightbot = 0;
+		double blockly = 0;
+	
+		for (Student student: students) {
+			if (! student.usesBeta) {
+				scala += student.scala;
+				python += student.python;
+				C += student.C;
+				java += student.java;
+				lightbot += student.lightbot;
+				blockly += student.blockly;
+			}
+		}
+		double total = scala+python+java+C;
+		System.out.println("Scala: "+scala+" ("+((int)(100*scala/total))+"%); "+
+				           "Python: "+python+" ("+((int)(100*python/total))+"%); "+
+				           "Java: "+java+" ("+((int)(100*java/total))+"%); "+
+				           "Blockly: "+blockly+" ("+((int)(100*blockly/total))+"%); "+
+				           "lightbot: "+lightbot+"; "+
+				           "C:"+C+" ("+((int)(100*C/total))+"%)");
+	}
 	static void printCumulative() {
 		int[] passing = new int[201];
 		int[] attempting = new int[201];
@@ -114,16 +138,16 @@ public class Harvester {
 			}
 		}
 
-		System.out.println("# exo count , cumulative count of passing students, cumulative count of attempting students");
-		for (int i=passing.length;i>=0;i--) {
-			if ((i%25 == 0 && i!=0) || i==190 || i==10 || i==5 || i==1)
-				System.out.format(" %4d ,  %4d,  %4d\n",i, passing[i], attempting[i]);
+		System.out.println("# exo count , cumulative count of attempting students, cumulative count of passing students");
+		for (int i=passing.length-1;i>=0;i--) {
+		//	if ((i%25 == 0 && i!=0) || i==190 || i==10 || i==5 || i==1)
+				System.out.format("| %4d |  %4d|  %4d|\n",i, attempting[i], passing[i]);
 		}
 
 		System.out.println("# lines count , cumulative count of students with more passing lines");
-		for (int i=lines.length;i>=0;i--) {
-			if ((i%1000==0 && i!=0) || i==500 || i==250 || i==50 || i==10)
-				System.out.format("  %4d,  %4d\n",i, lines[i]);
+		for (int i=lines.length-1;i>=0;i--) {
+//			if ((i%1000==0 && i!=0) || i==500 || i==250 || i==50 || i==10 || i==1)
+				System.out.format("|  %4d|  %4d|\n",i, lines[i]);
 		}
 	}
 	static void printMonthly() {
@@ -175,7 +199,7 @@ public class Harvester {
 				if (mu!=null) {
 					int ju = monthlyJavaPassingUsers.get(date);
 					int pu = monthlyPythonPassingUsers.get(date);
-					int su = monthlyScalaPassingUsers.get(date);
+					int su = monthlyScalaPassingUsers==null?0:monthlyScalaPassingUsers.get(date);
 
 					int je = monthlyJavaPassedExo.get(date);
 					int pe = monthlyPythonPassedExo.get(date);
@@ -345,8 +369,8 @@ public class Harvester {
 		printWeekly();
 		//printDaily();
 		System.out.println("\nThere is "+ students.size() + " non-empty students (+ "+Student.betaUsers+" beta users), "+Student.passedExo+" passed exos (of which "+Student.feedback+" have a feedback) and "+ totalCommits + " valid commits!");
-		System.out.println("Failed exos: "+Student.failed+"; compil error:"+Student.compil);
-
+		System.out.println("Failed exos: "+Student.failed+"; compil error:"+Student.compil+"; Code submissions (total):"+(Student.passedExo+Student.failed+Student.compil));
+		countLanguages();
 	}
 	static int intOrZero(Integer i) {
 		if (i==null)
